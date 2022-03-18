@@ -2,4 +2,37 @@
     <string name="app_name">MessagingApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="Universities">
+        <item>Technische Universiteit Eindhoven</item>
+        <item>Erasmus Universiteit Rotterdam</item>
+        <item>Maastricht University</item>
+        <item>Radboud Universiteit</item>
+        <item>Rijksuniversiteit Groningen</item>
+        <item>Tilburg University</item>
+        <item>Universiteit Leiden</item>
+        <item>Universiteit Utrecht</item>
+        <item>Universiteit van Amsterdam</item>
+        <item>Vrije Universiteit Amsterdam</item>
+        <item>Theologische Universiteit Apeldoorn</item>
+        <item>IHE Delft Institute for Water Education</item>
+        <item>Universiteit voor Humanistiek</item>
+        <item>Faculteit Militaire Wetenschappen</item>
+        <item>Universiteit Twente</item>
+        <item>University College Roosevelt</item>
+        <item>Protestantse Theologische Universiteit</item>
+        <item>TSM Business School</item>
+        <item>Technische Universiteit Delft</item>
+        <item>Universiteit Leiden</item>
+        <item>Maastricht School of Management</item>
+        <item>Theologische Universiteit Kampen</item>
+        <item>Open Universiteit</item>
+        <item>Wageningen University  Research</item>
+        <item>AMC-UvA</item>
+        <item>TIAS School for Business and Society</item>
+        <item>University School of Medicine</item>
+        <item>Amsterdam School of Real Estate</item>
+        <item>Transnationale Universiteit Limburg</item>
+        <item>Nyenrode Business Universiteit</item>
+    </array>
 </resources>
