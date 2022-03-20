@@ -2,6 +2,7 @@ package com.example.messagingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, View.OnClickListener {
 
+    private CardView cardAddListing;
     BottomNavigationView bottomNavigationView;
     ImageView settingsBtn;
     @Override
@@ -29,6 +31,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
+        cardAddListing = (CardView) findViewById(R.id.cardAddListing);
+        cardAddListing.setOnClickListener(this);
+    }
+
+    public void onClick(View v) {
+        if (v.getId()==R.id.cardAddListing) {
+            startActivity(new Intent(this, AddListingActivity.class));
+        }
     }
 
     @Override
@@ -52,7 +62,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             case R.id.messages:
                 startActivity(new Intent(this,MessagesActivity.class));
                 return true;
-
         }
         return false;
     }

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary_blue">#3d90e3</color>
     <color name="facebook_blue">#3262C4</color>
+    <color name="colorPrimary">#3d90e3</color>
+    <color name="red">#FF0000</color>
 </resources>
