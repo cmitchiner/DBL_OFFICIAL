@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "736238836222",
+    "project_id": "justudy-ebc7b",
+    "storage_bucket": "justudy-ebc7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736238836222:android:077d338117aa018bbdc8af",
+        "android_client_info": {
+          "package_name": "com.example.messagingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "736238836222-v16duimfam9d6l3u7vlp640f7327tcgh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCARKelD8M0D4JpNsP_Z7ioSYHcEtUOlLU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "736238836222-v16duimfam9d6l3u7vlp640f7327tcgh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
