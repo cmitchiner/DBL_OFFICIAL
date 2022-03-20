@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void firebaseAuthWithGoogleAccount(GoogleSignInAccount account) {
-        Log.d(TAG, "firebaseAuthWithGoogleAccount: begin firebase auth with google account ");
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -243,21 +242,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //Check if user is new or existing
                         if (authResult.getAdditionalUserInfo().isNewUser()){
                             //User Is New - Account Creation
-
-                            addGoogleAcctToDB(firebaseUser.getDisplayName(), "", " ", email);
+                            addGoogleAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
                             Log.d(TAG, "onSuccess: Account Created...\n" + email);
 
 
                             Toast.makeText(MainActivity.this, "Account Created...\n"
                                     + email, Toast.LENGTH_SHORT).show();
-
                         } else {
                             //existing user - Logged In
                             Log.d(TAG, "onSuccess: Existing User...\n" + email);
                             Toast.makeText(MainActivity.this, "Existing User...\n"
                                     + email, Toast.LENGTH_SHORT).show();
                         }
-
                         //Start profile activity
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         finish();

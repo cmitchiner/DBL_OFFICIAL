@@ -2,10 +2,12 @@ package com.example.messagingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,18 +48,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         firebaseUser = firebaseAuth.getCurrentUser();
 
         //Set Text-Fields to User name and email
-        fullNameTv.setText(firebaseUser.getDisplayName().toString());
+        fullNameTv.setText(firebaseUser.getDisplayName());
         emailTv.setText(firebaseUser.getEmail());
 
 
     }
+
+    /**
+     * onClick(): holds all the On-Click listeners for any elements on the screen
+     *
+     * @param v a view of all elements present on the screen
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logoutBtn:
+                logoutUser();
                 break;
             case R.id.changePassBtn:
+                startActivity(new Intent(this, ChangePasswordActivity.class));
                 break;
         }
     }
+
+    private void logoutUser() {
+        firebaseAuth.signOut();
+        Toast.makeText(SettingsActivity.this, "Logged Out!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
 }

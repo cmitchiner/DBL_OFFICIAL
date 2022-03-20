@@ -263,6 +263,7 @@
                             android:drawableLeft="@drawable/ic_person"
                             android:drawablePadding="10dp"
                             android:drawableTint="@color/black"
+                            android:editable="false"
                             android:text="jdoe123" />
                     </com.google.android.material.textfield.TextInputLayout>
 

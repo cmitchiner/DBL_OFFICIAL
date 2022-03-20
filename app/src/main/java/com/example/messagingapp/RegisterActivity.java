@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseAuth firebaseAuth;
 
     //Global variable for method use
-    private boolean usernameisUnique;
+    private boolean usernameIsUnique;
 
     /** onCreate() is a method that runs before a user see's the current activity
      *
@@ -67,6 +69,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * onClick(): holds all the On-Click listeners for any elements on the screen
+     *
+     * @param v a view of all elements present on the screen
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -76,6 +83,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * Makes an email/pass authentication account with firebase, and posts a new User object
+     * to the firebase database.
+     *
+     */
     public void registerUser() {
         //Store all info from EditText fields
         String fullName = registerFullNameEt.getText().toString().trim();
@@ -84,55 +96,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = registerEmailEt.getText().toString().trim();
         String password = registerPasswordEt.getText().toString().trim();
 
-        if (allFieldsAreFilled(fullName, username, phone, email, password)) {
-            if (usernameIsAvailable(username)) {
-                if (passwordIsValid(password)) {
-                    firebaseAuth.createUserWithEmailAndPassword(email,password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                    if(task.isSuccessful()) {
-                                        /** User account created on firebase successfully **/
-                                        User user = new User(fullName, username, phone, email);
-                                        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-
-                                                /** User posted to database successfully **/
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(RegisterActivity.this,
-                                                            "User has been registered successfully!",
-                                                            Toast.LENGTH_LONG).show();
-                                                    startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
-                                                } else {
-                                                    /** User failed to be added to database **/
-                                                    Toast.makeText(RegisterActivity.this,
-                                                            "Failed to register! Try again!",
-                                                            Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        });
-
-                                    } else {
-                                        /** User account failed to be created on firebase **/
-                                        String error = "";
-                                        task.addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(RegisterActivity.this,
-                                                        e.getMessage(),
-                                                        Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                                    }
-                                }
-                            });
+        //Verify all fields are filled out correctly
+        if (allFieldsAreFilled(fullName, username, phone, email, password) &&
+                usernameIsAvailable(username) && passwordIsValid(password)) {
+                    attemptFirebaseRegistration(fullName, username, phone, email,password);
                 }
-            }
-        }
     }
 
     //TODO: Write contract
@@ -179,21 +147,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         if (snapshot.exists()) {
                             registerUsernameEt.setError("Username is already taken!");
                             registerUsernameEt.requestFocus();
-                            usernameisUnique = false;
+                            usernameIsUnique = false;
                             Log.d("MYACTIVITY", "Username already exists");
                         } else {
                             Log.d("MYACTIVITY", "Username is unique");
-                            usernameisUnique = true;
+                            usernameIsUnique = true;
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        usernameisUnique = false;
+                        usernameIsUnique = false;
                         Log.d("MYACTIVITY", error.getMessage());
                     }
                 });
-        return usernameisUnique;
+        return usernameIsUnique;
     }
 
     //TODO: Write contract
@@ -229,5 +197,73 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
         return matcher.matches();
+    }
+
+    public void attemptFirebaseRegistration(String fullName, String username, String phone, String email, String password) {
+        //Attempt to create a new email/pass authentication account
+        firebaseAuth.createUserWithEmailAndPassword(email,password)
+            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    //Account created Successfully
+                    if(task.isSuccessful()) {
+                        //Create new User Object
+                        User user = new User(fullName, username, phone, email);
+
+                        //Attempt to store User object in FirebaseDatabase
+                        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                //SUCCESS: User posted to DB
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(RegisterActivity.this,
+                                            "User has been registered successfully!",
+                                            Toast.LENGTH_LONG).show();
+                                    //Set Display Name on Firebase
+                                    setFirebaseDisplayName(fullName);
+                                    //Redirect to Profile Page
+                                    startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
+                                } else {
+                                    //FAIL: User was NOT posted to DB
+                                    Toast.makeText(RegisterActivity.this,
+                                            "Failed to register! Try again!",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    } else {
+                        //Account FAILED to be created
+                        task.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(RegisterActivity.this,
+                                        e.getMessage(),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            });
+    }
+
+    private void setFirebaseDisplayName(String fullName) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(fullName).build();
+
+        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("REGISTER", "Display Name Set Successfully!");
+                        } else {
+                            Log.d("REGISTER", "Failed to set DisplayName");
+                        }
+                    }
+                });
     }
 }

@@ -20,22 +20,18 @@
 
             <TextView
                 android:id="@+id/txtAddOffer"
-                android:layout_width="149dp"
-                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/bungee"
                 android:text="Add Listing"
                 android:textColor="@color/black"
                 android:textSize="34sp" />
 
         </RelativeLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@drawable/bg_layout"
-        android:layout_marginTop="60dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -51,13 +47,13 @@
 
 
             <TextView
+                android:id="@+id/warningTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add a title"
                 android:textColor="@color/red"
-                android:visibility="gone"
-                android:id="@+id/warningTitle"
-                />
+                android:visibility="gone" />
+
             <EditText
                 android:id="@+id/edtTxtTitle"
                 android:layout_width="match_parent"
@@ -72,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_layout"
-                android:entries="@array/Universities"
-                android:elevation="5dp"/>
+                android:elevation="5dp"
+                android:entries="@array/Universities" />
 
             <!--            <Spinner-->
             <!--                android:id="@+id/spinnerCourseCode"-->
@@ -87,23 +83,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp">
+
                 <TextView
+                    android:id="@+id/warningCourseCode"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:text="Add a course code"
                     android:textColor="@color/red"
-                    android:visibility="gone"
-                    android:id="@+id/warningCourseCode"
-                    />
+                    android:visibility="gone" />
+
                 <TextView
+                    android:id="@+id/warningCourseName"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="130dp"
                     android:text="Add a course name"
                     android:textColor="@color/red"
-                    android:visibility="gone"
-                    android:layout_marginLeft="130dp"
-                    android:id="@+id/warningCourseName"
-                    />
+                    android:visibility="gone" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -138,8 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_layout"
-                android:orientation="horizontal"
-                android:elevation="5dp">
+                android:elevation="5dp"
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rbNotes"
@@ -202,8 +198,8 @@
                     android:layout_marginStart="130dp"
                     android:background="@drawable/bg_layout"
                     android:elevation="5dp"
-                    app:tint="@color/black"
-                    app:srcCompat="@drawable/ic_add" />
+                    app:srcCompat="@drawable/ic_add"
+                    app:tint="@color/black" />
 
             </RelativeLayout>
 
@@ -228,8 +224,8 @@
                     android:layout_marginStart="130dp"
                     android:background="@drawable/bg_layout"
                     android:elevation="5dp"
-                    app:tint="@color/black"
-                    app:srcCompat="@drawable/ic_add" />
+                    app:srcCompat="@drawable/ic_add"
+                    app:tint="@color/black" />
             </RelativeLayout>
 
             <ImageView
@@ -244,9 +240,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
+                android:background="@drawable/bg_layout"
                 android:elevation="5dp"
-                android:background="@drawable/bg_layout">
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rbSetPrice"
@@ -306,8 +302,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Publish"
-                    android:elevation="5dp"/>
+                    android:background="@drawable/btn_bg"
+                    android:elevation="5dp"
+                    android:text="Publish" />
             </RelativeLayout>
 
             <!--            <TextView-->
