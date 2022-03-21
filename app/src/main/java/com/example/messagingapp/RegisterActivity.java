@@ -96,7 +96,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String email = registerEmailEt.getText().toString().trim();
         String password = registerPasswordEt.getText().toString().trim();
 
-        //Verify all fields are filled out correctly
+        //Verify all fields are filled out correctly, username is unique and password follows
+        //                                                                              requirements
         if (allFieldsAreFilled(fullName, username, phone, email, password) &&
                 usernameIsAvailable(username) && passwordIsValid(password)) {
                     attemptFirebaseRegistration(fullName, username, phone, email,password);
@@ -130,7 +131,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             registerPasswordEt.requestFocus();
             return false;
         }
-
         return true;
     }
 
