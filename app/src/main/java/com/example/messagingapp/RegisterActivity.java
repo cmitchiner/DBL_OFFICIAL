@@ -148,9 +148,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             registerUsernameEt.setError("Username is already taken!");
                             registerUsernameEt.requestFocus();
                             usernameIsUnique = false;
-                            Log.d("MYACTIVITY", "Username already exists");
+                            Log.d("REGISTER", "Username already exists");
                         } else {
-                            Log.d("MYACTIVITY", "Username is unique");
+                            Log.d("REGISTER", "Username is unique");
                             usernameIsUnique = true;
                         }
                     }
@@ -158,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         usernameIsUnique = false;
-                        Log.d("MYACTIVITY", error.getMessage());
+                        Log.d("REGISTER", error.getMessage());
                     }
                 });
         return usernameIsUnique;

@@ -29,7 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AddListingActivity extends AppCompatActivity {
+public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName;
@@ -45,47 +45,52 @@ public class AddListingActivity extends AppCompatActivity {
     int SELECT_PICTURE = 200;
 
 
+    /** onCreate() is a method that runs before a user see's the current activity
+     *
+     * @param savedInstanceState the previous state of the app to be loaded
+     * @post All variables are initialized and Auth Tokens are setup correctly
+     * @returns void
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_listing);
 
+        //Init references to activity_add_listing.xml
         initViews();
 
-        btnPublish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //Init On-Click Listeners
+        btnPublish.setOnClickListener(this);
+        btnUploadPicture.setOnClickListener(this);
+        btnUploadDocument.setOnClickListener(this);
+        rbBidding.setOnClickListener(this);
+        rbSetPrice.setOnClickListener(this);
+    }
+
+    /**
+     * onClick(): holds all the On-Click listeners for any elements on the screen
+     *
+     * @param v a view of all elements present on the screen
+     */
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.btnPublish:
                 initPublish();
-            }
-        });
-
-        btnUploadPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                break;
+            case R.id.btnUploadPicture:
                 selectImage();
-            }
-        });
-
-        btnUploadDocument.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                break;
+            case R.id.btnUploadDocument:
                 chooseFile();
-            }
-        });
-
-        rbBidding.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                txtPrice.setText("Starting Price:");
-            }
-        });
-
-        rbSetPrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                txtPrice.setText("Set Price: ");
-            }
-        });
+                break;
+            case R.id.rbBidding:
+                txtPrice.setText("Starting price: ");
+                break;
+            case R.id.rbSetPrice:
+                txtPrice.setText("Set price: ");
+                break;
+        }
     }
 
         private void chooseFile() {
@@ -136,10 +141,10 @@ public class AddListingActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (options[i].equals("Cancel")) {
                         dialogInterface.dismiss();
-                    }else if(options[i].equals("Take photo")) {
+                    } else if(options[i].equals("Take photo")) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 1);
-                    }else if (options[i].equals("Choose image from gallery")){
+                    } else if (options[i].equals("Choose image from gallery")){
                         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(intent, 2);
                     }
@@ -154,11 +159,11 @@ public class AddListingActivity extends AppCompatActivity {
             if (requestCode==2) {
                 Uri selectedImage = data.getData();
                 imgView.setImageURI(selectedImage);
-            }else if (requestCode==1) {
+            } else if (requestCode==1) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 imgView.setImageBitmap(imageBitmap);
-            }else if (requestCode==3) {
+            } else if (requestCode==3) {
                 Uri filePath = data.getData();
                 getStringPdf(filePath);
                 Toast.makeText(this, "File chosen", Toast.LENGTH_SHORT).show();
@@ -167,7 +172,6 @@ public class AddListingActivity extends AppCompatActivity {
 
         private void initPublish() {
             Log.d(TAG, "initPublish: started");
-
             if (validateData()) {
                 showSnackBar();
             }
@@ -175,7 +179,6 @@ public class AddListingActivity extends AppCompatActivity {
 
         private void showSnackBar() {
             Log.d(TAG, "showSnackBar: started");
-
             Snackbar.make(parent, "Offer added", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Dismiss", new View.OnClickListener() {
                         @Override

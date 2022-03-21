@@ -71,6 +71,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * logoutUser(): Logs a user out and redirects them to the Login Screen
+     *
+     * @pre @code{FirebaseAuth.getCurrentUser() != null}
+     * @modifies FirebaseUser
+     * @post @code{FirebaseAuth.getCurrentUser() == null}
+     */
     private void logoutUser() {
         firebaseAuth.signOut();
         Toast.makeText(SettingsActivity.this, "Logged Out!", Toast.LENGTH_SHORT).show();
