@@ -301,7 +301,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     }
                 }
             });
-        } else {
+        }
+        if (currentPhone.equals(newPhone) && currentFullName.equals(newFullName) && currentUsername.equals(newUsername)) {
             Toast.makeText(ProfileActivity.this, "Nothing to Update!",
                     Toast.LENGTH_SHORT).show();
         }
