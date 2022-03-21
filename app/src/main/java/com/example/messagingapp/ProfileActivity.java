@@ -301,6 +301,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     }
                 }
             });
+        } else {
+            Toast.makeText(ProfileActivity.this, "Nothing to Update!",
+                    Toast.LENGTH_SHORT).show();
         }
         //Refresh EditText fields, TextView at top of screen, and variables for current user info
         getCurrentUserInfo();
