@@ -73,9 +73,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         firebaseAuth = FirebaseAuth.getInstance();
 
         //Init Firebase Database Reference
-        ref = FirebaseDatabase.getInstance(
-                "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
-                .getReference("Users").child(firebaseAuth.getCurrentUser().getUid());
+        if (!MainActivity.isGuest) {
+            ref = FirebaseDatabase.getInstance(
+                    "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
+                    .getReference("Users").child(firebaseAuth.getCurrentUser().getUid());
+        }
 
         //Verify user is still logged in and update EditText fields
         verifyLoginStatus();
@@ -116,10 +118,18 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.cardAddListing:
-                startActivity(new Intent(this, AddListingActivity.class));
+                if (!MainActivity.isGuest) {
+                    startActivity(new Intent(this, AddListingActivity.class));
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Guests cannot create listings!", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.updateBtn:
-                updateUserInfo();
+                if (!MainActivity.isGuest) {
+                    updateUserInfo();
+                } else {
+                    Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
@@ -131,7 +141,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
      */
     private void verifyLoginStatus() {
         FirebaseUser fireBaseUser = firebaseAuth.getCurrentUser();
-        if (fireBaseUser != null) {
+        if (fireBaseUser != null || MainActivity.isGuest) {
             //User is signed in
             getCurrentUserInfo();
         } else {
@@ -150,7 +160,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         fullNameEt.setText(currentFullName);
         usernameEt.setText(currentUsername);
         phoneEt.setText(currentPhone);
-
     }
 
     /**
@@ -158,18 +167,30 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
      * and TextViews accordingly.
      */
     private void getCurrentUserInfo() {
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("PROFILE", "Reading user info from Database...");
-                User user = snapshot.getValue(User.class);
-                fillUserInfoFields(user.fullName, user.username, user.phone);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("PROFILE", "Failed to read user info from Database");
-            }
-        });
+        if (MainActivity.isGuest) {
+            fullNameTv.setText("GUEST");
+            emailTv.setText("GUEST");
+            fullNameEt.setText("GUEST");
+            usernameEt.setText("GUEST");
+            phoneEt.setText("GUEST");
+            fullNameEt.setEnabled(false);
+            usernameEt.setEnabled(false);
+            phoneEt.setEnabled(false);
+        } else {
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Log.d("PROFILE", "Reading user info from Database...");
+                    User user = snapshot.getValue(User.class);
+                    fillUserInfoFields(user.fullName, user.username, user.phone);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("PROFILE", "Failed to read user info from Database");
+                }
+            });
+        }
     }
 
     /**

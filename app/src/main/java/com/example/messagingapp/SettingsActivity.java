@@ -45,11 +45,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         //Init FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+
 
         //Set Text-Fields to User name and email
-        fullNameTv.setText(firebaseUser.getDisplayName());
-        emailTv.setText(firebaseUser.getEmail());
+        if (!MainActivity.isGuest) {
+            firebaseUser = firebaseAuth.getCurrentUser();
+            fullNameTv.setText(firebaseUser.getDisplayName());
+            emailTv.setText(firebaseUser.getEmail());
+        } else {
+            fullNameTv.setText("GUEST");
+            emailTv.setText("GUEST");
+        }
 
 
     }
@@ -66,7 +72,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 logoutUser();
                 break;
             case R.id.changePassBtn:
-                startActivity(new Intent(this, ChangePasswordActivity.class));
+                if (!MainActivity.isGuest) {
+                    startActivity(new Intent(this, ChangePasswordActivity.class));
+                } else {
+                    Toast.makeText(SettingsActivity.this, "This feature is not allowed for guests", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
@@ -79,7 +89,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
      * @post @code{FirebaseAuth.getCurrentUser() == null}
      */
     private void logoutUser() {
-        firebaseAuth.signOut();
+        if (!MainActivity.isGuest) {
+            firebaseAuth.signOut();
+        }
         Toast.makeText(SettingsActivity.this, "Logged Out!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }

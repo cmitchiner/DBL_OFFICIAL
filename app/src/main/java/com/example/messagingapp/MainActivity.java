@@ -34,7 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     //Variables for references to activity_main.xml
-    private Button loginBtn, googleSignInButton;
+    private Button loginBtn, googleSignInButton, guestBtn;
     private EditText emailEt, passwordEt;
     private TextView forgotTv, registerTv;
 
@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient googleSignInClient;
     public FirebaseAuth firebaseAuth;
     private static final String TAG = "GOOGLE_SIGN_IN_TAG";
+
+    public static boolean isGuest = true;
 
 
     /** onCreate() is a method that runs before a user see's a page
@@ -64,12 +66,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         passwordEt = findViewById(R.id.inputPassword);
         forgotTv = findViewById(R.id.forgotTv);
         googleSignInButton = findViewById(R.id.btnGoogle);
+        guestBtn = findViewById(R.id.btnGuest);
 
         //Set references On-Click Listeners
         registerTv.setOnClickListener(this);
         googleSignInButton.setOnClickListener(this);
         loginBtn.setOnClickListener(this);
         forgotTv.setOnClickListener(this);
+        guestBtn.setOnClickListener(this);
 
         //Init Google Auth
         GoogleSignInOptions googleSignInOptions =
@@ -112,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Start the forgot password activity
                 startActivity(new Intent(this, ForgotPassActivity.class));
                 break;
+            case R.id.btnGuest:
+                isGuest = true;
+                startActivity(new Intent(this, ProfileActivity.class));
+                break;
         }
     }
 
@@ -126,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
             Log.d(TAG, "checkUser: User Already Signed In");
+            isGuest = false;
             startActivity(new Intent(this, ProfileActivity.class));
             finish();
         }
@@ -151,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //Login SUCCESS: Redirect to Profile
+                            isGuest=false;
                             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         } else {
                             //Login FAIL: Alert user of issue
@@ -229,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onSuccess(AuthResult authResult) {
                         //login success
                         Log.d(TAG, "onSuccess: Logged In");
-
+                        isGuest = false;
                         //Get logged-in user
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 

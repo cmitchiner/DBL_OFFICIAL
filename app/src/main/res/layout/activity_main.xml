@@ -148,11 +148,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="20dp">
+            android:padding="15dp">
 
             <Button
                 android:id="@+id/btnGoogle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg"
                 android:drawableLeft="@drawable/ic_google"
@@ -164,16 +165,31 @@
 
             <Button
                 android:id="@+id/btnFacebook"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:drawableLeft="@drawable/ic_facebook"
                 android:text="Facebook"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/primary_blue"
                 android:shadowColor="@color/black"/>
+            <Button
+                android:id="@+id/btnGuest"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_bg"
+                android:drawableLeft="@drawable/ic_person"
+                android:drawableTint="@color/black"
+                android:text="Guest"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/primary_blue"
+                android:layout_marginLeft="5dp"/>
         </LinearLayout>
 
 
