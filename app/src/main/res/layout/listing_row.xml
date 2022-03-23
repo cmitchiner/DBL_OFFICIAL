@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/row_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/Title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="Title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <View
+                android:id="@+id/tit_line"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/black"
+                app:layout_constraintBottom_toTopOf="@+id/author"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Title">
+
+            </View>
+
+            <TextView
+                android:id="@+id/author"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:maxLength="50"
+                android:maxLines="2"
+                android:singleLine="true"
+                android:text="Author"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </TextView>
+
+
+            <TextView
+                android:id="@+id/OfferCourseIdRow"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rowbox"
+                android:gravity="center"
+                android:text="CourseId"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/tit_line"
+                app:layout_constraintEnd_toStartOf="@+id/OfferUniversityIdRow"
+                app:layout_constraintStart_toEndOf="@+id/OfferTypeRow"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/OfferUniversityIdRow"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rowbox"
+                android:gravity="center"
+                android:text="University"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/tit_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/OfferTypeRow"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/rowbox"
+                android:text="Type"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/tit_line"
+                app:layout_constraintStart_toEndOf="@+id/Title"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/OfferPriceRow"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="Price"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            </TextView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

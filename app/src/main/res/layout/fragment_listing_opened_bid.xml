@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/teal_700"
+    tools:context=".listing_opened">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/list_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="Title of a very cool listing BIDDER"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+        <View
+            android:id="@+id/tit_line"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_title">
+
+        </View>
+
+
+        <TextView
+            android:id="@+id/list_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Author"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tit_line" />
+
+        <TextView
+            android:id="@+id/list_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Rating"
+            app:layout_constraintStart_toEndOf="@+id/list_author"
+            app:layout_constraintTop_toBottomOf="@+id/tit_line" />
+
+        <Button
+            android:id="@+id/report_button"
+            android:layout_width="106dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Report"
+            app:layout_constraintBottom_toTopOf="@+id/list_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.928"
+            app:layout_constraintStart_toEndOf="@+id/list_rating"
+            app:layout_constraintTop_toBottomOf="@+id/tit_line"
+            app:layout_constraintVertical_bias="0.625" />
+
+
+        <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/black"
+            android:src="@drawable/rowbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_author"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/list_university"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="University"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_image" />
+        <TextView
+            android:id="@+id/isbn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="isbn"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_university" />
+
+        <TextView
+            android:id="@+id/list_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="CourseCode"
+            app:layout_constraintStart_toEndOf="@+id/list_university"
+            app:layout_constraintTop_toBottomOf="@+id/list_image" />
+
+        <TextView
+            android:id="@+id/list_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Price"
+            app:layout_constraintStart_toEndOf="@+id/list_code"
+            app:layout_constraintTop_toBottomOf="@+id/list_image" />
+
+        <EditText
+            android:id="@+id/list_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:text="Several different classes work together to build your dynamic list.  RecyclerView is the ViewGroup that contains the views corresponding to your data. It's a view itself, so you add RecyclerView into your layout the way you would add any other UI element.  Each individual element in the list is defined by a view holder object. When the view holder is created, it doesn't have any data associated with it. After the view holder is created, the RecyclerView binds it to its data. You define the view holder by extending RecyclerView.ViewHolder.  The RecyclerView requests those views, and binds the views to their data, by calling methods in the adapter. You define the adapter by extending RecyclerView.Adapter.  The layout manager arranges the individual elements in your list. You can use one of the layout managers provided by the RecyclerView library, or you can define your own. Layout managers are all based on the library's LayoutManager abstract class.  You can see how all the pieces fit together in the RecyclerView sample app (Kotlin) or RecyclerView sample app (Java).  Steps for implementing your RecyclerView"
+            android:background="@drawable/searchbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/isbn" />
+
+        <Button
+            android:id="@+id/message_button"
+            android:layout_width="107dp"
+            android:layout_height="42dp"
+            android:text="Contact"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/list_price"
+            app:layout_constraintTop_toBottomOf="@+id/list_image" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
