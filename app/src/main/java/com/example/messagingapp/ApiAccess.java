@@ -3,6 +3,7 @@ package com.example.messagingapp;
 import android.database.Observable;
 
 import com.example.messagingapp.model.BiddingData;
+import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.Message;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public interface ApiAccess {
     Call<ArrayList<Message>> getMessages(@Query("apiKey") String apiKey,
                                          @Query("firstUser") String userId1,
                                          @Query("secondUser") String userId2);
+    @GET("/listings")
+    Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
+
     @POST("/addlisting")
     Call<Listing> addNewListing(@Body Listing list);
 
