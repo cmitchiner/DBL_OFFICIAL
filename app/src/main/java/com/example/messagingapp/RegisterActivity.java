@@ -209,7 +209,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if(task.isSuccessful()) {
                         //Create new User Object
                         User user = new User(fullName, username, phone, email);
-
                         //Attempt to store User object in FirebaseDatabase
                         FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -218,13 +217,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             public void onComplete(@NonNull Task<Void> task) {
                                 //SUCCESS: User posted to DB
                                 if (task.isSuccessful()) {
+                                    sendVerificationEmail();
                                     Toast.makeText(RegisterActivity.this,
-                                            "User has been registered successfully!",
-                                            Toast.LENGTH_LONG).show();
+                                            "Success! To finish registration please check your email and follow the given +" +
+                                                    "instructions.", Toast.LENGTH_LONG).show();
                                     //Set Display Name on Firebase
                                     setFirebaseDisplayName(fullName);
-                                    //Redirect to Profile Page
-                                    startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
+                                    //Redirect to Login Page
+                                    firebaseAuth.signOut();
+                                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                 } else {
                                     //FAIL: User was NOT posted to DB
                                     Toast.makeText(RegisterActivity.this,
@@ -247,6 +248,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
     }
+    private void sendVerificationEmail() {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseUser.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Verification email sent to " + firebaseUser.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Failed to send verification email.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
 
     private void setFirebaseDisplayName(String fullName) {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();

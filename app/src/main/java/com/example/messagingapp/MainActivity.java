@@ -160,8 +160,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //Login SUCCESS: Redirect to Profile
-                            isGuest=false;
-                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                            if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                isGuest = false;
+                                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                            } else {
+                                firebaseAuth.signOut();
+                                Toast.makeText(MainActivity.this, "You must verify your email before logging in!", Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             //Login FAIL: Alert user of issue
                             task.addOnFailureListener(new OnFailureListener() {
