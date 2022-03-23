@@ -1,5 +1,6 @@
 package com.example.messagingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -38,13 +42,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class listing_list extends Fragment implements SelectListener{
     int count = 0;
     private ArrayList<String> filtArray = new ArrayList<>();
-    private ArrayList<View> rowsArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
     RecyclerView recycler;
     com.example.messagingapp.RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
-    Thread offerthread;
+    FloatingActionButton addListingButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -107,6 +110,13 @@ public class listing_list extends Fragment implements SelectListener{
         recycler = view.findViewById(R.id.offerContainer);
         progressBar = view.findViewById(R.id.idPBLoading);
         nestedScrollView = view.findViewById(R.id.nested_scroll);
+        addListingButton = view.findViewById(R.id.add_offer_butt);
+        addListingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddListingActivity.class));
+            }
+        });
 
         //initializing arrays
         getData();
@@ -210,7 +220,7 @@ public class listing_list extends Fragment implements SelectListener{
 
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.nested_scroll, listing_opened, "listingId");
+            fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId");
             fragmentTransaction.commit();
 
         } else if(!listFacade.getIsBid()){
@@ -219,7 +229,7 @@ public class listing_list extends Fragment implements SelectListener{
 
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.nested_scroll, listing_opened_bid, "listingId");
+            fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId");
             fragmentTransaction.commit();
         }
     }

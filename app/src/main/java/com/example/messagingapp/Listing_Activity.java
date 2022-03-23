@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.messagingapp.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -20,19 +21,20 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_messages);
+        setContentView(R.layout.listing_activity);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
-        setContentView(R.layout.activity_main);
-        listing_list listing_list = new listing_list();
+
+        com.example.messagingapp.listing_list listing_list = new listing_list();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, listing_list);
         fragmentTransaction.commit();
+
+
     }
 
     @Override
@@ -50,6 +52,8 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
 
         }
         return false;
+
     }
+
 
 }

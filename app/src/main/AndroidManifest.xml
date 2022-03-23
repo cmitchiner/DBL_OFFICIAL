@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessagingApp">
         <activity
+            android:name=".blankact"
+            android:exported="false" />
+        <activity
+            android:name=".Listing_Activity"
+            android:exported="false" />
+        <activity
             android:name=".ChangePasswordActivity"
             android:exported="false" />
         <activity

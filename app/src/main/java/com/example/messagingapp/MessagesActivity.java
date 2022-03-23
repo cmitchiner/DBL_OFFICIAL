@@ -28,7 +28,7 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
 
         switch(item.getItemId()) {
             case R.id.home:
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, Listing_Activity.class));
                 return true;
             case R.id.profileNavBar:
                 startActivity(new Intent(this,ProfileActivity.class));
