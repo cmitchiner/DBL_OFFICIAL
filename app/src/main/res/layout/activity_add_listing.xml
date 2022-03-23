@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    tools:context=".AddListingActivity">
+    tools:context=".AddListingActivity"
+    android:id="@+id/parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,34 +51,47 @@
                 android:id="@+id/warningTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="Add a title"
                 android:textColor="@color/red"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/edtTxtTitle"
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="12"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Listing title"
-                android:inputType="textNoSuggestions" />
+                app:boxBackgroundColor="@android:color/transparent"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp">
 
-            <Spinner
-                android:id="@+id/spinnerUniversity"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTxtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_title"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/black"
+                    android:text="" />//Summary Linear Algebra
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/testView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_layout"
+                android:drawableEnd="@drawable/ic_arrow"
+                android:gravity="center_vertical"
+                android:text="Select University"
                 android:elevation="5dp"
-                android:entries="@array/Universities" />
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_layout"/>
 
-            <!--            <Spinner-->
-            <!--                android:id="@+id/spinnerCourseCode"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginTop="16dp"-->
-            <!--                android:background="@color/colorPrimary"-->
-            <!--                android:entries="@array/CourseCodes" />-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -88,6 +102,7 @@
                     android:id="@+id/warningCourseCode"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:text="Add a course code"
                     android:textColor="@color/red"
                     android:visibility="gone" />
@@ -96,7 +111,7 @@
                     android:id="@+id/warningCourseName"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="130dp"
+                    android:layout_marginLeft="170dp"
                     android:text="Add a course name"
                     android:textColor="@color/red"
                     android:visibility="gone" />
@@ -106,18 +121,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/edtTxtCourseCode"
-                    android:layout_width="120dp"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="155dp"
                     android:layout_height="wrap_content"
-                    android:hint="Course Code" />
+                    android:hint="Course code"
+                    app:boxBackgroundColor="@android:color/transparent"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp">
 
-                <EditText
-                    android:id="@+id/edtTxtCourseName"
-                    android:layout_width="200dp"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtTxtCourseCode"
+                        android:layout_width="155dp"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_code"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/black"
+                        android:text="" />//2DBN00
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="130dp"
-                    android:hint="Course Name" />
+                    android:layout_marginLeft="165dp"
+                    android:hint="Course Name"
+                    app:boxBackgroundColor="@android:color/transparent"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtTxtCourseName"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_course_name"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/black"
+                        android:text="" />//Linear Algebra
+                </com.google.android.material.textfield.TextInputLayout>
 
             </RelativeLayout>
 
@@ -160,22 +205,28 @@
                     android:text="Book" />
             </RadioGroup>
 
-            <TextView
-                android:id="@+id/txtDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Description:" />
-
-            <EditText
-                android:id="@+id/edtTxtDescription"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:singleLine="false" />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Description"
+                app:boxBackgroundColor="@android:color/transparent"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTxtDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_description"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/black"
+                    android:text="" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -273,23 +324,28 @@
                     android:layout_centerVertical="true"
                     android:text="Set Price:" />
 
-                <TextView
-                    android:id="@+id/txtEuro"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="200dp"
-                    android:text="EURO" />
+                    android:layout_marginLeft="100dp"
 
-                <EditText
-                    android:id="@+id/edtTxtPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="100dp"
-                    android:ems="5"
-                    android:inputType="numberDecimal"
-                    android:text="0.00" />
+                    app:boxBackgroundColor="@android:color/transparent"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtTxtPrice"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_euro"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/black"
+                        android:inputType="numberDecimal"
+                        android:text="0.00" />
+                </com.google.android.material.textfield.TextInputLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -307,15 +363,6 @@
                     android:text="Publish" />
             </RelativeLayout>
 
-            <!--            <TextView-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:id="@+id/searchableSpinner"-->
-            <!--                android:hint="Select university"-->
-            <!--                android:padding="12dp"-->
-            <!--                android:gravity="center_vertical"-->
-            <!--                android:background="@drawable/bg_layout"-->
-            <!--                />-->
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

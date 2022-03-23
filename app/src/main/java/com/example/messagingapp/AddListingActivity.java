@@ -1,21 +1,30 @@
 package com.example.messagingapp;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,21 +37,24 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName;
-    private TextView txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName;
+    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName;
     private Spinner spinnerUniversity, spinnerCourseCode;
     private RadioGroup rgCategory, rgBid;
-    private ConstraintLayout parent;
     private Button btnPublish;
     private ImageButton btnUploadPicture, btnUploadDocument;
     private ImageView imgView;
     private String Document_img1="";
     private RadioButton rbBidding, rbSetPrice;
+    private RelativeLayout parent;
     int SELECT_PICTURE = 200;
+    private ArrayList<String> arrayList;
+    private Dialog dialog;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -65,6 +77,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         btnUploadDocument.setOnClickListener(this);
         rbBidding.setOnClickListener(this);
         rbSetPrice.setOnClickListener(this);
+        textview.setOnClickListener(this);
     }
 
     /**
@@ -90,7 +103,50 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             case R.id.rbSetPrice:
                 txtPrice.setText("Set price: ");
                 break;
+            case R.id.testView:
+                searchableSpinner();
+                break;
         }
+    }
+
+    private void searchableSpinner() {
+        dialog=new Dialog(AddListingActivity.this);
+        dialog.setContentView(R.layout.dialog_searchable_spinner);
+        dialog.getWindow().setLayout(1000,1500);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+        EditText editText=dialog.findViewById(R.id.edit_text);
+        ListView listView=dialog.findViewById(R.id.list_view);
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_list_item_1,arrayList);
+        listView.setAdapter(adapter);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // when item selected from list
+                // set selected item on textView
+                textview.setText(adapter.getItem(position));
+
+                // Dismiss dialog
+                dialog.dismiss();
+            }
+        });
+
     }
 
         private void chooseFile() {
@@ -190,15 +246,17 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
         private boolean validateData() {
             if (edtTxtTitle.getText().toString().equals("")) {
-//                Toast.makeText(this, "You need to add a title", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningTitle.setVisibility(View.VISIBLE);
                 return false;
             }
             if (edtTxtCourseCode.getText().toString().equals("")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseCode.setVisibility(View.VISIBLE);
                 return false;
             }
             if (edtTxtCourseName.getText().toString().equals("")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseName.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -219,24 +277,28 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
             txtAddOffer = findViewById(R.id.txtAddOffer);
             txtCategory = findViewById(R.id.txtCategory);
-            txtDescription = findViewById(R.id.txtDescription);
-            txtEuro = findViewById(R.id.txtEuro);
             txtPrice = findViewById(R.id.txtPrice);
             txtUploadDocument = findViewById(R.id.txtUploadDocument);
             txtUploadPicture = findViewById(R.id.txtUploadPicture);
             warningTitle = findViewById(R.id.warningTitle);
             warningCourseCode = findViewById(R.id.warningCourseCode);
             warningCourseName = findViewById(R.id.warningCourseName);
-//        searchableSpinner = findViewById(R.id.searchableSpinner);
+            textview = findViewById(R.id.testView);
 
-            spinnerUniversity = findViewById(R.id.spinnerUniversity);
-//        spinnerCourseCode = findViewById(R.id.spinnerCourseCode);
+            arrayList = new ArrayList<>();
+            arrayList.add("Technische Universiteit Eindhoven");
+            arrayList.add("Erasmus Universiteit Rotterdam");
+            arrayList.add("Maastricht University");
+            arrayList.add("Radboud Universiteit");
+            arrayList.add("Rijksuniversiteit Groningen");
+            arrayList.add("Tilburg University");
+            arrayList.add("Universiteit Leiden");
+
             rgCategory = findViewById(R.id.rgCategory);
             rgBid = findViewById(R.id.rgBid);
             rbBidding = findViewById(R.id.rbBidding);
             rbSetPrice = findViewById(R.id.rbSetPrice);
-//        parent = findViewById(R.id.parent);
+            parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
-//        list_view = findViewById(R.id.list_view);
         }
 }
