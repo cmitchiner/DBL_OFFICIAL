@@ -3,6 +3,7 @@ package com.example.messagingapp;
 import android.database.Observable;
 
 import com.example.messagingapp.model.BiddingData;
+import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.Message;
 
