@@ -219,7 +219,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 if (task.isSuccessful()) {
                                     sendVerificationEmail();
                                     Toast.makeText(RegisterActivity.this,
-                                            "Success! To finish registration please check your email and follow the given +" +
+                                            "Success! To finish registration please check your email and follow the given " +
                                                     "instructions.", Toast.LENGTH_LONG).show();
                                     //Set Display Name on Firebase
                                     setFirebaseDisplayName(fullName);
