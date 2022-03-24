@@ -23,6 +23,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -47,7 +49,7 @@ public class listing_list extends Fragment implements SelectListener{
     com.example.messagingapp.RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
-    FloatingActionButton addListingButton;
+    Button addListingButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

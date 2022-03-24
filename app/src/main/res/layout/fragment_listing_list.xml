@@ -5,71 +5,104 @@
     android:id="@+id/nested_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_700"
     tools:context=".listing_list">
 
     <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
 
+        <TextView
+            android:id="@+id/listingListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/bungee"
+            android:includeFontPadding="false"
+            android:text="Offers"
+            android:textColor="@color/primary_blue"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/offer_search"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
 
-    <TextView
-        android:id="@+id/listingListTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center"
-        android:text="Offers"
-        android:textSize="32dp"
-        android:textStyle="italic">
-
-    </TextView>
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/offer_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
+            app:layout_constraintBottom_toTopOf="@id/offer_hor_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/searchbox">
+        </androidx.appcompat.widget.SearchView>
 
 
- <HorizontalScrollView
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content">
+        <HorizontalScrollView
+            android:id="@+id/offer_hor_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
+            app:layout_constraintBottom_toTopOf="@id/offerContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
 
-     <LinearLayout
-         android:id="@+id/filt_bubble_cont"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal">
-     </LinearLayout>
- </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/filt_bubble_cont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"></LinearLayout>
+        </HorizontalScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/offerContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="false"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/offer_hor_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
         </androidx.recyclerview.widget.RecyclerView>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <Button
             android:id="@+id/add_offer_butt"
-            android:layout_width="59dp"
-            android:layout_height="54dp"
-            android:layout_gravity="end|bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:layout_marginBottom="140dp"
+            android:background="@color/white"
+            android:fontFamily="@font/bungee"
+            android:text="Update Info"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/primary_blue"
             android:contentDescription="@string/add_offer"
-            android:src="@drawable/ic_baseline_add_circle_24">
+            app:layout_constraintTop_toBottomOf="@id/offer_search"
+            app:layout_constraintBottom_toTopOf="@id/offerContainer"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+        </Button>
 
         <ProgressBar
             android:id="@+id/idPBLoading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@id/offerContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    </LinearLayout>
+        </ProgressBar>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.core.widget.NestedScrollView>
