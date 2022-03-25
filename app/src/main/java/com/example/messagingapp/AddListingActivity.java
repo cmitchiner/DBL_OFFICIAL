@@ -38,21 +38,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName;
-    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName;
+    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription;
     private Spinner spinnerUniversity, spinnerCourseCode;
     private RadioGroup rgCategory, rgBid;
     private Button btnPublish;
     private ImageButton btnUploadPicture, btnUploadDocument;
     private ImageView imgView;
-    private String Document_img1="";
     private RadioButton rbBidding, rbSetPrice;
     private RelativeLayout parent;
-    int SELECT_PICTURE = 200;
     private ArrayList<String> arrayList;
     private Dialog dialog;
 
@@ -209,7 +209,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             builder.show();
         }
 
-        @Override
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode==2) {
@@ -244,10 +250,19 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     }).show();
         }
 
-        private boolean validateData() {
+    /**
+     * Validates that all the required fields are non-empty
+     * @returns
+     */
+    private boolean validateData() {
             if (edtTxtTitle.getText().toString().equals("")) {
                 Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningTitle.setVisibility(View.VISIBLE);
+                return false;
+            }
+            if (textview.getText().toString().equals("Select University")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
+                warningUniversity.setVisibility(View.VISIBLE);
                 return false;
             }
             if (edtTxtCourseCode.getText().toString().equals("")) {
@@ -260,11 +275,19 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 warningCourseName.setVisibility(View.VISIBLE);
                 return false;
             }
+            if (edtTxtDescription.getText().toString().equals("")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
+                warningDescription.setVisibility(View.VISIBLE);
+                return false;
+            }
             return true;
         }
 
-        private void initViews() {
-            Log.d(TAG, "initViews: started");
+    /**
+     * Inits all references to Activity_Add_Listing.xml and pulls the arraylist of university
+     * from strings.xml
+     */
+    private void initViews() {
             edtTxtTitle = findViewById(R.id.edtTxtTitle);
             edtTxtDescription = findViewById(R.id.edtTxtDescription);
             edtTxtPrice = findViewById(R.id.edtTxtPrice);
@@ -283,16 +306,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningTitle = findViewById(R.id.warningTitle);
             warningCourseCode = findViewById(R.id.warningCourseCode);
             warningCourseName = findViewById(R.id.warningCourseName);
+            warningUniversity = findViewById(R.id.warningUniversity);
+            warningDescription = findViewById(R.id.warningUniversity);
             textview = findViewById(R.id.testView);
-
-            arrayList = new ArrayList<>();
-            arrayList.add("Technische Universiteit Eindhoven");
-            arrayList.add("Erasmus Universiteit Rotterdam");
-            arrayList.add("Maastricht University");
-            arrayList.add("Radboud Universiteit");
-            arrayList.add("Rijksuniversiteit Groningen");
-            arrayList.add("Tilburg University");
-            arrayList.add("Universiteit Leiden");
 
             rgCategory = findViewById(R.id.rgCategory);
             rgBid = findViewById(R.id.rgBid);
@@ -300,5 +316,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             rbSetPrice = findViewById(R.id.rbSetPrice);
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
+
+            arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
+            Collections.sort(arrayList);
         }
 }

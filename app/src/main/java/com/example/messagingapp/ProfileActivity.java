@@ -183,6 +183,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             usernameEt.setEnabled(false);
             phoneEt.setEnabled(false);
         } else {
+            //Pulling Data
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

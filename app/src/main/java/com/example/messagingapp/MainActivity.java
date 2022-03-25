@@ -29,12 +29,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     //Variables for references to activity_main.xml
-    private Button loginBtn, googleSignInButton, guestBtn;
+    private Button loginBtn, googleSignInButton, guestBtn, facebookBtn, microsoftBtn;
     private EditText emailEt, passwordEt;
     private TextView forgotTv, registerTv;
 
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         forgotTv = findViewById(R.id.forgotTv);
         googleSignInButton = findViewById(R.id.btnGoogle);
         guestBtn = findViewById(R.id.btnGuest);
+        facebookBtn = findViewById(R.id.btnFacebook);
+        microsoftBtn = findViewById(R.id.btnMicrosoft);
 
         //Set references On-Click Listeners
         registerTv.setOnClickListener(this);
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loginBtn.setOnClickListener(this);
         forgotTv.setOnClickListener(this);
         guestBtn.setOnClickListener(this);
+        facebookBtn.setOnClickListener(this);
+        microsoftBtn.setOnClickListener(this);
 
         //Init Google Auth
         GoogleSignInOptions googleSignInOptions =
@@ -119,6 +124,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnGuest:
                 isGuest = true;
                 startActivity(new Intent(this, ProfileActivity.class));
+                break;
+            case R.id.btnFacebook:
+                Intent intentFacebook = new Intent(MainActivity.this, FacebookAuthActivity.class);
+                intentFacebook.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intentFacebook);
+                break;
+            case R.id.btnMicrosoft:
+                isGuest = false;
+                signInWithMicrosoft();
                 break;
         }
     }
@@ -257,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //Check if user is new or existing
                         if (authResult.getAdditionalUserInfo().isNewUser()){
                             //User Is New - Account Creation
-                            addGoogleAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
+                            addAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
                             Log.d(TAG, "onSuccess: Account Created...\n" + email);
 
 
@@ -286,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * If an account is created via google sign in, we still need a reference to them in the DB, thus
      * this method does such.
      */
-    private void addGoogleAcctToDB(String fullName, String username, String phone, String email ) {
+    private void addAcctToDB(String fullName, String username, String phone, String email ) {
 
         User user = new User (fullName, username, phone, email);
         FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
@@ -311,5 +325,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
+    private void signInWithMicrosoft() {
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder("microsoft.com");
+
+        Task < AuthResult > pendingResultTask = firebaseAuth.getPendingAuthResult();
+        if (pendingResultTask != null) {
+            pendingResultTask.addOnSuccessListener(new OnSuccessListener < AuthResult >
+                    () {
+                @Override
+                public void onSuccess(AuthResult authResult) {
+                    Log.e("PROFILE", authResult.getAdditionalUserInfo()
+                            .getProfile().toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("FAIL", "ERROR LOGIN");
+                }
+            });
+        } else {
+            firebaseAuth.startActivityForSignInWithProvider(MainActivity.this, provider.build())
+                    .addOnSuccessListener(new OnSuccessListener < AuthResult > () {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            isGuest = false;
+                            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                            if (authResult.getAdditionalUserInfo().isNewUser()) {
+                                addAcctToDB(" ", firebaseUser.getUid(), "0", firebaseUser.getEmail());
+                            }
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("FAIL", "ERROR LOGIN: " + e);
+                }
+            });
+        }
+    }
+
 
 }

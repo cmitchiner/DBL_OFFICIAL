@@ -13,6 +13,9 @@
         <item> Author </item>
         <item> ISBN </item>
     </array>
+    <string name="facebook_app_id">455163563020016</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">8dffaf2409e252e12ce273573a54c9fb</string>
     <array name="Universities">
         <item>Technische Universiteit Eindhoven</item>
         <item>Erasmus Universiteit Rotterdam</item>

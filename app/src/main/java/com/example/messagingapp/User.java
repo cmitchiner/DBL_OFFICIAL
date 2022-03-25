@@ -1,8 +1,16 @@
 package com.example.messagingapp;
 
+import java.util.ArrayList;
+
 public class User {
 
     public String fullName, email, username, phone;
+
+    public int activeListings, soldListings;
+
+    public float rating;
+
+    public ArrayList<String> usersInChatWith;
 
     public User() {
 
@@ -13,5 +21,13 @@ public class User {
         this.email = email;
         this.username = username;
         this.phone = phone;
+    }
+
+    public ArrayList<String> getUsersInChatWith() {
+        return usersInChatWith;
+    }
+
+    public void addUserInChat(String uid) {
+        usersInChatWith.add(uid);
     }
 }

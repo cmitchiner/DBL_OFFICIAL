@@ -128,7 +128,9 @@
                                 android:layout_below="@+id/activeLabelTV"
                                 android:layout_centerHorizontal="true"
                                 android:includeFontPadding="true"
+                                android:maxLines="1"
                                 android:text="Active Listings"
+                                android:autoSizeTextType="uniform"
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
 
