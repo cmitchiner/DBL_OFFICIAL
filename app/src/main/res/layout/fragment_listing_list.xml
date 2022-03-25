@@ -17,18 +17,33 @@
             android:id="@+id/listingListTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
             android:text="Offers"
             android:textColor="@color/primary_blue"
-            android:textSize="20sp"
+            android:textSize="24sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/offer_search"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
         </TextView>
+
+        <ImageButton
+            android:id="@+id/add_offer_butt"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_layout"
+            android:elevation="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="75dp"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/offer_search"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/listingListTitle"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/offer_search"
@@ -63,7 +78,7 @@
             android:id="@+id/offerContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:nestedScrollingEnabled="false"
+            android:nestedScrollingEnabled="true"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/offer_hor_view"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -73,24 +88,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
 
-        <Button
-            android:id="@+id/add_offer_butt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_marginBottom="140dp"
-            android:background="@color/white"
-            android:fontFamily="@font/bungee"
-            android:text="Add Offer"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/primary_blue"
-            android:contentDescription="@string/add_offer"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/offer_search"
-            app:layout_constraintBottom_toTopOf="@id/offerContainer"
-            app:layout_constraintEnd_toEndOf="parent">
 
-        </Button>
 
         <ProgressBar
             android:id="@+id/idPBLoading"

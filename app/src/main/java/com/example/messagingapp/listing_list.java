@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -57,7 +58,7 @@ public class listing_list extends Fragment implements SelectListener {
     com.example.messagingapp.RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
-    Button addListingButton;
+    ImageButton addListingButton;
     SearchView searchView;
 
     ApiAccess apiAccess;
