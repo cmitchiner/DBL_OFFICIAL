@@ -218,7 +218,7 @@ public class listing_list extends Fragment implements SelectListener{
 
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId");
+            fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
 
         } else if(!listFacade.getIsBid()){
@@ -227,7 +227,7 @@ public class listing_list extends Fragment implements SelectListener{
 
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId");
+            fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
         }
     }
