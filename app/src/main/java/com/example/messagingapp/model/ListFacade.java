@@ -22,10 +22,12 @@ public class ListFacade implements Parcelable {
     private boolean isBid;
     @SerializedName("isbn")
     private Long isbn;
+    @SerializedName("location")
+    private String location;
 
     //Construtor
     public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode,
-                      String auniversity, boolean aisBid, Long aisbn ){
+                      String auniversity, boolean aisBid, Long aisbn, String alocation ){
         list_iD = iD;
         title = atitle;
         price = aprice;
@@ -34,6 +36,7 @@ public class ListFacade implements Parcelable {
         university = auniversity;
         isBid = aisBid;
         isbn = aisbn;
+        location = alocation;
 
     }
 
@@ -46,6 +49,7 @@ public class ListFacade implements Parcelable {
         university = in.readString();
         isBid = in.readByte() != 0;
         isbn = in.readLong();
+        location = in.readString();
     }
 
     public static final Creator<ListFacade> CREATOR = new Creator<ListFacade>() {
@@ -92,6 +96,9 @@ public class ListFacade implements Parcelable {
     public Long getIsbn(){ return this.isbn; }
     public void setIsbn(Long isbn) { this.isbn = isbn; }
 
+    public String getLocation(){ return this.location; }
+    public void setLocation(String location){ this.location = location; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -106,5 +113,6 @@ public class ListFacade implements Parcelable {
         parcel.writeString(courseCode);
         parcel.writeString(university);
         parcel.writeLong(isbn);
+        parcel.writeString(location);
     }
 }

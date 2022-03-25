@@ -1,5 +1,7 @@
 package com.example.messagingapp;
 
+import com.example.messagingapp.model.ListFacade;
+
 public interface SelectListener {
-    void onItemClicked(com.example.messagingapp.ListFacade listFacade);
+    void onItemClicked(ListFacade listFacade);
 }

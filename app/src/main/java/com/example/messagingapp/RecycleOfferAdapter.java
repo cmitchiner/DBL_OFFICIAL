@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.messagingapp.model.ListFacade;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

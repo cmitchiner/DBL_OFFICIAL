@@ -25,7 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
-
+import com.example.messagingapp.ApiAccess;
+import com.example.messagingapp.model.ListFacade;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements SelectListener{
+public class listing_list extends Fragment implements SelectListener {
     int count = 0;
     private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
@@ -176,28 +177,45 @@ public class listing_list extends Fragment implements SelectListener{
         int rowNum = 55;
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-        ApiAccessB apiAccessB = retrofit.create(ApiAccessB.class);
-        Call<ArrayList<ListFacade>> listings = apiAccessB.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
-        listings.enqueue(new Callback<ArrayList<ListFacade>>() {
+        ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+        Call<ArrayList<ListFacade>> listingQuery = apiAccess.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
+        listingQuery.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
             public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
                 if(!response.isSuccessful()) {
                     return;
                 }
                 list = response.body();
-                // on below line we are adding our array list to our adapter class.
-                recycleOfferAdapter = new com.example.messagingapp.RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
-
-                // on below line we are setting
-                // adapter to our recycler view.
+                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
                 recycler.setAdapter(recycleOfferAdapter);
             }
 
             @Override
             public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
-
+                Log.d(null, t.getMessage());
             }
         });
+//        listings.enqueue(new Callback<ArrayList<ListFacade>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
+//                if(!response.isSuccessful()) {
+//                    return;
+//                }
+//                list = response.body();
+//                // on below line we are adding our array list to our adapter class.
+//                recycleOfferAdapter = new com.example.messagingapp.RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
+//
+//                // on below line we are setting
+//                // adapter to our recycler view.
+//                recycler.setAdapter(recycleOfferAdapter);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
+//                Log.d(null, "Where are my listings");
+//
+//            }
+//        });
 
 
 

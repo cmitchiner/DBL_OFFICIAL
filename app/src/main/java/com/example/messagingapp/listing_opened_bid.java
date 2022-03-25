@@ -13,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.messagingapp.model.ListFacade;
+import com.example.messagingapp.model.Listing;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link listing_opened_bid#newInstance} factory method to

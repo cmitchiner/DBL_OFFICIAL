@@ -13,14 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.messagingapp.model.ListFacade;
+import com.example.messagingapp.model.Listing;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link listing_opened#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class listing_opened extends Fragment {
-    com.example.messagingapp.ListFacade listFacade;
-    com.example.messagingapp.Listing listing;
+    ListFacade listFacade;
+    Listing listing;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

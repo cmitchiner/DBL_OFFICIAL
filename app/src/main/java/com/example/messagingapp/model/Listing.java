@@ -2,10 +2,8 @@ package com.example.messagingapp.model;
 
 import android.location.Location;
 
-import java.util.ArrayList;
-
 public class Listing {
-    private ArrayList<String> photos;
+    private String photo;
     private int price;
     private String type;
     private int reportCounter;
@@ -20,10 +18,10 @@ public class Listing {
     private String courseCode;
     private int Rating;
 
-    public ArrayList<String> getPhotos(){
-        return this.photos;
+    public String getPhotos(){
+        return this.photo;
     }
-    public void setPhoto(String Photo){ this.photos.add(Photo); }
+    public void setPhoto(String Photo){ this.photo = photo; }
 
     public int getPrice(){ return this.price;}
     public void setPrice(int price){this.price = price; }
