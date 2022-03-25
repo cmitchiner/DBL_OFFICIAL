@@ -126,7 +126,9 @@ public class listing_list extends Fragment implements SelectListener{
                 bubble.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        recycleOfferAdapter.getFilter().filter(bubble_text.getText());
+                        CharSequence bubText = bubble_text.getText();
+                        recycleOfferAdapter.getFilter().filter(bubText);
+                        recycleOfferAdapter.recoverFilters(bubText);
                         Log.d("bubble", "removed filter " + bubble_text.getText() );
                         filt_cont.removeView(v);
                     }
@@ -143,6 +145,7 @@ public class listing_list extends Fragment implements SelectListener{
                 return false;
             }
         });
+
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,7 +164,7 @@ public class listing_list extends Fragment implements SelectListener{
                 if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()){
                     count++;
                     progressBar.setVisibility(View.VISIBLE);
-                    if(count < 10){
+                    if(count < 30){
                         getData();
                     }
                 }

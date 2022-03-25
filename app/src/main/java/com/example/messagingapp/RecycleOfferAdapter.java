@@ -22,6 +22,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     private Context context;
     private ArrayList<ListFacade> listFacadeList;
     private ArrayList<ListFacade> allListFacadeList;
+    private ArrayList<ListFacade> currentRows;
     private ArrayList<String> filterss = new ArrayList<>();
     private SelectListener listner;
 
@@ -31,6 +32,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         this.listner = listner;
         this.listFacadeList = listFacadeList;
         allListFacadeList = new ArrayList<>(listFacadeList);
+        currentRows = new ArrayList<>(listFacadeList);
     }
 
     @NonNull
@@ -73,27 +75,28 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            ArrayList<ListFacade> filterlist = new ArrayList<>();
+            ArrayList<ListFacade> removedFiltRows = new ArrayList<>();
             if(charSequence == null || charSequence.length() == 0){
-                filterlist.addAll(allListFacadeList);
+                removedFiltRows.addAll(allListFacadeList);
             }else{
                 String[] colWithFilt = charSequence.toString().split(":");
                 String filtCol = colWithFilt[0].toLowerCase().trim();
-                String filtCont = colWithFilt[1].toLowerCase().trim();
-                Log.d("filter", filtCol + " Content: " + filtCont);
+                String filtContent = colWithFilt[1].toLowerCase().trim();
+                //Log.d("filter", filtCol + " Content: " + filtContent);
 
-                if(filterss.contains(filtCont)){
-                    filterss.remove(filtCont);
+                if(filterss.contains(filtContent)){
+                    filterss.remove(filtContent);
+
                     if(filterss.size() == 0){
-                        filterlist.addAll(allListFacadeList);
+                        removedFiltRows.addAll(allListFacadeList);
                     }
                 } else{
-                    filterss.add(filtCont);
+                    filterss.add(filtContent);
                 }
-                    for (ListFacade item : allListFacadeList) {
-                        Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtCont));
-                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtCont)) {
-                            filterlist.add(item);
+                    for (ListFacade item : currentRows) {
+                        //Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtContent));
+                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtContent)) {
+                            removedFiltRows.add(item);
                         }
 
                     }
@@ -101,7 +104,9 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
             }
             FilterResults results = new FilterResults();
-            results.values = filterlist;
+            results.values = removedFiltRows;
+            currentRows.removeAll(removedFiltRows);
+            Log.d("filter", "currentRows size: " + currentRows.size());
             return results;
         }
 
@@ -145,24 +150,34 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
             case "title": col = "title";
                 result = listFacade.getTitle();
                 break;
-            //case "Author": col = "author";
+            //case "author": col = "author";
             //    result = listFacade.getAuthor();
             //    break;
-            case "University": col = "university";
+            case "university": col = "university";
                 result = listFacade.getUniversity();
                 break;
-            case "Type": col = "type";
+            case "type": col = "type";
                 result = listFacade.getType();
                 break;
-            case "CourseCode": col = "coursecode";
+            case "coursecode": col = "coursecode";
                 result = listFacade.getCourseCode();
                 break;
-            //case "ISBN": col = "isbn";
+            //case "isbn": col = "isbn";
             //    result = listFacade.getIsbn().toString();
             //    break;
         }
-        Log.d("filter", "result getFiltCol: " + result);
+        //Log.d("filter", "result getFiltCol: " + result);
         return result;
+    }
+
+    void recoverFilters(CharSequence bubText){
+        String[] colWithFilt = bubText.toString().split(":");
+        String filtCol = colWithFilt[0].toLowerCase().trim();
+        String filtContent = colWithFilt[1].toLowerCase().trim();
+        //Log.d("filter", filtCol + " Content: " + filtContent);
+
+
+
     }
 
 }

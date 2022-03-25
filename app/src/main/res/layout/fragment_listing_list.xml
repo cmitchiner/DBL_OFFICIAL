@@ -81,10 +81,11 @@
             android:layout_marginBottom="140dp"
             android:background="@color/white"
             android:fontFamily="@font/bungee"
-            android:text="Update Info"
+            android:text="Add Offer"
             android:textColor="@color/white"
             app:backgroundTint="@color/primary_blue"
             android:contentDescription="@string/add_offer"
+            android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/offer_search"
             app:layout_constraintBottom_toTopOf="@id/offerContainer"
             app:layout_constraintEnd_toEndOf="parent">
