@@ -6,6 +6,10 @@ public class User {
 
     public String fullName, email, username, phone;
 
+    public int activeListings, soldListings;
+
+    public float rating;
+
     public ArrayList<String> usersInChatWith;
 
     public User() {
