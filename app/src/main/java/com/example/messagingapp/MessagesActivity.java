@@ -23,6 +23,7 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
         bottomNavigationView.setSelectedItemId(R.id.messages);
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -35,7 +36,6 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
                 return true;
             case R.id.messages:
                 return true;
-
         }
         return false;
     }
