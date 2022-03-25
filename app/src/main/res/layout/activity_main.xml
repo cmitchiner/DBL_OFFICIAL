@@ -193,9 +193,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg"
-                app:icon="@drawable/ic_person"
-                app:iconPadding="-2dp"
-                app:iconGravity="textEnd"
+                android:text="Guest"
                 app:backgroundTint="@color/primary_blue"
                 android:layout_marginLeft="5dp"/>
 
