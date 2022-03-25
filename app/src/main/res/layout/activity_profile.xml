@@ -138,51 +138,6 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
-                        android:layout_width="0dp"
-                        android:layout_height="125dp"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        app:cardBackgroundColor="@color/primary_blue"
-                        app:cardElevation="10dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="5dp">
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_sold_listings"
-                                app:tint="@color/white" />
-
-                            <TextView
-                                android:id="@+id/soldLabelTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:fontFamily="@font/bungee"
-                                android:includeFontPadding="false"
-                                android:text="6"
-                                android:textColor="@color/white"
-                                android:textSize="20sp" />
-
-                            <TextView
-                                android:id="@+id/soldDescTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/soldLabelTV"
-                                android:layout_centerHorizontal="true"
-                                android:includeFontPadding="true"
-                                android:text="Sold Listings"
-                                android:textColor="@color/white"
-                                android:textSize="14sp" />
-
-                        </RelativeLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAddListing"
                         android:layout_width="0dp"
                         android:layout_height="125dp"

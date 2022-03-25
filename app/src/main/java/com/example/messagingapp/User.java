@@ -6,8 +6,6 @@ public class User {
 
     public String fullName, email, username, phone;
 
-    public int activeListings, soldListings;
-
     public float rating;
 
     public ArrayList<String> usersInChatWith;
@@ -21,7 +19,7 @@ public class User {
         this.email = email;
         this.username = username;
         this.phone = phone;
-    }
+}
 
     public ArrayList<String> getUsersInChatWith() {
         return usersInChatWith;
