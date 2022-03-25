@@ -38,12 +38,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName;
-    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName;
+    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription;
     private Spinner spinnerUniversity, spinnerCourseCode;
     private RadioGroup rgCategory, rgBid;
     private Button btnPublish;
@@ -250,6 +252,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 warningTitle.setVisibility(View.VISIBLE);
                 return false;
             }
+            if (textview.getText().toString().equals("Select University")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
+                warningUniversity.setVisibility(View.VISIBLE);
+                return false;
+            }
             if (edtTxtCourseCode.getText().toString().equals("")) {
                 Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseCode.setVisibility(View.VISIBLE);
@@ -258,6 +265,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             if (edtTxtCourseName.getText().toString().equals("")) {
                 Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseName.setVisibility(View.VISIBLE);
+                return false;
+            }
+            if (edtTxtDescription.getText().toString().equals("")) {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
+                warningDescription.setVisibility(View.VISIBLE);
                 return false;
             }
             return true;
@@ -283,16 +295,12 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningTitle = findViewById(R.id.warningTitle);
             warningCourseCode = findViewById(R.id.warningCourseCode);
             warningCourseName = findViewById(R.id.warningCourseName);
+            warningUniversity = findViewById(R.id.warningUniversity);
+            warningDescription = findViewById(R.id.warningUniversity);
             textview = findViewById(R.id.testView);
 
-            arrayList = new ArrayList<>();
-            arrayList.add("Technische Universiteit Eindhoven");
-            arrayList.add("Erasmus Universiteit Rotterdam");
-            arrayList.add("Maastricht University");
-            arrayList.add("Radboud Universiteit");
-            arrayList.add("Rijksuniversiteit Groningen");
-            arrayList.add("Tilburg University");
-            arrayList.add("Universiteit Leiden");
+            arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
+            Collections.sort(arrayList);
 
             rgCategory = findViewById(R.id.rgCategory);
             rgBid = findViewById(R.id.rgBid);

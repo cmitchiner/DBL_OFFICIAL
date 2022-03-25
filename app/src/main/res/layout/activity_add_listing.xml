@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Listing title"
+                android:layout_marginBottom="16dp"
                 app:boxBackgroundColor="@android:color/transparent"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
@@ -80,10 +81,18 @@
 
 
             <TextView
+                android:id="@+id/warningUniversity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Select a University"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/testView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:drawableEnd="@drawable/ic_arrow"
                 android:gravity="center_vertical"
                 android:text="Select University"
@@ -177,7 +186,8 @@
                 android:id="@+id/rgCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_layout"
                 android:elevation="5dp"
                 android:orientation="horizontal">
@@ -205,11 +215,19 @@
                     android:text="Book" />
             </RadioGroup>
 
+            <TextView
+                android:id="@+id/warningDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Add a description"
+                android:textColor="@color/red"
+                android:visibility="gone" />
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="10dp"
                 android:hint="Description"
                 app:boxBackgroundColor="@android:color/transparent"
