@@ -22,7 +22,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     private Context context;
     private ArrayList<ListFacade> listFacadeList;
     private ArrayList<ListFacade> allListFacadeList;
-    private ArrayList<ListFacade> currentRows;
+    private ArrayList<ListFacade> currentFiltRows;
     private ArrayList<String> filterss = new ArrayList<>();
     private SelectListener listner;
 
@@ -32,7 +32,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         this.listner = listner;
         this.listFacadeList = listFacadeList;
         allListFacadeList = new ArrayList<>(listFacadeList);
-        currentRows = new ArrayList<>(listFacadeList);
+        currentFiltRows = new ArrayList<>();
     }
 
     @NonNull
@@ -72,41 +72,57 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     public Filter getFilter() {
         return exampleFilter;
     }
+
     private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            ArrayList<ListFacade> removedFiltRows = new ArrayList<>();
+            Log.d("filter", " currentRows:" + currentFiltRows.size());
+
             if(charSequence == null || charSequence.length() == 0){
-                removedFiltRows.addAll(allListFacadeList);
+                currentFiltRows.addAll(allListFacadeList);
             }else{
                 String[] colWithFilt = charSequence.toString().split(":");
                 String filtCol = colWithFilt[0].toLowerCase().trim();
                 String filtContent = colWithFilt[1].toLowerCase().trim();
-                //Log.d("filter", filtCol + " Content: " + filtContent);
+                Log.d("filter", filtCol + " Content: " + filtContent);
 
                 if(filterss.contains(filtContent)){
                     filterss.remove(filtContent);
 
                     if(filterss.size() == 0){
-                        removedFiltRows.addAll(allListFacadeList);
+                        currentFiltRows.addAll(allListFacadeList);
                     }
-                } else{
+                } else {
                     filterss.add(filtContent);
                 }
-                    for (ListFacade item : currentRows) {
+
+                Log.d("filter", filtCol + " We get before ifs: " + filtContent);
+
+                if(filterss.size() == 1) {
+                    for (ListFacade item : allListFacadeList) {
                         //Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtContent));
                         if (getFiltCol(item, filtCol).toLowerCase().contains(filtContent)) {
-                            removedFiltRows.add(item);
+                            currentFiltRows.add(item);
                         }
 
                     }
 
+                } else if(filterss.size() > 1){
+                    for (ListFacade item : currentFiltRows) {
+                        //Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtContent));
+                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtContent)) {
+                            currentFiltRows.add(item);
+                        }
+
+                    }
+
+                }
+
 
             }
             FilterResults results = new FilterResults();
-            results.values = removedFiltRows;
-            currentRows.removeAll(removedFiltRows);
-            Log.d("filter", "currentRows size: " + currentRows.size());
+            results.values = currentFiltRows;
+            Log.d("filter", " currentRows:" + currentFiltRows.size());
             return results;
         }
 
