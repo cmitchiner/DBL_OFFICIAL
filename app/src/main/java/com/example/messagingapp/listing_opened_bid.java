@@ -79,9 +79,10 @@ public class listing_opened_bid extends Fragment {
         TextView description = (TextView) view.findViewById(R.id.list_desc);
         TextView university = (TextView) view.findViewById(R.id.list_university);
         TextView courseCode = (TextView) view.findViewById(R.id.list_code);
-        TextView price = (TextView) view.findViewById(R.id.list_price);
+        TextView price = (TextView) view.findViewById(R.id.list_current_price);
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
+        TextView timeleft = (TextView) view.findViewById(R.id.time_left);
 
 
         //image.setImageDrawable();
