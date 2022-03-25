@@ -134,6 +134,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         }
     }
 
+
+
     /**
      * Verifies that the user is still logged in
      * If they are, pull latest user info from DB and fill out profile page accordingly
@@ -160,6 +162,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         fullNameEt.setText(currentFullName);
         usernameEt.setText(currentUsername);
         phoneEt.setText(currentPhone);
+        if (currentUsername.equals(fireBaseUser.getUid().toString())) {
+            usernameEt.setError("Please change your username!");
+            usernameEt.requestFocus();
+        }
     }
 
     /**
@@ -177,6 +183,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             usernameEt.setEnabled(false);
             phoneEt.setEnabled(false);
         } else {
+            //Pulling Data
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

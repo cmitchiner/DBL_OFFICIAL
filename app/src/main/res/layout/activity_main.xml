@@ -46,11 +46,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="64dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/input_bg"
-                android:drawablePadding="10dp"
                 android:drawableLeft="@drawable/ic_baseline_email_24"
+                android:drawablePadding="10dp"
                 android:hint="Enter Email..."
                 android:inputType="textEmailAddress"
                 android:minHeight="48dp"
@@ -62,7 +61,8 @@
                 android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/inputPassword"
@@ -156,12 +156,9 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg"
-                android:drawableLeft="@drawable/ic_google"
-                android:text="Google"
-                android:maxLines="1"
-                android:autoSizeTextType="uniform"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+                app:icon="@drawable/ic_google"
+                app:iconPadding="-2dp"
+                app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
                 android:layout_marginRight="5dp"/>
 
@@ -173,29 +170,33 @@
                 android:background="@drawable/btn_bg"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:drawableLeft="@drawable/ic_facebook"
-                android:text="Facebook"
-                android:maxLines="1"
-                android:autoSizeTextType="uniform"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+                app:icon="@drawable/ic_facebook"
+                app:iconPadding="-2dp"
+                app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
                 android:shadowColor="@color/black"/>
+            <Button
+                android:id="@+id/btnMicrosoft"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_bg"
+                app:icon="@drawable/ic_microsoft_5"
+                app:iconPadding="-2dp"
+                app:iconGravity="textEnd"
+                app:backgroundTint="@color/primary_blue"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
             <Button
                 android:id="@+id/btnGuest"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:maxLines="1"
-                android:autoSizeTextType="uniform"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg"
-                android:drawableLeft="@drawable/ic_person"
-                android:drawableTint="@color/black"
                 android:text="Guest"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
                 app:backgroundTint="@color/primary_blue"
                 android:layout_marginLeft="5dp"/>
+
         </LinearLayout>
 
 

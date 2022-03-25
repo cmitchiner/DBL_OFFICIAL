@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".ProfileActivity">
-
-
-
 
 
     <FrameLayout
@@ -19,9 +17,11 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -31,20 +31,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:background="@color/primary_blue"
-                    android:padding="20dp">
+                    android:padding="10dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
+
                         <ImageView
                             android:id="@+id/settingsBtn"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_alignParentEnd="true"
+                            android:layout_margin="20dp"
                             android:src="@drawable/ic_gear"
-                            app:tint="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/white" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -63,9 +66,9 @@
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/profileImg"
                         android:fontFamily="@font/bungee"
-                        android:textColor="@color/white"
                         android:includeFontPadding="false"
                         android:text="John Doe"
+                        android:textColor="@color/white"
                         android:textSize="20sp" />
 
                     <TextView
@@ -105,7 +108,7 @@
                                 android:layout_height="30dp"
                                 android:layout_centerHorizontal="true"
                                 android:src="@drawable/ic_listings"
-                                app:tint="@color/white"/>
+                                app:tint="@color/white" />
 
                             <TextView
                                 android:id="@+id/activeLabelTV"
@@ -114,8 +117,8 @@
                                 android:layout_centerInParent="true"
                                 android:fontFamily="@font/bungee"
                                 android:includeFontPadding="false"
-                                android:textColor="@color/white"
                                 android:text="10"
+                                android:textColor="@color/white"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -124,9 +127,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/activeLabelTV"
                                 android:layout_centerHorizontal="true"
-                                android:textColor="@color/white"
                                 android:includeFontPadding="true"
                                 android:text="Active Listings"
+                                android:textColor="@color/white"
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
@@ -148,43 +151,43 @@
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                app:tint="@color/white"
                                 android:layout_centerHorizontal="true"
-                                android:src="@drawable/ic_sold_listings" />
+                                android:src="@drawable/ic_sold_listings"
+                                app:tint="@color/white" />
 
                             <TextView
                                 android:id="@+id/soldLabelTV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
-                                android:textColor="@color/white"
                                 android:fontFamily="@font/bungee"
                                 android:includeFontPadding="false"
                                 android:text="6"
+                                android:textColor="@color/white"
                                 android:textSize="20sp" />
 
                             <TextView
                                 android:id="@+id/soldDescTV"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/white"
                                 android:layout_below="@+id/soldLabelTV"
                                 android:layout_centerHorizontal="true"
                                 android:includeFontPadding="true"
                                 android:text="Sold Listings"
+                                android:textColor="@color/white"
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardAddListing"
                         android:layout_width="0dp"
                         android:layout_height="125dp"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/primary_blue"
-                        app:cardElevation="10dp"
-                        android:id="@+id/cardAddListing">
+                        app:cardElevation="10dp">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -195,10 +198,10 @@
                                 android:id="@+id/plusDrawable"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                app:tint="@color/white"
-                                android:layout_centerHorizontal="true"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/ic_add" />
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/ic_add"
+                                app:tint="@color/white" />
 
 
                             <TextView
@@ -207,8 +210,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/plusDrawable"
                                 android:layout_centerHorizontal="true"
-                                android:textColor="@color/white"
                                 android:text="Add Listing"
+                                android:textColor="@color/white"
                                 android:textSize="14sp" />
 
                         </RelativeLayout>
@@ -304,16 +307,17 @@
             </LinearLayout>
         </ScrollView>
     </FrameLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        app:itemIconTint="@drawable/bottom_nav_bar_menu"
+        app:itemTextColor="@drawable/bottom_nav_bar_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemIconTint="@drawable/bottom_nav_bar_menu"
-        app:itemTextColor="@drawable/bottom_nav_bar_menu"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
