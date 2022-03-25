@@ -31,7 +31,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         this.context = context;
         this.listner = listner;
         this.listFacadeList = listFacadeList;
-        allListFacadeList = new ArrayList<>(listFacadeList);
+        allListFacadeList = new ArrayList<>();
         currentFiltRows = new ArrayList<>();
     }
 
@@ -45,16 +45,19 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListFacade rower = listFacadeList.get(position);
+        holder.isBid = rower.getIsBid();
+        holder.id = rower.getList_iD();
+        holder.isbn = rower.getIsbn();
+        holder.location = rower.getLocation();
+        holder.priceEuro = rower.getPrice();
+
         holder.title.setText(rower.getTitle());
         holder.title.setTag(rower.getTitle());
-        holder.price.setText(rower.getPrice()/100 + "€");
+        holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
         holder.offerType.setText(rower.getType());
         holder.offerType.setTag(rower.getTitle());
         holder.courseId.setText(rower.getCourseCode());
         holder.university.setText(rower.getUniversity());
-        holder.isBid = rower.getIsBid();
-        holder.id = rower.getList_iD();
-        holder.isbn = rower.getIsbn();
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,18 +81,18 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         protected FilterResults performFiltering(CharSequence charSequence) {
             Log.d("filter", " currentRows:" + currentFiltRows.size());
 
-            if(charSequence == null || charSequence.length() == 0){
+            if (charSequence == null || charSequence.length() == 0){
                 currentFiltRows.addAll(allListFacadeList);
-            }else{
+            }else {
                 String[] colWithFilt = charSequence.toString().split(":");
                 String filtCol = colWithFilt[0].toLowerCase().trim();
                 String filtContent = colWithFilt[1].toLowerCase().trim();
                 Log.d("filter", filtCol + " Content: " + filtContent);
 
-                if(filterss.contains(filtContent)){
+                if (filterss.contains(filtContent)) {
                     filterss.remove(filtContent);
 
-                    if(filterss.size() == 0){
+                    if (filterss.size() == 0) {
                         currentFiltRows.addAll(allListFacadeList);
                     }
                 } else {
@@ -147,6 +150,8 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         private CardView cardView;
         private String id;
         private Long isbn;
+        private String location;
+        private double priceEuro;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -191,8 +196,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         String filtCol = colWithFilt[0].toLowerCase().trim();
         String filtContent = colWithFilt[1].toLowerCase().trim();
         //Log.d("filter", filtCol + " Content: " + filtContent);
-
-
 
     }
 

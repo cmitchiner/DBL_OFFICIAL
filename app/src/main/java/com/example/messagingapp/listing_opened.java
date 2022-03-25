@@ -91,17 +91,16 @@ public class listing_opened extends Fragment {
         //description.setText(listing.getDescription());
         university.setText(listFacade.getUniversity());
         courseCode.setText(listFacade.getCourseCode());
-        price.setText(listFacade.getPrice()/100 + "€");
+        double priceEuro = listFacade.getPrice();
+        price.setText(String.valueOf( priceEuro/100 + "€"));
         //rating.setText(getString(listing.getRating()));
 
-        /*if(!isNull(listFacade.getIsbn())){
+        if(!String.valueOf(listFacade.getIsbn()).equals("null")){
             isbn.setVisibility(View.VISIBLE);
             isbn.setText(String.valueOf(listFacade.getIsbn()));
         } else{
             isbn.setVisibility(View.INVISIBLE);
         }
-
-         */
 
 
     }
