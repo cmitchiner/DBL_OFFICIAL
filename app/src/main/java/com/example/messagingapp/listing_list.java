@@ -1,6 +1,7 @@
 package com.example.messagingapp;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,10 +28,16 @@ import androidx.appcompat.widget.SearchView;
 
 import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.model.ListFacade;
+import com.example.messagingapp.model.Listing;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +59,8 @@ public class listing_list extends Fragment implements SelectListener {
     NestedScrollView nestedScrollView;
     Button addListingButton;
     SearchView searchView;
+
+    ApiAccess apiAccess;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -177,7 +186,7 @@ public class listing_list extends Fragment implements SelectListener {
         int rowNum = 55;
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-        ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+        apiAccess = retrofit.create(ApiAccess.class);
         Call<ArrayList<ListFacade>> listingQuery = apiAccess.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
         listingQuery.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
@@ -195,42 +204,65 @@ public class listing_list extends Fragment implements SelectListener {
                 Log.d(null, t.getMessage());
             }
         });
-//        listings.enqueue(new Callback<ArrayList<ListFacade>>() {
-//            @Override
-//            public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
-//                if(!response.isSuccessful()) {
-//                    return;
-//                }
-//                list = response.body();
-//                // on below line we are adding our array list to our adapter class.
-//                recycleOfferAdapter = new com.example.messagingapp.RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
-//
-//                // on below line we are setting
-//                // adapter to our recycler view.
-//                recycler.setAdapter(recycleOfferAdapter);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
-//                Log.d(null, "Where are my listings");
-//
-//            }
-//        });
-
-
-
     }
 
 
 
     @Override
     public void onItemClicked(ListFacade listFacade) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("listingFacade", listFacade);
-        Log.d("isbn", String.valueOf(listFacade.getIsbn()));
-        Log.d("isbn", listFacade.getTitle() + " " + listFacade.getUniversity() + " " + listFacade.getPrice() );
+        Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
+        getFullData.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                JSONObject data;
+                try {
+                    String extraData = response.body().string();
+                    data = new JSONObject(extraData);
+                } catch (Exception e) {
+                    return;
+                }
 
-        if(listFacade.getIsBid()){
+                try {
+                    ArrayList<String> photos = new ArrayList<>();
+                    JSONArray array = data.optJSONArray("photos");
+                    if(array != null) {
+                        for(int i = 0; i < array.length(); i++) {
+                            photos.add(array.getString(i));
+                        }
+                    }
+
+
+                    Location loc = new Location("");
+                    String[] coords = listFacade.getLocation().split(";");
+                    loc.setLatitude(Double.valueOf(coords[0]));
+                    loc.setLongitude(Double.valueOf(coords[1]));
+
+                    Listing list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
+                                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
+                                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    openListing(list);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                return;
+            }
+        });
+    }
+    public void openListing(Listing list) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("listingFacade", list);
+
+
+        if(!list.getIsBid()){
             listing_opened listing_opened = new listing_opened();
             listing_opened.setArguments(bundle);
 
@@ -239,7 +271,7 @@ public class listing_list extends Fragment implements SelectListener {
             fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
 
-        } else if(!listFacade.getIsBid()){
+        } else if(list.getIsBid()) {
             com.example.messagingapp.listing_opened_bid listing_opened_bid = new com.example.messagingapp.listing_opened_bid();
             listing_opened_bid.setArguments(bundle);
 
@@ -248,6 +280,7 @@ public class listing_list extends Fragment implements SelectListener {
             fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
         }
+
     }
 }
 

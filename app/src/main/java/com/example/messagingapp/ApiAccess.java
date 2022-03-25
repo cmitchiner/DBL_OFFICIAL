@@ -37,10 +37,9 @@ public interface ApiAccess {
     @POST("/addlisting")
     Call<Listing> addNewListing(@Body Listing list);
 
-    @GET("/singlelisting/{id}")
-    Call<Listing> getDetailedListing(@Query("apiKey") String apiKey,
-                                     @Path("id") String listingId);
-
+    @GET("/listings/{id}")
+    Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
+                                     );
 
     @FormUrlEncoded
     @PATCH("/auction/{id}")

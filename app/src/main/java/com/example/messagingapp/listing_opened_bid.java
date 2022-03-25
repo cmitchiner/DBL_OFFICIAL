@@ -3,6 +3,7 @@ package com.example.messagingapp;
 import static java.util.Objects.isNull;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +76,7 @@ public class listing_opened_bid extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listFacade = getArguments().getParcelable("listingFacade");
+        listing = getArguments().getParcelable("listingFacade");
 
         ImageView image = (ImageView) view.findViewById(R.id.list_image);
         TextView title = (TextView) view.findViewById(R.id.list_title);
@@ -86,8 +88,6 @@ public class listing_opened_bid extends Fragment {
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         TextView timeleft = (TextView) view.findViewById(R.id.time_left);
-
-
         //image.setImageDrawable();
         title.setText(listFacade.getTitle());
         //author.setText(listFacade.getAuthor());
