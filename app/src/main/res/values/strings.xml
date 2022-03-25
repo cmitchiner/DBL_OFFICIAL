@@ -5,6 +5,14 @@
     <string name="apiBaseUrl">http://62.163.185.17:5000/</string>
     <string name="apiDevKey">oiFST5jFe48oLXkDiveqCgQ2</string>
     <string name="add_offer">add_offer</string>
+    <array name = "filterColumns">
+        <item> Title </item>
+        <item> Type </item>
+        <item> University </item>
+        <item> Course code </item>
+        <item> Author </item>
+        <item> ISBN </item>
+    </array>
     <array name="Universities">
         <item>Technische Universiteit Eindhoven</item>
         <item>Erasmus Universiteit Rotterdam</item>

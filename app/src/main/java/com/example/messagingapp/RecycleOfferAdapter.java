@@ -1,6 +1,7 @@
 package com.example.messagingapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapter.ViewHolder> implements Filterable {
 
@@ -75,27 +77,28 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
             if(charSequence == null || charSequence.length() == 0){
                 filterlist.addAll(allListFacadeList);
             }else{
-                String filterPattern = charSequence.toString().toLowerCase().trim();
-                if(filterss.contains(filterPattern)){
-                    filterss.remove(filterPattern);
+                String[] colWithFilt = charSequence.toString().split(":");
+                String filtCol = colWithFilt[0].toLowerCase().trim();
+                String filtCont = colWithFilt[1].toLowerCase().trim();
+                Log.d("filter", filtCol + " Content: " + filtCont);
+
+                if(filterss.contains(filtCont)){
+                    filterss.remove(filtCont);
                     if(filterss.size() == 0){
                         filterlist.addAll(allListFacadeList);
                     }
                 } else{
-                    filterss.add(filterPattern);
+                    filterss.add(filtCont);
                 }
-                for(int i = 0; i < filterss.size(); i++) {
                     for (ListFacade item : allListFacadeList) {
-                        if (item.getTitle().toLowerCase().contains(filterss.get(i))
-                                || item.getTitle().toLowerCase().contains(filterss.get(i))
-                                || item.getType().toLowerCase().contains(filterss.get(i))
-                                || item.getCourseCode().toLowerCase().contains(filterss.get(i))
-                                || item.getUniversity().toLowerCase().contains(filterss.get(i))) {
+                        Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtCont));
+                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtCont)) {
                             filterlist.add(item);
                         }
 
                     }
-                }
+
+
             }
             FilterResults results = new FilterResults();
             results.values = filterlist;
@@ -134,6 +137,32 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
             university = itemView.findViewById(R.id.OfferUniversityIdRow);
             cardView = itemView.findViewById(R.id.row_card);
         }
+    }
+
+    String getFiltCol(ListFacade listFacade, String col){
+        String result = "";
+        switch (col){
+            case "title": col = "title";
+                result = listFacade.getTitle();
+                break;
+            //case "Author": col = "author";
+            //    result = listFacade.getAuthor();
+            //    break;
+            case "University": col = "university";
+                result = listFacade.getUniversity();
+                break;
+            case "Type": col = "type";
+                result = listFacade.getType();
+                break;
+            case "CourseCode": col = "coursecode";
+                result = listFacade.getCourseCode();
+                break;
+            //case "ISBN": col = "isbn";
+            //    result = listFacade.getIsbn().toString();
+            //    break;
+        }
+        Log.d("filter", "result getFiltCol: " + result);
+        return result;
     }
 
 }

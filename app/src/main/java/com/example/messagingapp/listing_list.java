@@ -50,6 +50,7 @@ public class listing_list extends Fragment implements SelectListener{
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
     Button addListingButton;
+    SearchView searchView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -113,6 +114,35 @@ public class listing_list extends Fragment implements SelectListener{
         progressBar = view.findViewById(R.id.idPBLoading);
         nestedScrollView = view.findViewById(R.id.nested_scroll);
         addListingButton = view.findViewById(R.id.add_offer_butt);
+        searchView = view.findViewById(R.id.offer_search);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filtArray.add(query);
+                LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
+                View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
+                TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
+                bubble_text.setText(query);
+                bubble.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        recycleOfferAdapter.getFilter().filter(bubble_text.getText());
+                        Log.d("bubble", "removed filter " + bubble_text.getText() );
+                        filt_cont.removeView(v);
+                    }
+                });
+                filt_cont.addView(bubble);
+                recycleOfferAdapter.getFilter().filter(query);
+                Log.d("bubble","Bubble added");
+                searchView.clearFocus();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,43 +201,6 @@ public class listing_list extends Fragment implements SelectListener{
     }
 
 
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.searchbar, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem menuItem = menu.findItem(R.id.searchBar);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Type to filter");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                filtArray.add(query);
-                LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
-                View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
-                TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
-                bubble_text.setText(query);
-                bubble.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        recycleOfferAdapter.getFilter().filter(bubble_text.getText());
-                        Log.d("bubble", "removed filter " + bubble_text.getText() );
-                        filt_cont.removeView(v);
-                    }
-                });
-                filt_cont.addView(bubble);
-                recycleOfferAdapter.getFilter().filter(query);
-                Log.d("bubble","Bubble added");
-                searchView.clearFocus();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-    }
 
     @Override
     public void onItemClicked(ListFacade listFacade) {
