@@ -51,10 +51,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button btnPublish;
     private ImageButton btnUploadPicture, btnUploadDocument;
     private ImageView imgView;
-    private String Document_img1="";
     private RadioButton rbBidding, rbSetPrice;
     private RelativeLayout parent;
-    int SELECT_PICTURE = 200;
     private ArrayList<String> arrayList;
     private Dialog dialog;
 
@@ -211,7 +209,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             builder.show();
         }
 
-        @Override
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode==2) {
@@ -246,7 +250,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     }).show();
         }
 
-        private boolean validateData() {
+    /**
+     * Validates that all the required fields are non-empty
+     * @returns
+     */
+    private boolean validateData() {
             if (edtTxtTitle.getText().toString().equals("")) {
                 Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningTitle.setVisibility(View.VISIBLE);
@@ -275,8 +283,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             return true;
         }
 
-        private void initViews() {
-            Log.d(TAG, "initViews: started");
+    /**
+     * Inits all references to Activity_Add_Listing.xml and pulls the arraylist of university
+     * from strings.xml
+     */
+    private void initViews() {
             edtTxtTitle = findViewById(R.id.edtTxtTitle);
             edtTxtDescription = findViewById(R.id.edtTxtDescription);
             edtTxtPrice = findViewById(R.id.edtTxtPrice);
@@ -299,14 +310,14 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningDescription = findViewById(R.id.warningUniversity);
             textview = findViewById(R.id.testView);
 
-            arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
-            Collections.sort(arrayList);
-
             rgCategory = findViewById(R.id.rgCategory);
             rgBid = findViewById(R.id.rgBid);
             rbBidding = findViewById(R.id.rbBidding);
             rbSetPrice = findViewById(R.id.rbSetPrice);
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
+
+            arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
+            Collections.sort(arrayList);
         }
 }

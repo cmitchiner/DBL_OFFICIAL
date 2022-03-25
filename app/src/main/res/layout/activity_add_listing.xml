@@ -21,14 +21,14 @@
 
             <TextView
                 android:id="@+id/txtAddOffer"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/bungee"
                 android:text="Add Listing"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="34sp" />
 
         </RelativeLayout>
@@ -58,11 +58,11 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Listing title"
                 android:layout_marginBottom="16dp"
+                android:hint="Listing title"
                 app:boxBackgroundColor="@android:color/transparent"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_title"
                     android:drawablePadding="10dp"
-                    android:drawableTint="@color/black"
+                    android:drawableTint="@color/primary_blue"
                     android:text="" />//Summary Linear Algebra
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,13 +93,13 @@
                 android:id="@+id/testView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_layout"
                 android:drawableEnd="@drawable/ic_arrow"
-                android:gravity="center_vertical"
-                android:text="Select University"
                 android:elevation="5dp"
+                android:gravity="center_vertical"
                 android:padding="12dp"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_layout"/>
+                android:text="Select University"
+                android:textColor="@color/white" />
 
 
             <RelativeLayout
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_code"
                         android:drawablePadding="10dp"
-                        android:drawableTint="@color/black"
+                        android:drawableTint="@color/primary_blue"
                         android:text="" />//2DBN00
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_course_name"
                         android:drawablePadding="10dp"
-                        android:drawableTint="@color/black"
+                        android:drawableTint="@color/primary_blue"
                         android:text="" />//Linear Algebra
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -180,7 +180,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Select category:" />
+                android:text="Select category:"
+                android:textColor="@color/black"/>
 
             <RadioGroup
                 android:id="@+id/rgCategory"
@@ -196,23 +197,29 @@
                     android:id="@+id/rbNotes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
                     android:checked="true"
                     android:paddingRight="16dp"
-                    android:text="Notes" />
+                    android:text="Notes"
+                    android:textColor="@color/white" />
 
                 <RadioButton
                     android:id="@+id/rbSummary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
                     android:paddingRight="16dp"
-                    android:text="Summary" />
+                    android:text="Summary"
+                    android:textColor="@color/white" />
 
                 <RadioButton
                     android:id="@+id/rbBook"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/white"
                     android:paddingRight="6dp"
-                    android:text="Book" />
+                    android:text="Book"
+                    android:textColor="@color/white" />
             </RadioGroup>
 
             <TextView
@@ -242,7 +249,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_description"
                     android:drawablePadding="10dp"
-                    android:drawableTint="@color/black"
+                    android:drawableTint="@color/primary_blue"
                     android:text="" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -257,7 +264,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="16dp"
-                    android:text="Upload document:" />
+                    android:text="Upload document:"
+                    android:textColor="@color/black"/>
 
                 <ImageButton
                     android:id="@+id/btnUploadDocument"
@@ -268,7 +276,7 @@
                     android:background="@drawable/bg_layout"
                     android:elevation="5dp"
                     app:srcCompat="@drawable/ic_add"
-                    app:tint="@color/black" />
+                    app:tint="@color/white" />
 
             </RelativeLayout>
 
@@ -283,7 +291,8 @@
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Upload picture:" />
+                    android:text="Upload picture:"
+                    android:textColor="@color/black"/>
 
                 <ImageButton
                     android:id="@+id/btnUploadPicture"
@@ -294,7 +303,7 @@
                     android:background="@drawable/bg_layout"
                     android:elevation="5dp"
                     app:srcCompat="@drawable/ic_add"
-                    app:tint="@color/black" />
+                    app:tint="@color/white" />
             </RelativeLayout>
 
             <ImageView
@@ -319,14 +328,18 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:paddingRight="16dp"
-                    android:text="Set price" />
+                    android:text="Set price"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/white"/>
 
                 <RadioButton
                     android:id="@+id/rbBidding"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="6dp"
-                    android:text="Bidding" />
+                    android:text="Bidding"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/white"/>
 
             </RadioGroup>
 
@@ -340,7 +353,8 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Set Price:" />
+                    android:text="Set Price:"
+                    android:textColor="@color/black"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -360,7 +374,7 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_euro"
                         android:drawablePadding="10dp"
-                        android:drawableTint="@color/black"
+                        android:drawableTint="@color/primary_blue"
                         android:inputType="numberDecimal"
                         android:text="0.00" />
                 </com.google.android.material.textfield.TextInputLayout>
