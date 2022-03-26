@@ -146,6 +146,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
+        //Making the drop down menu show up on text field click
         /*filterText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -159,14 +160,12 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
         //Setting up text view for filtering
 
         //Adding event listner for soft input
-        filterText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-        //Adding event listner for software keyboard
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_DONE) {
+                if(i == EditorInfo.IME_ACTION_SEARCH) {
                     filtContent = textView.getText().toString().trim();
+                    filterText.clearFocus();
                     Log.d("filter", "kur");
                     if(!filtContent.isEmpty()) {
                         Addbubble(filtContent);
@@ -184,6 +183,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if(i == KeyEvent.KEYCODE_ENTER) {
                     filtContent = filterText.getText().toString().trim();
+                    filterText.clearFocus();
                     if(!filtContent.isEmpty()) {
                         Addbubble(filtContent);
                         filter();
@@ -194,39 +194,6 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
             }
         });
 
-
-        /*
-        searchView = view.findViewById(R.id.offer_search);
-        searchView.setEnabled(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                filtArray.add(query);
-                LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
-                View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
-                TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
-                bubble_text.setText(query);
-                bubble.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CharSequence bubText = bubble_text.getText();
-                        Log.d("bubble", "removed filter " + bubble_text.getText() );
-                        filt_cont.removeView(v);
-                    }
-                });
-                filt_cont.addView(bubble);
-                Log.d("bubble","Bubble added");
-                searchView.clearFocus();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-         */
         //Setting Add Listing button
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -391,7 +358,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
 
     }
 
-    public void Addbubble(String query){
+    public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
         View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
         TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
@@ -409,7 +376,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
     }
 
     //Function to filter listings
-    public void filter(){
+    public void filter() {
         Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
     }
 }

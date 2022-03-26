@@ -83,7 +83,7 @@
                     android:singleLine="true"
                     android:lines="1"
                     android:maxLines="1"
-                    android:imeOptions="actionDone">
+                    android:imeOptions="actionSearch">
 
                 </com.google.android.material.textfield.MaterialAutoCompleteTextView>
             </com.google.android.material.textfield.TextInputLayout>
