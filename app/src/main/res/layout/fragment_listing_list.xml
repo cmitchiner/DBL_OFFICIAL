@@ -23,42 +23,62 @@
             android:text="Offers"
             android:textColor="@color/primary_blue"
             android:textSize="24sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/offer_search"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-        </TextView>
+            app:layout_constraintTop_toTopOf="parent"></TextView>
 
         <ImageButton
             android:id="@+id/add_offer_butt"
             android:layout_width="64dp"
             android:layout_height="32dp"
+            android:layout_marginLeft="75dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_layout"
             android:elevation="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="75dp"
-            app:srcCompat="@drawable/ic_add"
-            app:tint="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/offer_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/listingListTitle"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@color/white" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/offer_search"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
-            app:layout_constraintBottom_toTopOf="@id/offer_hor_view"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/add_offer_butt"
+            app:layout_constraintBottom_toTopOf="@id/bubble_scroll_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="@drawable/searchbox">
-        </androidx.appcompat.widget.SearchView>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Spinner
+                android:id="@+id/filterCol"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/primary_blue"
+                android:foregroundTint="@color/white"
+                >
+
+            </Spinner>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/filterInput"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
 
         <HorizontalScrollView
-            android:id="@+id/offer_hor_view"
+            android:id="@+id/bubble_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toBottomOf="@id/listingListTitle"
@@ -80,7 +100,7 @@
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="true"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/offer_hor_view"
+            app:layout_constraintTop_toBottomOf="@id/bubble_scroll_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

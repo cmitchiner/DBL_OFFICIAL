@@ -10,10 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,7 +53,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements SelectListener {
+public class listing_list extends Fragment implements SelectListener, AdapterView.OnItemSelectedListener {
     int count = 0;
     private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
@@ -59,7 +62,8 @@ public class listing_list extends Fragment implements SelectListener {
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
     ImageButton addListingButton;
-    SearchView searchView;
+    Spinner spinner;
+    String filtCol;
 
     ApiAccess apiAccess;
 
@@ -125,7 +129,18 @@ public class listing_list extends Fragment implements SelectListener {
         progressBar = view.findViewById(R.id.idPBLoading);
         nestedScrollView = view.findViewById(R.id.nested_scroll);
         addListingButton = view.findViewById(R.id.add_offer_butt);
+
+        //Creating Spinner for filter column selection
+        spinner = view.findViewById(R.id.filterCol);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
+                , R.array.filterColumns, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        /*
         searchView = view.findViewById(R.id.offer_search);
+        searchView.setEnabled(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -153,6 +168,8 @@ public class listing_list extends Fragment implements SelectListener {
                 return false;
             }
         });
+
+         */
 
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +272,7 @@ public class listing_list extends Fragment implements SelectListener {
             }
         });
     }
+
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
@@ -278,6 +296,17 @@ public class listing_list extends Fragment implements SelectListener {
             fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
         }
+
+    }
+
+    //On Item selected events for spinner
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        filtCol = (adapterView.getItemAtPosition(i).toString());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
