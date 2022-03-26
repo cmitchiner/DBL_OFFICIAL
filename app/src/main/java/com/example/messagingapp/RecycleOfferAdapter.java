@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.listing_row, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.listing_row_2, parent, false));
 
     }
 
@@ -56,7 +57,17 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.title.setText(rower.getTitle());
         holder.title.setTag(rower.getTitle());
         holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
-        holder.offerType.setText(rower.getType());
+        switch(rower.getType()) {
+            case "book":
+                holder.offerType.setImageResource(R.drawable.ic_book);
+                break;
+            case "notes":
+                holder.offerType.setImageResource(R.drawable.ic_notes);
+                break;
+            case "summary":
+                holder.offerType.setImageResource(R.drawable.ic_baseline_fact_check_24);
+                break;
+        }
         holder.offerType.setTag(rower.getTitle());
         holder.courseId.setText(rower.getCourseCode());
         holder.university.setText(rower.getUniversity());
@@ -143,7 +154,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         // creating variables for our text views.
         private final TextView title;
         private final TextView price;
-        private final TextView offerType;
+        private final ImageView offerType;
         private final TextView courseId;
         private final TextView university;
         private boolean sold;
