@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.

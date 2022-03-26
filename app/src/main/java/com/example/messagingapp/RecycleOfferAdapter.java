@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapter.ViewHolder> implements Filterable {
+public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<ListFacade> listFacadeList;
@@ -84,72 +84,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         return listFacadeList.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return exampleFilter;
-    }
-
-    private Filter exampleFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            Log.d("filter", " currentRows:" + currentFiltRows.size());
-
-            if (charSequence == null || charSequence.length() == 0){
-                currentFiltRows.addAll(allListFacadeList);
-            }else {
-                String[] colWithFilt = charSequence.toString().split(":");
-                String filtCol = colWithFilt[0].toLowerCase().trim();
-                String filtContent = colWithFilt[1].toLowerCase().trim();
-                Log.d("filter", filtCol + " Content: " + filtContent);
-
-                if (filterss.contains(filtContent)) {
-                    filterss.remove(filtContent);
-
-                    if (filterss.size() == 0) {
-                        currentFiltRows.addAll(allListFacadeList);
-                    }
-                } else {
-                    filterss.add(filtContent);
-                }
-
-                Log.d("filter", filtCol + " We get before ifs: " + filtContent);
-
-                if(filterss.size() == 1) {
-                    for (ListFacade item : allListFacadeList) {
-                        //Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtContent));
-                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtContent)) {
-                            currentFiltRows.add(item);
-                        }
-
-                    }
-
-                } else if(filterss.size() > 1){
-                    for (ListFacade item : currentFiltRows) {
-                        //Log.d("filter", "result if contains: " + getFiltCol(item, filtCol).toLowerCase().contains(filtContent));
-                        if (getFiltCol(item, filtCol).toLowerCase().contains(filtContent)) {
-                            currentFiltRows.add(item);
-                        }
-
-                    }
-
-                }
-
-
-            }
-            FilterResults results = new FilterResults();
-            results.values = currentFiltRows;
-            Log.d("filter", " currentRows:" + currentFiltRows.size());
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            listFacadeList.clear();
-            listFacadeList.addAll((List) filterResults.values);
-            notifyDataSetChanged();
-        }
-    };
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         // creating variables for our text views.
         private final TextView title;
@@ -178,39 +112,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         }
     }
 
-    String getFiltCol(ListFacade listFacade, String col){
-        String result = "";
-        switch (col){
-            case "title": col = "title";
-                result = listFacade.getTitle();
-                break;
-            //case "author": col = "author";
-            //    result = listFacade.getAuthor();
-            //    break;
-            case "university": col = "university";
-                result = listFacade.getUniversity();
-                break;
-            case "type": col = "type";
-                result = listFacade.getType();
-                break;
-            case "coursecode": col = "coursecode";
-                result = listFacade.getCourseCode();
-                break;
-            //case "isbn": col = "isbn";
-            //    result = listFacade.getIsbn().toString();
-            //    break;
-        }
-        //Log.d("filter", "result getFiltCol: " + result);
-        return result;
-    }
-
-    void recoverFilters(CharSequence bubText){
-        String[] colWithFilt = bubText.toString().split(":");
-        String filtCol = colWithFilt[0].toLowerCase().trim();
-        String filtContent = colWithFilt[1].toLowerCase().trim();
-        //Log.d("filter", filtCol + " Content: " + filtContent);
-
-    }
 
 }
 

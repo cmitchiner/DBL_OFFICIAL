@@ -138,14 +138,11 @@ public class listing_list extends Fragment implements SelectListener {
                     @Override
                     public void onClick(View v) {
                         CharSequence bubText = bubble_text.getText();
-                        recycleOfferAdapter.getFilter().filter(bubText);
-                        recycleOfferAdapter.recoverFilters(bubText);
                         Log.d("bubble", "removed filter " + bubble_text.getText() );
                         filt_cont.removeView(v);
                     }
                 });
                 filt_cont.addView(bubble);
-                recycleOfferAdapter.getFilter().filter(query);
                 Log.d("bubble","Bubble added");
                 searchView.clearFocus();
                 return false;
