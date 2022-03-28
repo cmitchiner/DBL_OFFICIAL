@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.objects;
 
 import java.util.ArrayList;
 

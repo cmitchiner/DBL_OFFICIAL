@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,10 +12,11 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.messagingapp.R;
+import com.example.messagingapp.objects.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,6 +33,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_SIGN_IN = 100;
     private GoogleSignInClient googleSignInClient;
     public FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
     private static final String TAG = "GOOGLE_SIGN_IN_TAG";
 
     public static boolean isGuest = false;
@@ -121,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Init Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         //initialize fusedLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -319,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //Login SUCCESS: Redirect to Profile
                             if (firebaseAuth.getCurrentUser().isEmailVerified()) {
                                 isGuest = false;
+                                sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
                                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                             } else {
                                 firebaseAuth.signOut();
@@ -337,6 +345,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
         }
+    }
+    private void sendDataToFireStore(String name, String uid) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("name", name);
+        userData.put("uid", uid);
+
+        firebaseFirestore.collection("Users").document(uid)
+                .set(userData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void v) {
+                        Log.d("REGISTER", "Successfully sent to firestore");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("REGISTER", "Failed to send to firestore");
+                    }
+                });
     }
 
     /**
@@ -416,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //User Is New - Account Creation
                             addAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
                             Log.d(TAG, "onSuccess: Account Created...\n" + email);
-
+                            sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
 
                             Toast.makeText(MainActivity.this, "Account Created...\n"
                                     + email, Toast.LENGTH_SHORT).show();
@@ -496,7 +524,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                             if (authResult.getAdditionalUserInfo().isNewUser()) {
                                 addAcctToDB(" ", firebaseUser.getUid(), "0", firebaseUser.getEmail());
+                                sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
                             }
+
                             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {

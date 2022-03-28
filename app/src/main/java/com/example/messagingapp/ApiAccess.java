@@ -5,7 +5,7 @@ import android.database.Observable;
 import com.example.messagingapp.model.BiddingData;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
-import com.example.messagingapp.model.Message;
+import com.example.messagingapp.model.MessageModel;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ public interface ApiAccess {
     Call<BiddingData> getAuctionDetails(@Query("aucId") int aucId, @Query("apiKey") String apiKey);
 
     @GET("/msgs")
-    Call<ArrayList<Message>> getMessages(@Query("apiKey") String apiKey,
-                                         @Query("firstUser") String userId1,
-                                         @Query("secondUser") String userId2);
+    Call<ArrayList<MessageModel>> getMessages(@Query("apiKey") String apiKey,
+                                              @Query("firstUser") String userId1,
+                                              @Query("secondUser") String userId2);
     @GET("/listings")
     Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
 

@@ -4,8 +4,6 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.messagingapp.User;
-
 import java.util.ArrayList;
 
 public class Listing implements Parcelable {
