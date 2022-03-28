@@ -33,6 +33,9 @@
             android:name=".activities.Listing_Activity"
             android:exported="false" />
         <activity
+            android:name=".activities.UserListingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChangePasswordActivity"
             android:exported="false" />
         <activity
