@@ -153,7 +153,13 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             if(!userId.toString().equals("no")){
                 filtDict.put("author", userId);
             }
-
+            filtDict.put("title", "");
+            filtDict.put("type", "");
+            filtDict.put("university", "");
+            filtDict.put("course_code", "");
+            filtDict.put("isbn", "");
+            filtDict.put("location", "");
+            Log.d("filter", String.valueOf(filtDict));
         }
 
 
@@ -165,15 +171,13 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         spinner.setOnItemSelectedListener(this);
 
         //Making the drop down menu show up on text field click
-        /*filterText.setOnTouchListener(new View.OnTouchListener() {
+        filterText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                filterText.showDropDown();
-                return false;
+            public void onClick(View view) {
+                //filterText.showDropDown();
             }
         });
 
-         */
 
         //Setting up text view for filtering
 
@@ -186,24 +190,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                     filterText.clearFocus();
                     Log.d("filter", "kur");
                     if(!filtContent.isEmpty()) {
-                        Addbubble(filtContent);
-                        filter();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        //adding event listner for hardware keyboard
-        filterText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(i == KeyEvent.KEYCODE_ENTER) {
-                    filtContent = filterText.getText().toString().trim();
-                    filterText.clearFocus();
-                    if(!filtContent.isEmpty()) {
-                        Addbubble(filtContent);
+                        Addbubble(filtCol+":"+filtContent);
+                        filtDict.put(filtCol, filtContent);
+                        Log.d("filter", String.valueOf(filtDict));
                         filter();
                     }
                     return true;
@@ -333,7 +322,6 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                                 listFacade.getCourseCode(), data.optString("ownerid"));
                     }
 
-
                     openListing(list);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -419,7 +407,10 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onClick(View v) {
                 CharSequence bubText = bubble_text.getText();
+                String parts[] = bubText.toString().split(":");
                 Log.d("bubble", "removed filter " + bubble_text.getText() );
+                filtDict.remove(parts[0], parts[1]);
+                Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
             }
         });

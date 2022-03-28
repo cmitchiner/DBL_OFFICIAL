@@ -90,20 +90,20 @@ public class listing_opened extends Fragment {
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         //image.setImageDrawable();
         title.setText(listing.getTitle());
-        //author.setText(listFacade.getAuthor());
+        author.setText(listing.getUser());
         description.setText(listing.getDescription());
         university.setText(listing.getUniversity());
         courseCode.setText(listing.getCourseCode());
         double priceEuro = listing.getPrice();
         price.setText(String.valueOf( priceEuro/100 + "€"));
         //rating.setText(getString(listing.getRating()));
-
-//        if(!String.valueOf(listing.getIsbn()).equals("null")){
-//            isbn.setVisibility(View.VISIBLE);
-//            isbn.setText(String.valueOf(listing.getIsbn()));
-//        } else{
-//            isbn.setVisibility(View.INVISIBLE);
-//        }
+        Log.d("isbn", String.valueOf(listing.getIsbn()));
+        if(!String.valueOf(listing.getIsbn()).equals("0")){
+            isbn.setVisibility(View.VISIBLE);
+            isbn.setText(String.valueOf(listing.getIsbn()));
+        } else{
+            isbn.setVisibility(View.INVISIBLE);
+        }
 
 
     }

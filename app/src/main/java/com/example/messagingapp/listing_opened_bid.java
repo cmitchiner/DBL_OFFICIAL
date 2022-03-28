@@ -88,10 +88,11 @@ public class listing_opened_bid extends Fragment {
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         TextView timeleft = (TextView) view.findViewById(R.id.time_left);
+
         //image.setImageDrawable();
         title.setText(listFacade.getTitle());
-        //author.setText(listFacade.getAuthor());
-        //description.setText(listing.getDescription());
+        author.setText(listing.getUser());
+        description.setText(listing.getDescription());
         university.setText(listFacade.getUniversity());
         courseCode.setText(listFacade.getCourseCode());
         double priceEuro = listFacade.getPrice();

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_700"
     tools:context=".listing_opened">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -125,6 +124,7 @@
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_image" />
+
         <TextView
             android:id="@+id/isbn"
             android:layout_width="wrap_content"

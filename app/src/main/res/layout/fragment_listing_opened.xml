@@ -141,6 +141,23 @@
             app:layout_constraintTop_toBottomOf="@+id/list_image" />
 
         <TextView
+            android:id="@+id/isbn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="isbn"
+            android:fontFamily="@font/bungee"
+            android:includeFontPadding="false"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/list_university" />
+
+        <TextView
             android:id="@+id/list_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
