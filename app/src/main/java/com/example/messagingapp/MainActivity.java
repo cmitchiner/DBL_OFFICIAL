@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean firstTime = true;
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 101;
+    private double latitude;
+    private double longitude;
 
 
     /** onCreate() is a method that runs before a user see's a page
@@ -126,11 +128,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Check if a user is already signed in
         checkUser();
 
-        Log.d("meToo", "onCreate");
         //checks if it is the first time opening the app
         firstTimeSetup();
-
-        //log.d(MeToo, getLocation());
     }
 
     /**
@@ -210,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             firstTime = false;
         }
-        askPermissionLoc();
-        Log.d("meToo", "permission is:" + checkPermission());
     }
 
     /**
@@ -258,12 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Initializing LocationRequest
         // object with appropriate methods
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-
+        LocationRequest mLocationRequest = LocationRequest.create();
         // setting LocationRequest
         // on FusedLocationClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -287,8 +279,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             requestNewLocationData();
                         } else {
                             //store to database here
-                            location.getLatitude();
-                            location.getLongitude();
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
                         }
                     }
                 });
