@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -37,6 +38,31 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     //Variables for references to activity_main.xml
@@ -52,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "GOOGLE_SIGN_IN_TAG";
 
     public static boolean isGuest = false;
+    private boolean firstTime = true;
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 101;
 
 
     /** onCreate() is a method that runs before a user see's a page
@@ -98,8 +127,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        //initialize fusedLocationProviderClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         //Check if a user is already signed in
         checkUser();
+
+        Log.d("meToo", "onCreate");
+        //checks if it is the first time opening the app
+        firstTimeSetup();
+
+        //log.d(MeToo, getLocation());
     }
 
     /**
@@ -159,6 +197,119 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, ProfileActivity.class));
             finish();
         }
+    }
+
+    /**
+     * Checks if a user has ever opened the app and asks for permission to use location if
+     * permission is not yet granted
+     *
+     * @post if @code{firstTime == true} then firstTime = False
+     */
+    private void firstTimeSetup() {
+        askPermissionLoc();
+        if (firstTime) {
+            if (checkPermission()) {
+                Log.d("meToo", "it's not the first time");
+                return;
+            }
+            else { Log.d("meToo", "it is the first time");
+                askPermissionLoc();
+            }
+            firstTime = false;
+        }
+        askPermissionLoc();
+        Log.d("meToo", "permission is:" + checkPermission());
+    }
+
+    /**
+     * Checks if the user already has granted permission to use the location
+     *
+     * @post if the user has granted permission, return true
+     */
+    public boolean checkPermission() {
+
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Asks the user for permission to use location
+     */
+    public void askPermissionLoc() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    /**
+     * Checks if location is turned on by device
+     */
+    public boolean locationEnabled(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+        }
+    };
+
+    /**
+     * Requests location data
+     */
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+
+    /**
+     * Obtains the location from a user
+     */
+    @SuppressLint("MissingPermission")
+    public Location getLocation() {
+        Location location = new Location("location");
+
+        if (checkPermission()) {
+            if (locationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        Location location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            //store to database here
+                            location.getLatitude();
+                            location.getLongitude();
+                        }
+                    }
+                });
+            }
+            else {
+                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        }
+        else {
+            askPermissionLoc();
+        }
+        return location;
     }
 
     /**
