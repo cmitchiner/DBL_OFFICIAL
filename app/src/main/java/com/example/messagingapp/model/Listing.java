@@ -40,6 +40,22 @@ public class Listing implements Parcelable {
         this.courseCode = courseCode;
         this.userId = userId;
     }
+    public Listing(ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+        this.photo = photo;
+        this.price = price;
+        this.type = type;
+        this.reportCounter = reportCounter;
+        this.sold = sold;
+        this.title = title;
+        this.isbn = 0;
+        this.location = location;
+        this.language = language;
+        this.auc_id = auc_id;
+        this.description = description;
+        this.university = university;
+        this.courseCode = courseCode;
+        this.userId = userId;
+    }
 
     protected Listing(Parcel in) {
         photo = in.readArrayList(String.class.getClassLoader());

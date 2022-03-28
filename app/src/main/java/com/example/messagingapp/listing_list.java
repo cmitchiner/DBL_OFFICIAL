@@ -1,6 +1,7 @@
 package com.example.messagingapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -198,7 +200,12 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddListingActivity.class));
+                if (MainActivity.isGuest) {
+                    //Deny add listing capability to guests
+                    Toast.makeText(getActivity(), "This feature is not allowed for guests", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(getActivity(), AddListingActivity.class));
+                }
             }
         });
 
@@ -279,10 +286,21 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
                     loc.setLatitude(Double.valueOf(coords[0]));
                     loc.setLongitude(Double.valueOf(coords[1]));
 
-                    Listing list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
-                                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
-                                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    Listing list;
+
+                    if (listFacade.getType() == "book") {
+                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
+                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
+                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    } else {
+                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(),loc,
+                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
+                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    }
+
+
                     openListing(list);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -328,6 +346,8 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         filtCol = (adapterView.getItemAtPosition(i).toString());
+        //Makes spinner text white
+        ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
         /*switch (filtCol){
             String[] empty;
             case "Title":

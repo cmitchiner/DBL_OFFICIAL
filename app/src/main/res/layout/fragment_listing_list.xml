@@ -31,12 +31,10 @@
             android:id="@+id/add_offer_butt"
             android:layout_width="64dp"
             android:layout_height="32dp"
-            android:layout_marginLeft="75dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
             android:background="@drawable/bg_layout"
-            android:elevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/listingListTitle"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_add"
             app:tint="@color/white" />
@@ -60,8 +58,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/primary_blue"
+                android:background="@drawable/bg_spinner"
                 android:foregroundTint="@color/white"
+                android:layout_marginRight="5dp"
                 >
 
             </Spinner>
@@ -71,6 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
+
                 app:startIconDrawable="@drawable/ic_baseline_search_24"
                 app:endIconMode="clear_text"
                 >
@@ -80,6 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter filter"
+                    android:background="@drawable/bg_search_bar"
                     android:singleLine="true"
                     android:lines="1"
                     android:maxLines="1"

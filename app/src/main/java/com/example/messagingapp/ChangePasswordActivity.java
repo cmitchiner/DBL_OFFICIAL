@@ -110,7 +110,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
             confNewPassEt.requestFocus();
         }
         if (newPass.length() < 6) {
-            newPassEt.setError("Password must be at least 6 characters");
+            newPassEt.setError("Password must be at least 6 characters and at most 20");
             newPassEt.requestFocus();
             return false;
         }
@@ -130,10 +130,10 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
      * @param password the password to be checked
      * @return result = true if password is valid, result = false if password is invalid
      */
-    private boolean passwordFollowsFormat(final String password) {
+    public static boolean passwordFollowsFormat(final String password) {
         Pattern pattern;
         Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{3,}$";
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,20}$";
 
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
