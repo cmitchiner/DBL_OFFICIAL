@@ -47,7 +47,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ListFacade rower = listFacadeList.get(position);
+        ListFacade rower = listFacadeList.get(holder.getAdapterPosition());
         holder.isBid = rower.getIsBid();
         holder.id = rower.getList_iD();
         holder.isbn = rower.getIsbn();
@@ -74,7 +74,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listner.onItemClicked(listFacadeList.get(position));
+                listner.onItemClicked(listFacadeList.get(holder.getAdapterPosition()));
             }
         });
     }

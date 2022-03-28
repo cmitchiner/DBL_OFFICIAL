@@ -29,7 +29,14 @@
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_add_listing.xml" value="0.23596014492753623" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_change_password.xml" value="0.1762917933130699" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_forgot_pass.xml" value="0.1762917933130699" />
-        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_profile.xml" value="0.33" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_messages.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_profile.xml" value="0.3037974683544304" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/chat_row.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_chat_list.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_list.xml" value="0.1391558712912662" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened.xml" value="0.22" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened_bid.xml" value="0.1391558712912662" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/listing_activity.xml" value="0.2760652765185857" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/listing_row.xml" value="0.284737067122702" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/listing_row_2.xml" value="0.284737067122702" />
         <entry key="app/src/main/res/drawable-v24/btn_bg.xml" value="0.1395" />
@@ -51,7 +58,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

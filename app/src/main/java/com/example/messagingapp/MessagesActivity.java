@@ -2,6 +2,8 @@ package com.example.messagingapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +23,12 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.messages);
+
+        com.example.messagingapp.ChatListFragment chatListFragment = new ChatListFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.chat_list_frame_layout, chatListFragment);
+        fragmentTransaction.commit();
     }
 
 

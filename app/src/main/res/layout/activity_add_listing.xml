@@ -131,6 +131,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edtTextCourseCode2"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="155dp"
                     android:layout_height="wrap_content"
@@ -155,7 +156,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="190dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="165dp"
+                    android:layout_toRightOf="@+id/edtTextCourseCode2"
+                    android:layout_marginLeft="10dp"
                     android:hint="Course Name"
                     app:boxBackgroundColor="@android:color/transparent"
                     app:boxCornerRadiusBottomEnd="8dp"
