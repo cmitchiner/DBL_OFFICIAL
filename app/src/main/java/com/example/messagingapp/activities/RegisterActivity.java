@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,13 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.messagingapp.R;
+import com.example.messagingapp.objects.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //Variables for firebase auth
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
 
     //Global variable for method use
     private boolean usernameIsUnique;
@@ -67,6 +69,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //Init FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
     }
 
     /**
@@ -209,6 +213,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     if(task.isSuccessful()) {
                         //Create new User Object
                         User user = new User(fullName, username, phone, email);
+
                         //Attempt to store User object in FirebaseDatabase
                         FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -248,6 +253,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
             });
     }
+
     private void sendVerificationEmail() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         firebaseUser.sendEmailVerification()
@@ -273,6 +279,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(fullName).build();
+
 
         firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(
                 new OnCompleteListener<Void>() {

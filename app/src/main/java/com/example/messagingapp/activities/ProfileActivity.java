@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,9 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.messagingapp.R;
+import com.example.messagingapp.objects.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -375,7 +376,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             case R.id.profileNavBar:
                 return true;
             case R.id.messages:
-                startActivity(new Intent(this,MessagesActivity.class));
+                if (MainActivity.isGuest) {
+                    Toast.makeText(ProfileActivity.this, "This feature is not available for guests!", Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    startActivity(new Intent(this, MessagesActivity.class));
+                }
                 return true;
         }
         return false;

@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,17 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,24 +22,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 
 import com.example.messagingapp.ApiAccess;
+import com.example.messagingapp.R;
+import com.example.messagingapp.adapters.RecycleOfferAdapter;
+import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -331,7 +325,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
             fragmentTransaction.commit();
 
         } else if(list.getIsBid()) {
-            com.example.messagingapp.listing_opened_bid listing_opened_bid = new com.example.messagingapp.listing_opened_bid();
+            listing_opened_bid listing_opened_bid = new listing_opened_bid();
             listing_opened_bid.setArguments(bundle);
 
             FragmentManager fragmentManager = getParentFragmentManager();

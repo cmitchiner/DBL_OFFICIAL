@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,8 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.messagingapp.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
