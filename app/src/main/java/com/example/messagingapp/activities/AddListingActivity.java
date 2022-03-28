@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,17 +45,19 @@ import java.util.Collections;
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName;
-    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription;
+    private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName, edtTxtISBN;
+    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN;
     private Spinner spinnerUniversity, spinnerCourseCode;
     private RadioGroup rgCategory, rgBid;
     private Button btnPublish;
     private ImageButton btnUploadPicture, btnUploadDocument;
     private ImageView imgView;
-    private RadioButton rbBidding, rbSetPrice;
+    private RadioButton rbBidding, rbSetPrice, rbNotes, rbSummary, rbBook;
     private RelativeLayout parent;
     private ArrayList<String> arrayList;
     private Dialog dialog;
+    private TextInputLayout txtISBN;
+    private boolean ISBN = false;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -78,6 +81,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbBidding.setOnClickListener(this);
         rbSetPrice.setOnClickListener(this);
         textview.setOnClickListener(this);
+        rbNotes.setOnClickListener(this);
+        rbSummary.setOnClickListener(this);
+        rbBook.setOnClickListener(this);
     }
 
     /**
@@ -105,6 +111,15 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.testView:
                 searchableSpinner();
+                break;
+            case R.id.rbBook:
+                txtISBN.setVisibility(View.VISIBLE);
+                ISBN = true;
+                break;
+            case R.id.rbNotes:
+            case R.id.rbSummary:
+                txtISBN.setVisibility(View.GONE);
+                ISBN = false;
                 break;
         }
     }
@@ -236,6 +251,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             Log.d(TAG, "initPublish: started");
             if (validateData()) {
                 showSnackBar();
+            }else {
+                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -255,32 +272,52 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      * @returns
      */
     private boolean validateData() {
+        boolean i = true;
             if (edtTxtTitle.getText().toString().equals("")) {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningTitle.setVisibility(View.VISIBLE);
-                return false;
+                i = false;
+            }else {
+                warningTitle.setVisibility(View.GONE);
             }
             if (textview.getText().toString().equals("Select University")) {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningUniversity.setVisibility(View.VISIBLE);
-                return false;
+                i = false;
+            }else {
+                warningUniversity.setVisibility(View.GONE);
             }
             if (edtTxtCourseCode.getText().toString().equals("")) {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseCode.setVisibility(View.VISIBLE);
-                return false;
+                i =  false;
+            }else {
+                warningCourseCode.setVisibility(View.GONE);
             }
             if (edtTxtCourseName.getText().toString().equals("")) {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningCourseName.setVisibility(View.VISIBLE);
-                return false;
+                i =  false;
+            }else {
+                warningCourseName.setVisibility(View.GONE);
             }
             if (edtTxtDescription.getText().toString().equals("")) {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
                 warningDescription.setVisibility(View.VISIBLE);
-                return false;
+                i = false;
+            }else {
+                warningDescription.setVisibility(View.GONE);
             }
-            return true;
+            if (ISBN) {
+                if(edtTxtISBN.getText().toString().equals("")) {
+                    warningISBN.setVisibility(View.VISIBLE);
+                    i = false;
+                }else {
+                    warningISBN.setVisibility(View.GONE);
+                }
+                if (edtTxtISBN.getText().toString().matches("^[0-9-]+$")) {
+
+                } else {
+                    Toast.makeText(this, "ISBN should only contain numbers and dashes", Toast.LENGTH_SHORT).show();
+                    i = false;
+                }
+            }
+            return i;
         }
 
     /**
@@ -293,6 +330,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             edtTxtPrice = findViewById(R.id.edtTxtPrice);
             edtTxtCourseCode = findViewById(R.id.edtTxtCourseCode);
             edtTxtCourseName = findViewById(R.id.edtTxtCourseName);
+            edtTxtISBN = findViewById(R.id.edtTxtISBN);
 
             btnPublish = findViewById(R.id.btnPublish);
             btnUploadDocument = findViewById(R.id.btnUploadDocument);
@@ -307,13 +345,19 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningCourseCode = findViewById(R.id.warningCourseCode);
             warningCourseName = findViewById(R.id.warningCourseName);
             warningUniversity = findViewById(R.id.warningUniversity);
-            warningDescription = findViewById(R.id.warningUniversity);
+            warningDescription = findViewById(R.id.warningDescription);
+            warningISBN = findViewById(R.id.warningISBN);
             textview = findViewById(R.id.testView);
+
+            txtISBN = findViewById(R.id.txtISBN);
 
             rgCategory = findViewById(R.id.rgCategory);
             rgBid = findViewById(R.id.rgBid);
             rbBidding = findViewById(R.id.rbBidding);
             rbSetPrice = findViewById(R.id.rbSetPrice);
+            rbNotes = findViewById(R.id.rbNotes);
+            rbSummary = findViewById(R.id.rbSummary);
+            rbBook = findViewById(R.id.rbBook);
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
 
