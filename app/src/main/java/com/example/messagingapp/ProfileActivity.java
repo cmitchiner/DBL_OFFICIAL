@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
     private ImageView settingsBtn;
     private CardView cardAddListing;
     private BottomNavigationView bottomNavigationView;
+    private RelativeLayout activeListings;
 
     //Firebase variables
     private FirebaseAuth firebaseAuth;
@@ -93,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         settingsBtn = findViewById(R.id.settingsBtn);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         cardAddListing = findViewById(R.id.cardAddListing);
+        activeListings = findViewById(R.id.activeListingsOpen);
     }
 
     private void initNavigationBar() {
@@ -104,6 +107,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         settingsBtn.setOnClickListener(this);
         updateBtn.setOnClickListener(this);
         cardAddListing.setOnClickListener(this);
+        activeListings.setOnClickListener(this);
     }
 
     /**
@@ -131,6 +135,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests", Toast.LENGTH_LONG).show();
                 }
                 break;
+                //Change to !Guest
+            case R.id.activeListingsOpen:
+                if (MainActivity.isGuest){
+                    startActivity(new Intent(this, UserListingsActivity.class));
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
+                }
+
         }
     }
 

@@ -47,6 +47,9 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -60,7 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements SelectListener, AdapterView.OnItemSelectedListener {
+public class listing_list extends Fragment implements AdapterView.OnItemSelectedListener {
     int count = 0;
     private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
@@ -73,7 +76,11 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
     AutoCompleteTextView filterText;
     String filtCol;
     String filtContent;
-
+    SelectListener selectListener;
+    TextView titleView;
+    String personalType;
+    String userId;
+    Map<String, String> filtDict;
     ApiAccess apiAccess;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -133,13 +140,22 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
         super.onViewCreated(view, savedInstanceState);
 
 
-        //initializing variables
-        recycler = view.findViewById(R.id.offerContainer);
-        progressBar = view.findViewById(R.id.idPBLoading);
-        nestedScrollView = view.findViewById(R.id.nested_scroll);
-        addListingButton = view.findViewById(R.id.add_offer_butt);
-        spinner = view.findViewById(R.id.filterCol);
-        filterText = view.findViewById(R.id.filterInput);
+        //getting the Views for every view component
+        initViewsAndVars(view);
+        //Set Title and add filter, depending on how listing list was started
+        Log.d("filter", String.valueOf(getArguments()));
+        if(getArguments() != null){
+            Log.d("bundle", String.valueOf(getArguments()));
+            personalType = getArguments().getString("title");
+            String[] parts = personalType.split(":");
+            titleView.setText(String.valueOf(parts[0]));
+            userId = parts[1];
+            if(!userId.toString().equals("no")){
+                filtDict.put("author", userId);
+            }
+
+        }
+
 
         //Creating Spinner for filter column selection
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
@@ -228,6 +244,24 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
         });
 
     }
+
+    private void initViewsAndVars(View view) {
+        recycler = view.findViewById(R.id.offerContainer);
+        progressBar = view.findViewById(R.id.idPBLoading);
+        nestedScrollView = view.findViewById(R.id.nested_scroll);
+        addListingButton = view.findViewById(R.id.add_offer_butt);
+        spinner = view.findViewById(R.id.filterCol);
+        filterText = view.findViewById(R.id.filterInput);
+        titleView = view.findViewById(R.id.listingListTitle);
+        filtDict = new HashMap<>();
+        selectListener = new SelectListener() {
+            @Override
+            public void onItemClicked(ListFacade listFacade) {
+                rowOnClick(listFacade);
+            }
+        };
+    }
+
     private void getData(){
         int rowNum = 55;
 
@@ -241,7 +275,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
                     return;
                 }
                 list = response.body();
-                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
+                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
             }
 
@@ -254,8 +288,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
 
 
     //On click listner for the rows
-    @Override
-    public void onItemClicked(ListFacade listFacade) {
+    public void rowOnClick(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
         getFullData.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -347,7 +380,6 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         filtCol = (adapterView.getItemAtPosition(i).toString());
         //Makes spinner text white
-        ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
         /*switch (filtCol){
             String[] empty;
             case "Title":

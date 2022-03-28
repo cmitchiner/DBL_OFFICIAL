@@ -99,6 +99,7 @@
                         app:cardElevation="10dp">
 
                         <RelativeLayout
+                            android:id="@+id/activeListingsOpen"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:padding="5dp">

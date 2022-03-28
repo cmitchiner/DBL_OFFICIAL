@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.util.ArrayList;
+
 
 public class Listing_Activity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     BottomNavigationView bottomNavigationView;
@@ -27,15 +29,19 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
+        String titleTypeInfo = "Offers:" + "no" ;
 
-        com.example.messagingapp.listing_list listing_list = new listing_list();
+        listing_list listing_list = new listing_list();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", titleTypeInfo);
+        listing_list.setArguments(bundle);
         fragmentTransaction.replace(R.id.frame_layout, listing_list);
         fragmentTransaction.commit();
 
-
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
