@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Message {
+public class MessageModel {
     @SerializedName("sender")
     private String senderId;
     @SerializedName("sender")

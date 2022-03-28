@@ -1,9 +1,6 @@
-package com.example.messagingapp;
-
-import static java.util.Objects.isNull;
+package com.example.messagingapp.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.messagingapp.R;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 //import com.squareup.picasso.Picasso;

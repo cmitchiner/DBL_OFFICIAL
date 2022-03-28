@@ -1,8 +1,8 @@
-package com.example.messagingapp;
+package com.example.messagingapp.model;
 
 public class firebaseChatModel {
 
-    String name;
+    static String name;
     String uid;
     String image;
 

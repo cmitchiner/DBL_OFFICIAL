@@ -10,7 +10,8 @@
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
         android:paddingRight="10dp"
-        android:paddingBottom="-5dp">
+        android:paddingBottom="-5dp"
+        android:background="@color/primary_blue">
 
         <TextView
             android:id="@+id/chat_row_name"
@@ -20,7 +21,7 @@
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/chat_list_card_view"
             android:text="Name"
-            android:textColor="@color/primary_blue"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -41,6 +42,18 @@
                 android:src="@drawable/profile" />
 
         </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginLeft="10dp"
+            android:backgroundTint="#a6a6a6"
+            android:background="#a6a6a6"
+            android:layout_below="@+id/chat_list_card_view"
+            android:layout_toRightOf="@+id/chat_list_card_view"
+            android:layout_marginTop="-5dp">
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

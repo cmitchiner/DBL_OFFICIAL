@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MessagesActivity">
+    tools:context=".activities.MessagesActivity">
 
 
     <TextView
@@ -27,7 +27,7 @@
         android:layout_height="24dp"
         android:layout_marginEnd="16dp"
         android:rotation="90"
-        android:src="@drawable/menu"
+        android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView" />
