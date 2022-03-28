@@ -1,20 +1,29 @@
 package com.example.messagingapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -50,16 +60,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements SelectListener {
+public class listing_list extends Fragment implements SelectListener, AdapterView.OnItemSelectedListener {
     int count = 0;
     private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
     RecyclerView recycler;
-    com.example.messagingapp.RecycleOfferAdapter recycleOfferAdapter;
+    RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
     NestedScrollView nestedScrollView;
     ImageButton addListingButton;
-    SearchView searchView;
+    Spinner spinner;
+    AutoCompleteTextView filterText;
+    String filtCol;
+    String filtContent;
 
     ApiAccess apiAccess;
 
@@ -125,42 +138,74 @@ public class listing_list extends Fragment implements SelectListener {
         progressBar = view.findViewById(R.id.idPBLoading);
         nestedScrollView = view.findViewById(R.id.nested_scroll);
         addListingButton = view.findViewById(R.id.add_offer_butt);
-        searchView = view.findViewById(R.id.offer_search);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                filtArray.add(query);
-                LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
-                View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
-                TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
-                bubble_text.setText(query);
-                bubble.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        CharSequence bubText = bubble_text.getText();
-                        recycleOfferAdapter.getFilter().filter(bubText);
-                        recycleOfferAdapter.recoverFilters(bubText);
-                        Log.d("bubble", "removed filter " + bubble_text.getText() );
-                        filt_cont.removeView(v);
-                    }
-                });
-                filt_cont.addView(bubble);
-                recycleOfferAdapter.getFilter().filter(query);
-                Log.d("bubble","Bubble added");
-                searchView.clearFocus();
-                return false;
-            }
+        spinner = view.findViewById(R.id.filterCol);
+        filterText = view.findViewById(R.id.filterInput);
 
+        //Creating Spinner for filter column selection
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
+                , R.array.filterColumns, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        //Making the drop down menu show up on text field click
+        /*filterText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                filterText.showDropDown();
                 return false;
             }
         });
 
+         */
+
+        //Setting up text view for filtering
+
+        //Adding event listner for soft input
+        filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                    filtContent = textView.getText().toString().trim();
+                    filterText.clearFocus();
+                    Log.d("filter", "kur");
+                    if(!filtContent.isEmpty()) {
+                        Addbubble(filtContent);
+                        filter();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //adding event listner for hardware keyboard
+        filterText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(i == KeyEvent.KEYCODE_ENTER) {
+                    filtContent = filterText.getText().toString().trim();
+                    filterText.clearFocus();
+                    if(!filtContent.isEmpty()) {
+                        Addbubble(filtContent);
+                        filter();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        //Setting Add Listing button
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddListingActivity.class));
+                if (MainActivity.isGuest) {
+                    //Deny add listing capability to guests
+                    Toast.makeText(getActivity(), "This feature is not allowed for guests", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(getActivity(), AddListingActivity.class));
+                }
             }
         });
 
@@ -175,7 +220,7 @@ public class listing_list extends Fragment implements SelectListener {
                 if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()){
                     count++;
                     progressBar.setVisibility(View.VISIBLE);
-                    if(count < 30){
+                    if(count < 100){
                         getData();
                     }
                 }
@@ -208,7 +253,7 @@ public class listing_list extends Fragment implements SelectListener {
     }
 
 
-
+    //On click listner for the rows
     @Override
     public void onItemClicked(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
@@ -241,10 +286,21 @@ public class listing_list extends Fragment implements SelectListener {
                     loc.setLatitude(Double.valueOf(coords[0]));
                     loc.setLongitude(Double.valueOf(coords[1]));
 
-                    Listing list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
-                                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
-                                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    Listing list;
+
+                    if (listFacade.getType() == "book") {
+                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
+                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
+                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    } else {
+                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(),loc,
+                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
+                                listFacade.getCourseCode(), data.optString("ownerid"));
+                    }
+
+
                     openListing(list);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -258,6 +314,8 @@ public class listing_list extends Fragment implements SelectListener {
             }
         });
     }
+
+    //Swaps fragment with the correpsonding fragment, depending on the value of isBid
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
@@ -282,6 +340,64 @@ public class listing_list extends Fragment implements SelectListener {
             fragmentTransaction.commit();
         }
 
+    }
+
+    //On Item selected events for spinner. TODO set suggested text
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        filtCol = (adapterView.getItemAtPosition(i).toString());
+        //Makes spinner text white
+        ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
+        /*switch (filtCol){
+            String[] empty;
+            case "Title":
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1,  ));
+                break;
+            case "Type":
+                String[] types = {"book", "notes", "summary"};
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, types));
+                break;
+            case "University":
+                String[] university = getResources().getStringArray(R.array.Universities);
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, university));
+                break;
+            case "Course code":
+                break;
+            case "ISBN":
+                break;
+        }
+        filterText.showDropDown();
+
+         */
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public void Addbubble(String query) {
+        LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
+        View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
+        TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
+        bubble_text.setText(query);
+        bubble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence bubText = bubble_text.getText();
+                Log.d("bubble", "removed filter " + bubble_text.getText() );
+                filt_cont.removeView(v);
+            }
+        });
+        filt_cont.addView(bubble);
+        Log.d("bubble","Bubble added");
+    }
+
+    //Function to filter listings
+    public void filter() {
+        Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
     }
 }
 

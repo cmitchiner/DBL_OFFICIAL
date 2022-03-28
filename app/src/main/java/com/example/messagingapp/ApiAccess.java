@@ -7,6 +7,7 @@ import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.Message;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
@@ -49,6 +50,19 @@ public interface ApiAccess {
             @Field("bidderId") String bidId,
             @Field("apiKey") String apiKey
     );
+
+    @FormUrlEncoded
+    @POST("/msgs")
+    Call<ResponseBody> sendMessage(
+            @Field("sender") String SenderID,
+            @Field("reciever") String RecieverID,
+            @Field("text") String msg,
+            @Field("photo") String photoURL,
+            @Field("date") ZonedDateTime date,
+            @Field("read") boolean read
+
+    );
+
 
     @Multipart
     @POST("/img/test.png")

@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public FirebaseAuth firebaseAuth;
     private static final String TAG = "GOOGLE_SIGN_IN_TAG";
 
-    public static boolean isGuest = true;
+    public static boolean isGuest = false;
 
 
     /** onCreate() is a method that runs before a user see's a page
