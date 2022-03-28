@@ -58,8 +58,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements SelectListener, AdapterView.OnItemSelectedListener {
+public class listing_list extends Fragment implements  AdapterView.OnItemSelectedListener {
     int count = 0;
+    private final SelectListener selectListener = new SelectListener() {
+        @Override
+        public void onItemClicked(ListFacade listFacade) {
+            recItemClicked(listFacade);
+        }
+    };
     private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
     RecyclerView recycler;
@@ -234,7 +240,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
                     return;
                 }
                 list = response.body();
-                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, listing_list.this::onItemClicked);
+                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
             }
 
@@ -247,8 +253,7 @@ public class listing_list extends Fragment implements SelectListener, AdapterVie
 
 
     //On click listner for the rows
-    @Override
-    public void onItemClicked(ListFacade listFacade) {
+    public void recItemClicked(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
         getFullData.enqueue(new Callback<ResponseBody>() {
             @Override
