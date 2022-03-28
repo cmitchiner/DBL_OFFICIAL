@@ -64,7 +64,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     RecyclerView recycler;
     RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
-    NestedScrollView nestedScrollView;
+    NestedScrollView nested_scroll;
     ImageButton addListingButton;
     Spinner spinner;
     AutoCompleteTextView filterText;
@@ -75,6 +75,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     String personalType;
     String userId;
     Map<String, String> filtDict;
+
     ApiAccess apiAccess;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -213,7 +214,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(manager);
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()){
@@ -231,7 +232,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     private void initViewsAndVars(View view) {
         recycler = view.findViewById(R.id.offerContainer);
         progressBar = view.findViewById(R.id.idPBLoading);
-        nestedScrollView = view.findViewById(R.id.nested_scroll);
+        nested_scroll = view.findViewById(R.id.nested_scroll);
         addListingButton = view.findViewById(R.id.add_offer_butt);
         spinner = view.findViewById(R.id.filterCol);
         filterText = view.findViewById(R.id.filterInput);
