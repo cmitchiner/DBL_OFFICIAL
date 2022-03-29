@@ -134,13 +134,12 @@ public class listing_opened extends Fragment {
         author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
-                Bundle send = new Bundle();
                 String user = usernameAuthor;
                 String authorrid = listing.getUser().toString();
                 String usidCombo = user+":"+authorrid;
-                send.putString(usidCombo, "title");
-                intent.putExtras(send);
+                Log.d("filter", usidCombo);
+                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
+                intent.putExtra("title", usidCombo);
                 startActivity(intent);
             }
         });

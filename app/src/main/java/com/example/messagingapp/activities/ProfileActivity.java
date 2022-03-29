@@ -147,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     //send.putString(usidCombo, "title");
                     Intent intent = new Intent(this, UserListingsActivity.class);
                     intent.putExtra("title", usidCombo);
-                    startActivity(intent);;
+                    startActivity(intent);
                 } else {
                     Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
                 }
