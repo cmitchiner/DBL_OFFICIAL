@@ -102,7 +102,6 @@ public class listing_opened extends Fragment {
         TextView university = (TextView) view.findViewById(R.id.list_university);
         TextView courseCode = (TextView) view.findViewById(R.id.list_code);
         TextView price = (TextView) view.findViewById(R.id.list_price);
-        TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         ImageView backBtn = view.findViewById(R.id.backBtn);
         final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
@@ -116,7 +115,6 @@ public class listing_opened extends Fragment {
         courseCode.setText(listing.getCourseCode());
         double priceEuro = listing.getPrice();
         price.setText(String.valueOf( priceEuro/100 + "€"));
-        //rating.setText(getString(listing.getRating()));
 
         if(!String.valueOf(listing.getIsbn()).equals("0")){
             isbn.setVisibility(View.VISIBLE);
