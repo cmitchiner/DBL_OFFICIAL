@@ -41,7 +41,7 @@ public interface ApiAccess {
     Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
 
     @POST("/updatelisting")
-    Call<ResponseBody> addNewListing(@Body Listing list);
+    Call<ResponseBody> addNewListing(@Body Listing list, @Query("apiKey") String apiKey);
 
     @GET("/listings/{id}")
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
