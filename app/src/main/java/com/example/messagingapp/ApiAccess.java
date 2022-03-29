@@ -7,15 +7,19 @@ import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.MessageModel;
 
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -43,7 +47,7 @@ public interface ApiAccess {
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
                                      );
 
-    //@POST("/pushFiltDict")
+    //@GET("/listingsFiltered")
     //Call<>
 
     @FormUrlEncoded
@@ -69,7 +73,10 @@ public interface ApiAccess {
 
 
     @Multipart
-    @POST("/img/test.png")
-    Observable<ResponseBody> uploadImg(@Part MultipartBody.Part image);
+    @POST("/addimg")
+    Call<ResponseBody> uploadImg(@Part MultipartBody.Part image, @Query("apiKey") String apiKey);
+//    @FormUrlEncoded
+//    @POST("/addimg")
+//    Call<ResponseBody> uploadImg(@Field("image") File img, @Query("apiKey") String apiKey);
 
 }

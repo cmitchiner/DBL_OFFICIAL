@@ -36,14 +36,24 @@ import com.example.messagingapp.model.Listing;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.messagingapp.ApiAccess;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,6 +77,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private boolean ISBN = false, locationGiven = false;
     private Button setLocationButt;
     private String type = "Notes";
+    private File image;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -105,7 +116,14 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.btnPublish:
-                initPublish();
+                if (validateData()) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initPublish();
+                    }
+                }).start();} else {
+                    Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();}
                 break;
             case R.id.btnUploadPicture:
                 selectImage();
@@ -259,9 +277,48 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 Uri selectedImage = data.getData();
                 imgView.setVisibility(View.VISIBLE);
                 imgView.setImageURI(selectedImage);
+                image = new File(selectedImage.getPath());
             } else if (requestCode==1) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        image = new File(getApplicationContext().getCacheDir(), "image");
+                        try {
+                            //create a file to write bitmap data
+                            File f = new File(getApplicationContext().getCacheDir(), "image");
+                            f.createNewFile();
+
+                            //Convert bitmap to byte array
+                            Bitmap bitmap = imageBitmap;
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
+                            byte[] bitmapdata = bos.toByteArray();
+
+                            //write the bytes in file
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(f);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                fos.write(bitmapdata);
+                                fos.flush();
+                                fos.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            image = f;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
                 imgView.setVisibility(View.VISIBLE);
                 imgView.setImageBitmap(imageBitmap);
             }
@@ -274,31 +331,61 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
         private void initPublish() {
             Log.d(TAG, "initPublish: started");
-            if (validateData()) {
-                showSnackBar();
-                double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
-                int priceInt = (int) price;
-                long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-                Listing listing = new Listing(null, priceInt, type, 0, false, edtTxtTitle.getText().toString(), ISBNlong, null,
-                        "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(), null);
+
                 Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
                 ApiAccess apiAccess = retrofit.create(ApiAccess.class);
-                Call<ResponseBody> call = apiAccess.addNewListing(listing);
-                call.enqueue(new Callback<ResponseBody>() {
+                RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
+                MultipartBody.Part img = MultipartBody.Part.createFormData("photo", image.getName(), part);
+                Call<ResponseBody> uploadImg = apiAccess.uploadImg(img, getResources().getString(R.string.apiDevKey));
+                uploadImg.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if(!response.isSuccessful()) {
+                            return;
+                        }
+                        JSONObject data;
+                        try {
+                            String extraData = response.body().string();
+                            data = new JSONObject(extraData);
+                        } catch (Exception e) {
+                            return;
+                        }
+                        ArrayList<String> photoString = new ArrayList<>();
+                        JSONArray photos = data.optJSONArray("photos");
+                        for(int i = 0; i < photos.length(); i++){
+                            photoString.add(photos.optString(i));
+                        }
+                        double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
+                        int priceInt = (int) price;
+                        long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
+                        Listing listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), ISBNlong, null,
+                                "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+                        ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+                        Call<ResponseBody> call2 = apiAccess.addNewListing(listing);
+                        call2.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                showSnackBar();
+                            }
 
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.d(null,  "BIG Fail");
+
+                            }
+                        });
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.d(null,  "BIG Fail");
+
 
                     }
                 });
                 startActivity(new Intent(this, ProfileActivity.class));
-            }else {
-                Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
-            }
+
         }
 
 

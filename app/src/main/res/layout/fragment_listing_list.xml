@@ -25,7 +25,9 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></TextView>
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
 
         <ImageButton
             android:id="@+id/add_offer_butt"
@@ -35,7 +37,7 @@
             android:layout_marginRight="25dp"
             android:background="@drawable/bg_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
             app:srcCompat="@drawable/ic_add"
             app:tint="@color/white" />
 
@@ -97,6 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Filter By Location"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintTop_toBottomOf="@id/filterLinlayout"
             app:layout_constraintBottom_toTopOf="@id/bubble_scroll_view"
             app:layout_constraintStart_toStartOf="parent"

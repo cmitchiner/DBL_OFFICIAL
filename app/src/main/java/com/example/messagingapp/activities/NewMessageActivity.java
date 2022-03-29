@@ -32,6 +32,7 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
     private Button newMessageBtn;
     private EditText usernameToChatWith;
     private String receiverUsername;
+    private String retrive;
 
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
@@ -57,6 +58,16 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
         firebaseDatabase = FirebaseDatabase.getInstance("" +
                 "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app");
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        Bundle received  = getIntent().getExtras();
+        if(received != null){
+            String nakdasd = received.getString("contact");
+            String parts[] = received.getString("contact").split(":");
+            Log.d("filter", "userlistingactivity: " + String.valueOf(nakdasd));
+            String person = parts[0];
+            String userId = parts[1];
+            startChatWithUser(userId, person);
+        }
     }
 
     @Override
