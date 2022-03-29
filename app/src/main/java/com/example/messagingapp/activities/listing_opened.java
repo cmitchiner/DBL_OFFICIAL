@@ -127,6 +127,13 @@ public class listing_opened extends Fragment {
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+            }
+        });
+
+        author.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), UserListingsActivity.class);
                 Bundle send = new Bundle();
                 String user = usernameAuthor;
@@ -135,7 +142,6 @@ public class listing_opened extends Fragment {
                 send.putString(usidCombo, "title");
                 intent.putExtras(send);
                 startActivity(intent);
-
             }
         });
 
