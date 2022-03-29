@@ -208,10 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         askPermissionLoc();
         if (firstTime) {
             if (checkPermission()) {
-                Log.d("meToo", "it's not the first time");
                 return;
             }
-            else { Log.d("meToo", "it is the first time");
+            else {
                 askPermissionLoc();
             }
             firstTime = false;

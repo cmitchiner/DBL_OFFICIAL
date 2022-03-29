@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -89,6 +90,7 @@ public class listing_opened extends Fragment {
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         ImageView backBtn = view.findViewById(R.id.backBtn);
+        final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         //image.setImageDrawable();
         title.setText(listing.getTitle());
         author.setText(listing.getUser());
@@ -113,6 +115,8 @@ public class listing_opened extends Fragment {
             }
         });
 
+        //insert rating of user here
+        ratingBar.setRating(3);
 
     }
 
