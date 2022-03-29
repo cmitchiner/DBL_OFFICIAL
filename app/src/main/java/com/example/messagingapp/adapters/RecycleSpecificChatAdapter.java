@@ -19,6 +19,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
     /** VARIABLE DECLARATIONS **/
 
+    //Current activity context
     Context context;
     //Array list to hold all messages in a chat
     ArrayList<Message> messages;
@@ -27,6 +28,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     final int ITEM_SEND = 1;
     final int ITEM_RECEIVE = 2;
 
+    //Constructor to set activity context and feed in messages array
     public RecycleSpecificChatAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
         this.messages = messages;
