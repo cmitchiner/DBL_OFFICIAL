@@ -7,17 +7,26 @@ public class Message {
     String senderID;
     long timestamp;
     String currentTime;
+    Boolean isNew;
 
     public Message() {
     }
 
-    public Message(String message, String senderID, long timestamp, String currentTime) {
+    public Message(String message, String senderID, long timestamp, String currentTime, boolean isNew) {
         this.message = message;
         this.senderID = senderID;
         this.timestamp = timestamp;
         this.currentTime = currentTime;
+        this.isNew = isNew;
     }
 
+    public Boolean getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(Boolean aNew) {
+        isNew = aNew;
+    }
     public String getMessage() {
         return message;
     }

@@ -42,11 +42,6 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
 
     }
 
-    @Override
-    public void onBackPressed() {
-        return;
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
