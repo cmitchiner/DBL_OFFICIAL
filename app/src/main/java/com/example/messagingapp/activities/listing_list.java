@@ -60,7 +60,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class listing_list extends Fragment implements AdapterView.OnItemSelectedListener {
     int count = 0;
-    private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
     RecyclerView recycler;
     RecycleOfferAdapter recycleOfferAdapter;
@@ -142,14 +141,21 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         //Set Title and add filter, depending on how listing list was started
         Log.d("filter", String.valueOf(getArguments()));
         if(getArguments() != null){
+
             Log.d("bundle", String.valueOf(getArguments()));
             personalType = getArguments().getString("title");
             String[] parts = personalType.split(":");
-            titleView.setText(String.valueOf(parts[0]));
             userId = parts[1];
+
+            titleView.setText(String.valueOf(parts[0]+"'s Offers"));
             if(!userId.toString().equals("no")){
+                titleView.setText(String.valueOf(parts[0]+"'s Offers"));
                 filtDict.put("author", userId);
+            }else{
+                titleView.setText(String.valueOf("Offers"));
             }
+
+            filtDict.put("author", "");
             filtDict.put("title", "");
             filtDict.put("type", "");
             filtDict.put("university", "");

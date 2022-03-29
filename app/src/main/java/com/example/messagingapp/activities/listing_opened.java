@@ -1,10 +1,12 @@
 package com.example.messagingapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -16,6 +18,14 @@ import androidx.fragment.app.Fragment;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.example.messagingapp.objects.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.messagingapp.objects.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 //import com.squareup.picasso.Picasso;
 
 /**
@@ -26,6 +36,11 @@ import com.example.messagingapp.model.Listing;
 public class listing_opened extends Fragment {
     ListFacade listFacade;
     Listing listing;
+    String currentUserId;
+    String authorId;
+    Button completeListing;
+    Button messageButton;
+    String usernameAuthor;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,6 +92,7 @@ public class listing_opened extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         listing = getArguments().getParcelable("listingFacade");
 
         ImageView image = (ImageView) view.findViewById(R.id.list_image);
@@ -86,27 +102,75 @@ public class listing_opened extends Fragment {
         TextView university = (TextView) view.findViewById(R.id.list_university);
         TextView courseCode = (TextView) view.findViewById(R.id.list_code);
         TextView price = (TextView) view.findViewById(R.id.list_price);
-        TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
+        ImageView backBtn = view.findViewById(R.id.backBtn);
         final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+        completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
+        messageButton = (Button) view.findViewById(R.id.message_button);
+
         //image.setImageDrawable();
         title.setText(listing.getTitle());
-        author.setText(listing.getUser());
         description.setText(listing.getDescription());
         university.setText(listing.getUniversity());
         courseCode.setText(listing.getCourseCode());
         double priceEuro = listing.getPrice();
         price.setText(String.valueOf( priceEuro/100 + "€"));
-        //rating.setText(getString(listing.getRating()));
-        Log.d("isbn", String.valueOf(listing.getIsbn()));
+
         if(!String.valueOf(listing.getIsbn()).equals("0")){
             isbn.setVisibility(View.VISIBLE);
             isbn.setText(String.valueOf(listing.getIsbn()));
         } else{
             isbn.setVisibility(View.INVISIBLE);
         }
+
+        if(currentUserId == authorId ){
+            completeListing.setVisibility(View.VISIBLE);
+        }
+
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        author.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String user = usernameAuthor;
+                String authorrid = listing.getUser().toString();
+                String usidCombo = user+":"+authorrid;
+                Log.d("filter", usidCombo);
+                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
+                intent.putExtra("title", usidCombo);
+                startActivity(intent);
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), Listing_Activity.class));
+            }
+        });
+
         //insert rating of user here
-        ratingBar.setRating(3);
+        FirebaseDatabase firebaseRating = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app/");
+        DatabaseReference ref = firebaseRating.getReference("Users").child(listing.getUser());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = snapshot.getValue(User.class);
+                ratingBar.setRating(user.rating);
+                author.setText(user.fullName);
+                usernameAuthor = user.username;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Metoo", "failed to read user rating");
+            }
+        });
 
     }
 
