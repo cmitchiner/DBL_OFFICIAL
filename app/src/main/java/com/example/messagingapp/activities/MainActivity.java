@@ -326,7 +326,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //Login SUCCESS: Redirect to Profile
                             if (firebaseAuth.getCurrentUser().isEmailVerified()) {
                                 isGuest = false;
-                                sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
                                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                             } else {
                                 firebaseAuth.signOut();
@@ -345,26 +344,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
         }
-    }
-    private void sendDataToFireStore(String name, String uid) {
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("name", name);
-        userData.put("uid", uid);
-
-        firebaseFirestore.collection("Users").document(uid)
-                .set(userData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void v) {
-                        Log.d("REGISTER", "Successfully sent to firestore");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("REGISTER", "Failed to send to firestore");
-                    }
-                });
     }
 
     /**
@@ -444,7 +423,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //User Is New - Account Creation
                             addAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
                             Log.d(TAG, "onSuccess: Account Created...\n" + email);
-                            sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
 
                             Toast.makeText(MainActivity.this, "Account Created...\n"
                                     + email, Toast.LENGTH_SHORT).show();
@@ -524,7 +502,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                             if (authResult.getAdditionalUserInfo().isNewUser()) {
                                 addAcctToDB(" ", firebaseUser.getUid(), "0", firebaseUser.getEmail());
-                                sendDataToFireStore(firebaseAuth.getCurrentUser().getDisplayName(), firebaseAuth.getUid());
                             }
 
                             startActivity(new Intent(MainActivity.this, ProfileActivity.class));

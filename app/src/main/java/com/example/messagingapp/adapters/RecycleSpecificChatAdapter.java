@@ -38,10 +38,10 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_SEND) {
-            View view = LayoutInflater.from(context).inflate(R.layout.specific_chat_sender, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_chat_me, parent, false);
             return new SenderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.specific_chat_reciever, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_chat_other, parent, false);
             return new ReceiverViewHolder(view);
         }
     }
@@ -82,8 +82,8 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
         public SenderViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            messageText = itemView.findViewById(R.id.senderTextView);
-            timeOfMessage = itemView.findViewById(R.id.timeOfSentMsgTV);
+            messageText = itemView.findViewById(R.id.text_gchat_message_me);
+            timeOfMessage = itemView.findViewById(R.id.text_gchat_timestamp_me);
 
         }
     }
@@ -95,8 +95,8 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            messageText = itemView.findViewById(R.id.senderTextView);
-            timeOfMessage = itemView.findViewById(R.id.timeOfSentMsgTV);
+            messageText = itemView.findViewById(R.id.text_gchat_message_other);
+            timeOfMessage = itemView.findViewById(R.id.text_gchat_timestamp_other);
 
         }
     }

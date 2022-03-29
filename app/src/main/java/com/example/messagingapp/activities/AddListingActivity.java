@@ -32,8 +32,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
+import com.example.messagingapp.model.Listing;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.example.messagingapp.ApiAccess;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,23 +44,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private EditText edtTxtTitle, edtTxtDescription, edtTxtPrice, edtTxtCourseCode, edtTxtCourseName, edtTxtISBN;
-    private TextView textview, txtAddOffer, txtCategory, txtDescription, txtUploadDocument, txtUploadPicture, txtPrice, txtEuro, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN;
-    private Spinner spinnerUniversity, spinnerCourseCode;
-    private RadioGroup rgCategory, rgBid;
+    private EditText edtTxtTitle, edtTxtDescription, edtTxtCourseCode, edtTxtCourseName, edtTxtPrice, edtTxtISBN;
+    private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN, warningLocation;
     private Button btnPublish;
-    private ImageButton btnUploadPicture, btnUploadDocument;
+    private ImageButton btnUploadPicture;
     private ImageView imgView;
     private RadioButton rbBidding, rbSetPrice, rbNotes, rbSummary, rbBook;
     private RelativeLayout parent;
     private ArrayList<String> arrayList;
     private Dialog dialog;
     private TextInputLayout txtISBN;
-    private boolean ISBN = false;
+    private boolean ISBN = false, locationGiven = false;
     private Button setLocationButt;
+    private String type = "Notes";
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -78,7 +86,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         //Init On-Click Listeners
         btnPublish.setOnClickListener(this);
         btnUploadPicture.setOnClickListener(this);
-        btnUploadDocument.setOnClickListener(this);
+//        btnUploadDocument.setOnClickListener(this);
         rbBidding.setOnClickListener(this);
         rbSetPrice.setOnClickListener(this);
         textview.setOnClickListener(this);
@@ -102,9 +110,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             case R.id.btnUploadPicture:
                 selectImage();
                 break;
-            case R.id.btnUploadDocument:
-                chooseFile();
-                break;
+//            case R.id.btnUploadDocument:
+//                chooseFile();
+//                break;
             case R.id.rbBidding:
                 txtPrice.setText("Starting price: ");
                 break;
@@ -117,14 +125,21 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             case R.id.rbBook:
                 txtISBN.setVisibility(View.VISIBLE);
                 ISBN = true;
+                type = "Book";
                 break;
             case R.id.rbNotes:
+                txtISBN.setVisibility(View.GONE);
+                ISBN = false;
+                type = "Notes";
+                break;
             case R.id.rbSummary:
                 txtISBN.setVisibility(View.GONE);
                 ISBN = false;
+                type = "Summary";
                 break;
-            case R.id.locationFiltButt:
+            case R.id.addLocationListButt:
                 getLocation();
+                locationGiven = true;
                 break;
 
         }
@@ -171,44 +186,44 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-        private void chooseFile() {
-            //System.out.println(type2);
-            Intent intent = new Intent();
-            //intent.setType("application/pdf");
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, 3 );
-        }
+//        private void chooseFile() {
+//            //System.out.println(type2);
+//            Intent intent = new Intent();
+//            //intent.setType("application/pdf");
+//            intent.setType("application/pdf");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            startActivityForResult(intent, 3 );
+//        }
 
-        public String getStringPdf (Uri filepath){
-            InputStream inputStream = null;
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            try {
-                inputStream =  getContentResolver().openInputStream(filepath);
-
-                byte[] buffer = new byte[1024];
-                byteArrayOutputStream = new ByteArrayOutputStream();
-
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    byteArrayOutputStream.write(buffer, 0, bytesRead);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            byte[] pdfByteArray = byteArrayOutputStream.toByteArray();
-
-            return Base64.encodeToString(pdfByteArray, Base64.DEFAULT);
-        }
+//        public String getStringPdf (Uri filepath){
+//            InputStream inputStream = null;
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            try {
+//                inputStream =  getContentResolver().openInputStream(filepath);
+//
+//                byte[] buffer = new byte[1024];
+//                byteArrayOutputStream = new ByteArrayOutputStream();
+//
+//                int bytesRead;
+//                while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                    byteArrayOutputStream.write(buffer, 0, bytesRead);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                if (inputStream != null) {
+//                    try {
+//                        inputStream.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            byte[] pdfByteArray = byteArrayOutputStream.toByteArray();
+//
+//            return Base64.encodeToString(pdfByteArray, Base64.DEFAULT);
+//        }
 
         private void selectImage() {
             final CharSequence[] options = {"Take photo", "Choose image from gallery", "Cancel"};
@@ -242,28 +257,55 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode==2) {
                 Uri selectedImage = data.getData();
+                imgView.setVisibility(View.VISIBLE);
                 imgView.setImageURI(selectedImage);
             } else if (requestCode==1) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
+                imgView.setVisibility(View.VISIBLE);
                 imgView.setImageBitmap(imageBitmap);
-            } else if (requestCode==3) {
-                Uri filePath = data.getData();
-                getStringPdf(filePath);
-                Toast.makeText(this, "File chosen", Toast.LENGTH_SHORT).show();
             }
+//            else if (requestCode==3) {
+//                Uri filePath = data.getData();
+//                getStringPdf(filePath);
+//                Toast.makeText(this, "File chosen", Toast.LENGTH_SHORT).show();
+//            }
         }
 
         private void initPublish() {
             Log.d(TAG, "initPublish: started");
             if (validateData()) {
                 showSnackBar();
+                double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
+                int priceInt = (int) price;
+                long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
+                Listing listing = new Listing(null, priceInt, type, 0, false, edtTxtTitle.getText().toString(), ISBNlong, null,
+                        "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(), null);
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+                ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+                Call<ResponseBody> call = apiAccess.addNewListing(listing);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+                startActivity(new Intent(this, ProfileActivity.class));
             }else {
                 Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
             }
         }
 
-        private void showSnackBar() {
+
+    /**
+     * Shows a snackbar when successfully published listing
+     */
+    private void showSnackBar() {
             Log.d(TAG, "showSnackBar: started");
             Snackbar.make(parent, "Offer added", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Dismiss", new View.OnClickListener() {
@@ -317,17 +359,24 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 }else {
                     warningISBN.setVisibility(View.GONE);
                 }
-                if (edtTxtISBN.getText().toString().matches("^[0-9-]+$")) {
+                if (edtTxtISBN.getText().toString().matches("^[0-9]+$")) {
 
                 } else {
-                    Toast.makeText(this, "ISBN should only contain numbers and dashes", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "ISBN should only contain numbers", Toast.LENGTH_SHORT).show();
                     i = false;
                 }
+            }
+            if (!locationGiven) {
+                warningLocation.setVisibility(View.VISIBLE);
+                i =false;
+            }else {
+                warningLocation.setVisibility(View.GONE);
             }
             return i;
         }
 
     private void getLocation() {
+        Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -337,37 +386,32 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void initViews() {
             edtTxtTitle = findViewById(R.id.edtTxtTitle);
             edtTxtDescription = findViewById(R.id.edtTxtDescription);
-            edtTxtPrice = findViewById(R.id.edtTxtPrice);
             edtTxtCourseCode = findViewById(R.id.edtTxtCourseCode);
             edtTxtCourseName = findViewById(R.id.edtTxtCourseName);
             edtTxtISBN = findViewById(R.id.edtTxtISBN);
+            edtTxtPrice = findViewById(R.id.edtTxtPrice);
 
             btnPublish = findViewById(R.id.btnPublish);
-            btnUploadDocument = findViewById(R.id.btnUploadDocument);
+//            btnUploadDocument = findViewById(R.id.btnUploadDocument);
             btnUploadPicture = findViewById(R.id.btnUploadPicture);
 
-            txtAddOffer = findViewById(R.id.txtAddOffer);
-            txtCategory = findViewById(R.id.txtCategory);
             txtPrice = findViewById(R.id.txtPrice);
-            txtUploadDocument = findViewById(R.id.txtUploadDocument);
-            txtUploadPicture = findViewById(R.id.txtUploadPicture);
             warningTitle = findViewById(R.id.warningTitle);
             warningCourseCode = findViewById(R.id.warningCourseCode);
             warningCourseName = findViewById(R.id.warningCourseName);
             warningUniversity = findViewById(R.id.warningUniversity);
             warningDescription = findViewById(R.id.warningDescription);
             warningISBN = findViewById(R.id.warningISBN);
+            warningLocation = findViewById(R.id.warningLocation);
             textview = findViewById(R.id.testView);
-
             txtISBN = findViewById(R.id.txtISBN);
 
-            rgCategory = findViewById(R.id.rgCategory);
-            rgBid = findViewById(R.id.rgBid);
             rbBidding = findViewById(R.id.rbBidding);
             rbSetPrice = findViewById(R.id.rbSetPrice);
             rbNotes = findViewById(R.id.rbNotes);
             rbSummary = findViewById(R.id.rbSummary);
             rbBook = findViewById(R.id.rbBook);
+
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
 

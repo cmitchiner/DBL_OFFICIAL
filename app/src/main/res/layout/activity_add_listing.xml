@@ -93,6 +93,7 @@
                 android:id="@+id/testView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_layout"
                 android:drawableEnd="@drawable/ic_arrow"
                 android:elevation="5dp"
@@ -102,38 +103,45 @@
                 android:textColor="@color/white" />
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/warningCourseCode"
-                    android:layout_width="120dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".45"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="Add a course code"
                     android:textColor="@color/red"
                     android:visibility="gone" />
 
+                <!-- TODO: have course name warning be at right place when course code warning is gone -->
                 <TextView
                     android:id="@+id/warningCourseName"
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
+                    android:layout_marginRight="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="170dp"
                     android:text="Add a course name"
                     android:textColor="@color/red"
+                    android:layout_gravity="right"
                     android:visibility="gone" />
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/edtTextCourseCode2"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="155dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".40"
                     android:layout_height="wrap_content"
                     android:hint="Course code"
                     app:boxBackgroundColor="@android:color/transparent"
@@ -144,7 +152,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtTxtCourseCode"
-                        android:layout_width="155dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_code"
                         android:drawablePadding="10dp"
@@ -154,7 +162,8 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="190dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".50"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/edtTextCourseCode2"
                     android:layout_marginLeft="10dp"
@@ -167,7 +176,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtTxtCourseName"
-                        android:layout_width="190dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_course_name"
                         android:drawablePadding="10dp"
@@ -175,7 +184,8 @@
                         android:text="" />//Linear Algebra
                 </com.google.android.material.textfield.TextInputLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txtCategory"
@@ -238,7 +248,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="ISBN number"
+                android:hint="ISBN number without dashes"
                 app:boxBackgroundColor="@android:color/transparent"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
@@ -254,6 +264,7 @@
                     android:drawableLeft="@drawable/ic_number"
                     android:drawablePadding="10dp"
                     android:drawableTint="@color/primary_blue"
+                    android:inputType="number"
                     android:text="" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -288,37 +299,37 @@
                     android:text="" />
             </com.google.android.material.textfield.TextInputLayout>
 
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/txtUploadDocument"-->
+<!--                    android:layout_width="130dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:text="Upload document:"-->
+<!--                    android:textColor="@color/black" />-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnUploadDocument"-->
+<!--                    android:layout_width="32dp"-->
+<!--                    android:layout_height="32dp"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:layout_marginStart="130dp"-->
+<!--                    android:background="@drawable/bg_layout"-->
+<!--                    android:elevation="5dp"-->
+<!--                    app:srcCompat="@drawable/ic_add"-->
+<!--                    app:tint="@color/white" />-->
+
+<!--            </RelativeLayout>-->
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txtUploadDocument"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="16dp"
-                    android:text="Upload document:"
-                    android:textColor="@color/black"/>
-
-                <ImageButton
-                    android:id="@+id/btnUploadDocument"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="130dp"
-                    android:background="@drawable/bg_layout"
-                    android:elevation="5dp"
-                    app:srcCompat="@drawable/ic_add"
-                    app:tint="@color/white" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -327,7 +338,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Upload picture:"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black" />
 
                 <ImageButton
                     android:id="@+id/btnUploadPicture"
@@ -341,12 +352,17 @@
                     app:tint="@color/white" />
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/imgView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
-                android:visibility="visible" />
+                android:visibility="gone" />
+            </RelativeLayout>
 
             <RadioGroup
                 android:id="@+id/rgBid"
@@ -396,7 +412,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="100dp"
-
+                    android:layout_marginBottom="16dp"
                     app:boxBackgroundColor="@android:color/transparent"
                     app:boxCornerRadiusBottomEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -418,17 +434,29 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="16dp">
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/warningLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add your location"
+                    android:textColor="@color/red"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <Button
                     android:id="@+id/addLocationListButt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:background="@drawable/btn_bg"
-                    android:text="Add location to listing">
-
-                </Button>
+                    android:text="Add location to listing"></Button>
             </RelativeLayout>
 
             <RelativeLayout

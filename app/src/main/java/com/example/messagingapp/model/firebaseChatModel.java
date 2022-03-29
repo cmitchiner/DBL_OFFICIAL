@@ -4,12 +4,10 @@ public class firebaseChatModel {
 
     static String name;
     String uid;
-    String image;
 
-    public firebaseChatModel(String name, String uid, String image) {
+    public firebaseChatModel(String name, String uid) {
         this.name = name;
         this.uid = uid;
-        this.image = image;
     }
     public firebaseChatModel() {}
 
@@ -29,11 +27,4 @@ public class firebaseChatModel {
         this.uid = uid;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 }
