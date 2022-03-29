@@ -88,12 +88,4 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
         return false;
     }
 
-    /**
-     * Method that runs when the activity is stopped
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
 }

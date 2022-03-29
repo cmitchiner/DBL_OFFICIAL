@@ -39,6 +39,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     final int ITEM_SEND = 1;
     final int ITEM_RECEIVE = 2;
 
+
     //Constructor to set activity context and feed in messages array
     public RecycleSpecificChatAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
@@ -60,15 +61,16 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
-
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
+        StorageReference storageReference = storage.getReference().child(message.getUniqueID());
         if (holder.getClass() == SenderViewHolder.class) {
             SenderViewHolder viewHolder = (SenderViewHolder) holder;
             if (message.getImage()) {
                 viewHolder.messageText.setVisibility(View.GONE);
                 viewHolder.timeOfMessage.setVisibility(View.GONE);
                 viewHolder.imageView.setVisibility(View.VISIBLE);
-                FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
-                StorageReference storageReference = storage.getReference().child(message.getUniqueID());
+
+
                 try {
                     localFile = File.createTempFile("images", "jpg");
                 } catch (IOException e) {
@@ -95,6 +97,18 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
                 viewHolder.messageText.setVisibility(View.GONE);
                 viewHolder.timeOfMessage.setVisibility(View.GONE);
                 viewHolder.imageView.setVisibility(View.VISIBLE);
+                try {
+                    localFile = File.createTempFile("images", "jpg");
+                } catch (IOException e) {
+                    Log.e("error", Log.getStackTraceString(e));
+                }
+                if (localFile != null) {
+                    storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            viewHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
+                        }});
+                }
             } else {
                 viewHolder.messageText.setVisibility(View.VISIBLE);
                 viewHolder.timeOfMessage.setVisibility(View.VISIBLE);
