@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -201,7 +204,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         currentTime = simpleDateFormat.format(calender.getTime());
 
         //Create a message object with correct params
-        Message message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime);
+        Message message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime, true);
 
         //Post both the sender + receiver rooms to firebase database
         firebaseDatabase.getReference("Chats")

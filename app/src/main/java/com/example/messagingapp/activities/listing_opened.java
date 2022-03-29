@@ -156,7 +156,7 @@ public class listing_opened extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), Listing_Activity.class));
+                getActivity().onBackPressed();
             }
         });
 
