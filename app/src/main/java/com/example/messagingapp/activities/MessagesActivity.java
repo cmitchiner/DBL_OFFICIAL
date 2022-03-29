@@ -19,6 +19,12 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
 
     BottomNavigationView bottomNavigationView;
     ImageView newMessageBtn;
+
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

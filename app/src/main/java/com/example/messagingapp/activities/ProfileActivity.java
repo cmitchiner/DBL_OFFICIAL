@@ -361,6 +361,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         getCurrentUserInfo();
     }
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
     /**
      * A users full name is stored both in a user object in the database and on their authentication
      * account, thus when we update the full name in the user object we must also update the full

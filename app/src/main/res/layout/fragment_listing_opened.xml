@@ -13,12 +13,23 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
 
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/primary_blue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <TextView
             android:id="@+id/list_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-24dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="30dp"
             android:gravity="center_horizontal"
@@ -28,8 +39,8 @@
             android:textColor="@color/primary_blue"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/backBtn">
 
         </TextView>
 
@@ -71,11 +82,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Rating"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="Rating"
             android:textColor="@color/primary_blue"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/list_author"
@@ -219,6 +228,17 @@
             app:layout_constraintBottom_toTopOf="@+id/list_desc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_image" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:numStars="5"
+            android:stepSize=".1"
+            app:layout_constraintTop_toBottomOf="@+id/list_rating"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

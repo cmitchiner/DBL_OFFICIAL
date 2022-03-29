@@ -38,6 +38,12 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
     FirebaseFirestore firebaseFirestore;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, MessagesActivity.class));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_message);
@@ -58,21 +64,28 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
         switch (view.getId()) {
             case R.id.startChatBtn:
                 receiverUsername = usernameToChatWith.getText().toString().trim();
-                checkUserExists();
+                checkUserExists(receiverUsername);
                 break;
         }
     }
 
-    private void checkUserExists() {
+
+    private void checkUserExists(String receiverUsername) {
         DatabaseReference ref = firebaseDatabase.getReference("Users");
 
         ref.orderByChild("username").equalTo(receiverUsername).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()) {
-                            User user = snapshot1.getValue(User.class);
-                            startChatWithUser(snapshot1.getKey(), user.fullName);
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                User user = snapshot1.getValue(User.class);
+                                //snapshot1.getKey() contains the receiving users UID
+                                startChatWithUser(snapshot1.getKey(), user.fullName);
+                            }
+                        } else {
+                            Toast.makeText(NewMessageActivity.this,
+                                    "This user does not exist!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -113,9 +126,6 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
                                 });
                     }
                 });
-
-
-
     }
 
 }

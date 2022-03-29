@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -97,6 +98,8 @@ public class listing_opened extends Fragment {
         TextView price = (TextView) view.findViewById(R.id.list_price);
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
+        ImageView backBtn = view.findViewById(R.id.backBtn);
+        final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
         messageButton = (Button) view.findViewById(R.id.message_button);
 
@@ -136,6 +139,15 @@ public class listing_opened extends Fragment {
             }
         });
 
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), Listing_Activity.class));
+            }
+        });
+
+        //insert rating of user here
+        ratingBar.setRating(3);
 
     }
 
