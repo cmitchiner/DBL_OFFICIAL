@@ -44,7 +44,7 @@
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_specific_chat.xml" value="0.22" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/chat_row.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_chat_list.xml" value="0.2975630611372381" />
-        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_list.xml" value="0.1391558712912662" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_list.xml" value="0.25" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened.xml" value="0.14" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened_bid.xml" value="0.1391558712912662" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/item_chat_me.xml" value="0.2975630611372381" />
@@ -53,8 +53,8 @@
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/listing_row.xml" value="0.284737067122702" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/listing_row_2.xml" value="0.284737067122702" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/specific_chat.xml" value="0.5" />
-        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/specific_chat_reciever.xml" value="0.1" />
-        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/specific_chat_sender.xml" value="0.14542415378186377" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/specific_chat_reciever.xml" value="0.15" />
+        <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/specific_chat_sender.xml" value="0.2" />
         <entry key="app/src/main/res/drawable-v24/btn_bg.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable-v24/input_bg.xml" value="0.1395" />
         <entry key="app/src/main/res/drawable/bottom_nav_bar_menu.xml" value="0.1" />

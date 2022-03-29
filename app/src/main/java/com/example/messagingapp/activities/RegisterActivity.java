@@ -32,7 +32,9 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Variables for references to activity_register.xml
     private Button registerBtn;
     private EditText registerFullNameEt, registerEmailEt, registerPasswordEt, registerUsernameEt;
@@ -45,7 +47,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     //Global variable for method use
     private boolean usernameIsUnique;
 
-    /** onCreate() is a method that runs before a user see's the current activity
+    /**
+     * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -90,7 +93,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * Makes an email/pass authentication account with firebase, and posts a new User object
      * to the firebase database.
-     *
      */
     public void registerUser() {
         //Store all info from EditText fields
@@ -104,12 +106,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         //                                                                              requirements
         if (allFieldsAreFilled(fullName, username, phone, email, password) &&
                 usernameIsAvailable(username) && passwordIsValid(password)) {
-                    attemptFirebaseRegistration(fullName, username, phone, email,password);
-                }
+            attemptFirebaseRegistration(fullName, username, phone, email, password);
+        }
     }
 
     //TODO: Write contract
-    public boolean allFieldsAreFilled(String fullName, String username, String phone, String email, String password) {
+    public boolean allFieldsAreFilled(String fullName, String username, String phone, String email,
+                                      String password) {
         if (fullName.isEmpty()) {
             registerFullNameEt.setError("Full name is required");
             registerFullNameEt.requestFocus();
@@ -187,8 +190,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * Checks if a password is in an acceptable format:
-     *      at least one special character, at least one capital, at least one number, and at least
-     *      6 characters long.
+     * at least one special character, at least one capital, at least one number, and at least
+     * 6 characters long.
+     *
      * @param password the password to be checked
      * @return result = true if password is valid, result = false if password is invalid
      */
@@ -203,55 +207,58 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return matcher.matches();
     }
 
-    public void attemptFirebaseRegistration(String fullName, String username, String phone, String email, String password) {
+    public void attemptFirebaseRegistration(String fullName, String username, String phone, String email,
+                                            String password) {
         //Attempt to create a new email/pass authentication account
-        firebaseAuth.createUserWithEmailAndPassword(email,password)
-            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    //Account created Successfully
-                    if(task.isSuccessful()) {
-                        //Create new User Object
-                        User user = new User(fullName, username, phone, email);
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //Account created Successfully
+                        if (task.isSuccessful()) {
+                            //Create new User Object
+                            User user = new User(fullName, username, phone, email);
 
-                        //Attempt to store User object in FirebaseDatabase
-                        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                //SUCCESS: User posted to DB
-                                if (task.isSuccessful()) {
-                                    sendVerificationEmail();
+                            //Attempt to store User object in FirebaseDatabase
+                            FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
+                                    ".firebasedatabase.app").getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    //SUCCESS: User posted to DB
+                                    if (task.isSuccessful()) {
+                                        sendVerificationEmail();
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Success! To finish registration please check your email " +
+                                                        "and follow the given " +
+                                                        "instructions.", Toast.LENGTH_LONG).show();
+                                        //Set Display Name on Firebase
+                                        setFirebaseDisplayName(fullName);
+                                        //Redirect to Login Page
+                                        firebaseAuth.signOut();
+                                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                    } else {
+                                        //FAIL: User was NOT posted to DB
+                                        Toast.makeText(RegisterActivity.this,
+                                                "Failed to register! Try again!",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        } else {
+                            //Account FAILED to be created
+                            task.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(RegisterActivity.this,
-                                            "Success! To finish registration please check your email and follow the given " +
-                                                    "instructions.", Toast.LENGTH_LONG).show();
-                                    //Set Display Name on Firebase
-                                    setFirebaseDisplayName(fullName);
-                                    //Redirect to Login Page
-                                    firebaseAuth.signOut();
-                                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                                } else {
-                                    //FAIL: User was NOT posted to DB
-                                    Toast.makeText(RegisterActivity.this,
-                                            "Failed to register! Try again!",
+                                            e.getMessage(),
                                             Toast.LENGTH_LONG).show();
                                 }
-                            }
-                        });
-                    } else {
-                        //Account FAILED to be created
-                        task.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterActivity.this,
-                                        e.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
     }
 
     private void sendVerificationEmail() {

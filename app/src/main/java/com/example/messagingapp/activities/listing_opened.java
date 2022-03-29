@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -130,12 +131,15 @@ public class listing_opened extends Fragment {
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String authIdCombo;
-                authIdCombo = usernameAuthor+":"+listing.getUser().toString();
-                Intent intent = new Intent(getActivity(), NewMessageActivity.class);
-                intent.putExtra("contact", authIdCombo);
-                startActivity(intent);
-
+                if (!MainActivity.isGuest) {
+                    String authIdCombo;
+                    authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
+                    Intent intent = new Intent(getActivity(), NewMessageActivity.class);
+                    intent.putExtra("contact", authIdCombo);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

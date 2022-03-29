@@ -34,7 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener, View.OnClickListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Variables for element references to activity_profile.xml
     private Button updateBtn;
     private TextView fullNameTv, emailTv;
@@ -53,7 +55,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
     private boolean usernameIsUnique;
     private String currentFullName = null, currentPhone = null, currentUsername = null;
 
-    /** onCreate() is a method that runs before a user see's a page
+    /**
+     * onCreate() is a method that runs before a user see's a page
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -87,6 +90,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         verifyLoginStatus();
     }
 
+    /**
+     * Initializes references to profile_activity.xml
+     */
     private void initXmlReferences() {
         fullNameTv = findViewById(R.id.fullNameTv);
         emailTv = findViewById(R.id.emailTv);
@@ -100,11 +106,17 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         activeListings = findViewById(R.id.activeListingsOpen);
     }
 
+    /**
+     * Initializes bottom navigation bar
+     */
     private void initNavigationBar() {
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
     }
 
+    /**
+     * Initializes on click listeners
+     */
     private void initOnClickListeners() {
         settingsBtn.setOnClickListener(this);
         updateBtn.setOnClickListener(this);
@@ -119,42 +131,45 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
      */
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.settingsBtn:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.cardAddListing:
                 if (!MainActivity.isGuest) {
+                    //Start add listing process
                     startActivity(new Intent(this, AddListingActivity.class));
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Guests cannot create listings!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Guests cannot create listings!",
+                            Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.updateBtn:
                 if (!MainActivity.isGuest) {
+                    //Start update profile process
                     updateUserInfo();
                 } else {
-                    Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests"
+                            , Toast.LENGTH_LONG).show();
                 }
                 break;
-                //Change to !Guest
+            //Change to !Guest
             case R.id.activeListingsOpen:
-                if (!MainActivity.isGuest){
-                    //Bundle send = new Bundle();
+                if (!MainActivity.isGuest) {
+                    //Show all of current users listings
                     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    String usidCombo = passuser+":"+id;
+                    String usidCombo = passuser + ":" + id;
                     Log.d("filter", usidCombo);
-                    //send.putString(usidCombo, "title");
                     Intent intent = new Intent(this, UserListingsActivity.class);
                     intent.putExtra("title", usidCombo);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Guests do not have active listings",
+                            Toast.LENGTH_LONG).show();
                 }
 
         }
     }
-
 
 
     /**
@@ -173,6 +188,13 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         }
     }
 
+    /**
+     * Sets the text for all edit text and text views holding user profile information
+     *
+     * @param fullName name to be displayed on screen
+     * @param username username to be displayed on screen
+     * @param phone    phone to be displayed on screen
+     */
     private void fillUserInfoFields(String fullName, String username, String phone) {
         FirebaseUser fireBaseUser = firebaseAuth.getCurrentUser();
         currentFullName = fullName;
@@ -195,6 +217,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
      */
     private void getCurrentUserInfo() {
         if (MainActivity.isGuest) {
+            //user is a guest so fill everything to be guest
             fullNameTv.setText("GUEST");
             emailTv.setText("GUEST");
             fullNameEt.setText("GUEST");
@@ -204,11 +227,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             usernameEt.setEnabled(false);
             phoneEt.setEnabled(false);
         } else {
-            //Pulling Data
+            //Pulling User Data
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Log.d("PROFILE", "Reading user info from Database...");
+                    //Store user data in User object
                     User user = snapshot.getValue(User.class);
                     passuser = user.fullName;
                     fillUserInfoFields(user.fullName, user.username, user.phone);
@@ -247,10 +270,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                                 attemptUserInfoUpdate();
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             Toast.makeText(ProfileActivity.this,
-                                "We are experiencing server issues, please try again later",
+                                    "We are experiencing server issues, please try again later",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
@@ -260,6 +284,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
 
     /**
      * Verifies all profile EditText fields are non-empty, and phone number is in a valid format
+     *
      * @return true if no violations are found, false if any violations are found
      */
     private boolean verifyUpdatedFields() {
@@ -353,7 +378,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 }
             });
         }
-        if (currentPhone.equals(newPhone) && currentFullName.equals(newFullName) && currentUsername.equals(newUsername)) {
+        if (currentPhone.equals(newPhone) && currentFullName.equals(newFullName)
+                && currentUsername.equals(newUsername)) {
             Toast.makeText(ProfileActivity.this, "Nothing to Update!",
                     Toast.LENGTH_SHORT).show();
         }
@@ -396,7 +422,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.home:
                 startActivity(new Intent(this, Listing_Activity.class));
                 return true;
@@ -404,7 +430,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 return true;
             case R.id.messages:
                 if (MainActivity.isGuest) {
-                    Toast.makeText(ProfileActivity.this, "This feature is not available for guests!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "This feature is not available for " +
+                            "guests!", Toast.LENGTH_LONG).show();
                     return false;
                 } else {
                     startActivity(new Intent(this, MessagesActivity.class));

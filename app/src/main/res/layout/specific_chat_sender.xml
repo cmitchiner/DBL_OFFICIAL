@@ -22,9 +22,23 @@
             android:paddingLeft="7dp"
             android:paddingRight="40dp"
             android:paddingTop="7dp"
-            android:paddingBottom="7dp"/>
+            android:paddingBottom="7dp"
+            android:visibility="visible"/>
+        <ImageView
+            android:id="@+id/senderImageView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:maxWidth="200dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="200dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/profile"/>
+
         <TextView
             android:id="@+id/timeOfSentMsgTV"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10sp"
@@ -32,7 +46,7 @@
             android:layout_marginLeft="-40dp"
             android:layout_alignBottom="@id/senderTextView"
             android:text="20:00"
-            android:textStyle="italic"
+            android:textStyle="bold"
             android:padding="7dp"
             android:textColor="#434343"/>
 

@@ -1,9 +1,13 @@
 package com.example.messagingapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,8 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.objects.Message;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
@@ -23,6 +33,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     Context context;
     //Array list to hold all messages in a chat
     ArrayList<Message> messages;
+    File localFile = null;
 
     //Constant integers to represent a sent or received message
     final int ITEM_SEND = 1;
@@ -38,10 +49,10 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_SEND) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_chat_me, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.specific_chat_sender, parent, false);
             return new SenderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_chat_other, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.specific_chat_reciever, parent, false);
             return new ReceiverViewHolder(view);
         }
     }
@@ -49,14 +60,48 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
+
         if (holder.getClass() == SenderViewHolder.class) {
             SenderViewHolder viewHolder = (SenderViewHolder) holder;
-            viewHolder.messageText.setText(message.getMessage());
-            viewHolder.timeOfMessage.setText(message.getCurrentTime());
+            if (message.getImage()) {
+                viewHolder.messageText.setVisibility(View.GONE);
+                viewHolder.timeOfMessage.setVisibility(View.GONE);
+                viewHolder.imageView.setVisibility(View.VISIBLE);
+                FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
+                StorageReference storageReference = storage.getReference().child(message.getUniqueID());
+                try {
+                    localFile = File.createTempFile("images", "jpg");
+                } catch (IOException e) {
+                    Log.e("error", Log.getStackTraceString(e));
+                }
+                if (localFile != null) {
+                    storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            viewHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
+                        }});
+                }
+
+            } else {
+                viewHolder.messageText.setVisibility(View.VISIBLE);
+                viewHolder.timeOfMessage.setVisibility(View.VISIBLE);
+                viewHolder.imageView.setVisibility(View.GONE);
+                viewHolder.messageText.setText(message.getMessage());
+                viewHolder.timeOfMessage.setText(message.getCurrentTime());
+            }
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
-            viewHolder.messageText.setText(message.getMessage());
-            viewHolder.timeOfMessage.setText(message.getCurrentTime());
+            if (message.getImage()) {
+                viewHolder.messageText.setVisibility(View.GONE);
+                viewHolder.timeOfMessage.setVisibility(View.GONE);
+                viewHolder.imageView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.messageText.setVisibility(View.VISIBLE);
+                viewHolder.timeOfMessage.setVisibility(View.VISIBLE);
+                viewHolder.imageView.setVisibility(View.GONE);
+                viewHolder.messageText.setText(message.getMessage());
+                viewHolder.timeOfMessage.setText(message.getCurrentTime());
+            }
         }
     }
 
@@ -78,12 +123,14 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     class SenderViewHolder extends RecyclerView.ViewHolder
     {
         TextView messageText, timeOfMessage;
+        ImageView imageView;
 
         public SenderViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            messageText = itemView.findViewById(R.id.text_gchat_message_me);
-            timeOfMessage = itemView.findViewById(R.id.text_gchat_timestamp_me);
+            messageText = itemView.findViewById(R.id.senderTextView);
+            timeOfMessage = itemView.findViewById(R.id.timeOfSentMsgTV);
+            imageView = itemView.findViewById(R.id.senderImageView);
 
         }
     }
@@ -91,12 +138,14 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     class ReceiverViewHolder extends RecyclerView.ViewHolder
     {
         TextView messageText, timeOfMessage;
+        ImageView imageView;
 
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            messageText = itemView.findViewById(R.id.text_gchat_message_other);
-            timeOfMessage = itemView.findViewById(R.id.text_gchat_timestamp_other);
+            messageText = itemView.findViewById(R.id.senderTextView);
+            timeOfMessage = itemView.findViewById(R.id.timeOfSentMsgTV);
+            imageView = itemView.findViewById(R.id.senderImageView);
 
         }
     }

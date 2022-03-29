@@ -9,10 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +30,8 @@ import com.example.messagingapp.adapters.RecycleSpecificChatAdapter;
 import com.example.messagingapp.objects.Message;
 import com.example.messagingapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -32,26 +39,39 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class SpecificChatActivity extends AppCompatActivity implements View.OnClickListener{
+public class SpecificChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /** VARIABLE DECLARATIONS **/
+    /**
+     * VARIABLE DECLARATIONS
+     **/
     //Variables for References to XML
     EditText messageET;
     ImageButton backBtn;
-    ImageView sendMessageBtn;
+    ImageView sendMessageBtn, attachImageBtn;
     CardView sendMessageCardView;
     Toolbar specificChatToolbar;
     TextView receiverNameTV;
     RecyclerView recyclerView;
 
+
     //variable to hold message user intends to send
     private String messageToSend;
+    private File image;
 
     //Variables to store info about sender/reciever
     String receiverName, senderName, receiverUID, senderUID, currentTime;
@@ -86,6 +106,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         specificChatToolbar = findViewById(R.id.toolbarSpecificChat);
         receiverNameTV = findViewById(R.id.receiverNameTV);
         recyclerView = findViewById(R.id.recyclerSpecificChat);
+        attachImageBtn = findViewById(R.id.attachImageBtn);
 
         //setup calender and date format for messages
         calender = Calendar.getInstance();
@@ -97,7 +118,8 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
         //Init firebase auth and databse
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app");
+        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
+                ".firebasedatabase.app");
 
         //Grab sender/reciever name + UID
         senderName = firebaseAuth.getCurrentUser().getDisplayName();
@@ -112,6 +134,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         //Setup On-Click Listeners
         backBtn.setOnClickListener(this);
         sendMessageBtn.setOnClickListener(this);
+        attachImageBtn.setOnClickListener(this);
 
         //Set name of recieving user on top of screen
         receiverNameTV.setText(receiverName);
@@ -149,6 +172,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         super.onStart();
         specificChatAdapter.notifyDataSetChanged();
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -192,49 +216,106 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                     Toast.makeText(getApplicationContext(), "Please enter a message first!",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    sendMessage(messageToSend);
+                    sendMessage(messageToSend, null);
                 }
+                break;
+            case R.id.attachImageBtn:
+                selectImage();
                 break;
         }
     }
 
-    private void sendMessage(String messageToSend) {
+    private void selectImage() {
+        final CharSequence[] options = {"Choose image from gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(SpecificChatActivity.this);
+        builder.setTitle("Add an image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (options[i].equals("Cancel")) {
+                    dialogInterface.dismiss();
+                } else if (options[i].equals("Choose image from gallery")) {
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 2);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2) {
+            Uri selectedImage = data.getData();
+            image = new File(selectedImage.getPath());
+            sendMessage("", selectedImage);
+        }
+    }
+
+    private void storeImage(Uri file, String UID) {
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
+        StorageReference storageReference = storage.getReference();
+        StorageReference storageReference1 = storageReference.child(UID);
+        UploadTask uploadTask = storageReference1.putFile(file);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void sendMessage(String messageToSend, Uri file) {
         //Pull current time for time stamp
         Date date = new Date();
         currentTime = simpleDateFormat.format(calender.getTime());
 
         //Create a message object with correct params
-        Message message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime, true);
-
-        //Post both the sender + receiver rooms to firebase database
-        firebaseDatabase.getReference("Chats")
-                .child(senderRoom)
-                .child("Messages")
-                .push()
-                .setValue(message)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            firebaseDatabase.getReference("Chats")
-                                    .child(receiverRoom)
-                                    .child("Messages")
-                                    .push()
-                                    .setValue(message)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isSuccessful()) {
-                                                Log.d("CHAT", "Failed to post receiver room to DB");
+        Message message;
+        if (file != null) {
+             message = new Message(firebaseAuth.getUid(), date.getTime(), currentTime);
+             //store the message under its messageID
+            storeImage(file, message.getUniqueID());
+        } else {
+            message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime);
+        }
+            //Post both the sender + receiver rooms to firebase database
+            firebaseDatabase.getReference("Chats")
+                    .child(senderRoom)
+                    .child("Messages")
+                    .push()
+                    .setValue(message)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                firebaseDatabase.getReference("Chats")
+                                        .child(receiverRoom)
+                                        .child("Messages")
+                                        .push()
+                                        .setValue(message)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.d("CHAT", "Failed to post receiver room to DB");
+                                                }
                                             }
-                                        }
-                                    });
-                        } else {
-                            Log.d("CHAT", "Failed to post sender room to DB");
+                                        });
+                            } else {
+                                Log.d("CHAT", "Failed to post sender room to DB");
+                            }
                         }
-                    }
-                });
-        //Clear text field so they can send another message
-        messageET.setText(null);
+                    });
+            //Clear text field so they can send another message
+            messageET.setText(null);
     }
 }

@@ -263,7 +263,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     }
 
     private void getData(){
-        int rowNum = 55;
+        int rowNum = 150;
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
         apiAccess = retrofit.create(ApiAccess.class);

@@ -1,5 +1,11 @@
 package com.example.messagingapp.objects;
 
+import android.net.Uri;
+
+import java.io.File;
+import java.net.URI;
+import java.util.UUID;
+
 public class Message {
 
 
@@ -7,26 +13,54 @@ public class Message {
     String senderID;
     long timestamp;
     String currentTime;
-    Boolean isNew;
+    String uniqueID;
+    //Boolean isNew;
+    Boolean isImage;
 
     public Message() {
     }
 
-    public Message(String message, String senderID, long timestamp, String currentTime, boolean isNew) {
+
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
+    }
+
+    public Message(String message, String senderID, long timestamp, String currentTime) {
         this.message = message;
         this.senderID = senderID;
         this.timestamp = timestamp;
         this.currentTime = currentTime;
-        this.isNew = isNew;
+        //this.isNew = isNew;
+        this.isImage = false;
+        this.uniqueID = UUID.randomUUID().toString();
+    }
+    public Message( String senderID, long timestamp, String currentTime) {
+        this.senderID = senderID;
+        this.timestamp = timestamp;
+        this.currentTime = currentTime;
+        //this.isNew = isNew;
+        this.isImage = true;
+        this.uniqueID = UUID.randomUUID().toString();
     }
 
-    public Boolean getIsNew() {
-        return isNew;
+    public Boolean getImage() {
+        return isImage;
     }
 
-    public void setIsNew(Boolean aNew) {
-        isNew = aNew;
+    public void setImage(Boolean image) {
+        isImage = image;
     }
+//    public Boolean getIsNew() {
+//        return isNew;
+//    }
+//
+//    public void setIsNew(Boolean aNew) {
+//        isNew = aNew;
+//    }
     public String getMessage() {
         return message;
     }

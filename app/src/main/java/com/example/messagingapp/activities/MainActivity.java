@@ -62,8 +62,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Variables for references to activity_main.xml
     private Button loginBtn, googleSignInButton, guestBtn, facebookBtn, microsoftBtn;
@@ -85,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private double longitude;
 
 
-    /** onCreate() is a method that runs before a user see's a page
+    /**
+     * onCreate() is a method that runs before a user see's a page
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Check if a user is already signed in
         checkUser();
 
-        //checks if it is the first time opening the app
+        //Checks if it is the first time user is opening the app
         firstTimeSetup();
     }
 
@@ -148,11 +148,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registerTv:
-                //Start the register new account activity
+                //Register new user, start register process
                 startActivity(new Intent(this, RegisterActivity.class));
                 break;
             case R.id.btnGoogle:
-                //begin the google sign in process
+                //Google sign in, start google login process
                 Log.d(TAG, "onClick: begin Google SignIn");
                 Intent intent = googleSignInClient.getSignInIntent();
                 startActivityForResult(intent, RC_SIGN_IN);
@@ -166,15 +166,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, ForgotPassActivity.class));
                 break;
             case R.id.btnGuest:
+                //Guest login, start profile activity
                 isGuest = true;
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
             case R.id.btnFacebook:
+                //Facebook login, start facebook login process
                 Intent intentFacebook = new Intent(MainActivity.this, FacebookAuthActivity.class);
                 intentFacebook.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intentFacebook);
                 break;
             case R.id.btnMicrosoft:
+                //Microsoft login, start microsoft login process
                 isGuest = false;
                 signInWithMicrosoft();
                 break;
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Checks if a user is already logged in, and automatically redirects to profile activity
      *
      * @post if @code{firebaseUser != null} then move them to the profile activity
-     *       if @code{firebaseUser == null} do nothing
+     * if @code{firebaseUser == null} do nothing
      */
     private void checkUser() {
         //if user is already signed in then go to profile activity
@@ -209,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (firstTime) {
             if (checkPermission()) {
                 return;
-            }
-            else {
+            } else {
                 askPermissionLoc();
             }
             firstTime = false;
@@ -224,8 +226,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public boolean checkPermission() {
 
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
@@ -240,11 +244,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Checks if location is turned on by device
      */
-    public boolean locationEnabled(){
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    public boolean locationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
+    //TODO @Wouter: add comment for what this does
     private LocationCallback mLocationCallback = new LocationCallback() {
 
         @Override
@@ -265,7 +271,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // setting LocationRequest
         // on FusedLocationClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
+                Looper.myLooper());
     }
 
     /**
@@ -290,14 +297,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
-        }
-        else {
+        } else {
             askPermissionLoc();
         }
         return location;
@@ -307,8 +312,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * loginUser(), logs a user in using the email + password specified in the EditText fields
      *
      * @modifies @code{firebaseAuth.getCurrentUser()}
-     * @post  if SUCCESS @code{firebaseAuth.getCurrentUser() != NULL}
-     *        if FAIL @code{firebaseAuth.getCurrentUser() == NULL}
+     * @post if SUCCESS @code{firebaseAuth.getCurrentUser() != NULL}
+     * if FAIL @code{firebaseAuth.getCurrentUser() == NULL}
      */
     public void loginWithEmailPass() {
         //Store Email & Password written in EditText fields
@@ -317,46 +322,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (verifyEmailPassFields(email, password)) {
             //Begin authentication of information with firebase
-            firebaseAuth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //Login SUCCESS: Redirect to Profile
-                            if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                                isGuest = false;
-                                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                            } else {
-                                firebaseAuth.signOut();
-                                Toast.makeText(MainActivity.this, "You must verify your email before logging in!", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            //Login FAIL: Alert user of issue
-                            task.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(MainActivity.this, e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                //Login SUCCESS: Redirect to Profile
+                                if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                    isGuest = false;
+                                    startActivity(new Intent(MainActivity.this,
+                                            ProfileActivity.class));
+                                } else {
+                                    firebaseAuth.signOut();
+                                    Toast.makeText(MainActivity.this, "You must verify your email" +
+                                            " before logging in!", Toast.LENGTH_LONG).show();
                                 }
-                            });
+                            } else {
+                                //Login FAIL: Alert user of issue
+                                task.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(MainActivity.this, e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
+                    });
         }
     }
 
     /**
-     *  Verifies that Email + Pass fields are not empty, and the email is in a valid format
+     * Verifies that Email + Pass fields are not empty, and the email is in a valid format
      *
-     * @param email a string containing the user inputted email
+     * @param email    a string containing the user inputted email
      * @param password a string containing the user inputted password
      * @modifies none
-     * @post  result=TRUE @code{!email.isEmpty() && !password.isEmpty() &&
-     *                          Patterns.EMAIL_ADDRESS.matcher(email).matches()}
-     *        result=FALSE @code{email.isEmpty() || !password.isEmpty() ||
-     *                          !Patterns.EMAIL_ADDRESS.matcher(email).matches()}
+     * @post result=TRUE @code{!email.isEmpty() && !password.isEmpty() &&
+     * Patterns.EMAIL_ADDRESS.matcher(email).matches()}
+     * result=FALSE @code{email.isEmpty() || !password.isEmpty() ||
+     * !Patterns.EMAIL_ADDRESS.matcher(email).matches()}
      */
-    public boolean verifyEmailPassFields(String email, String password){
+    public boolean verifyEmailPassFields(String email, String password) {
         //Verify constraints for email and password
         if (email.isEmpty()) {
             emailEt.setError("Email is required!");
@@ -377,12 +384,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    /**
+     * A core function for google sign in, provided by firebase
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Result returned form launching Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN){
+        if (requestCode == RC_SIGN_IN) {
             Log.d(TAG, "onActivityResult: Google SignIn intent result");
             Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -390,15 +403,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 GoogleSignInAccount account = accountTask.getResult(ApiException.class);
                 firebaseAuthWithGoogleAccount(account);
 
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 //Failed SignIn
                 Log.d(TAG, "onActivityResult: " + e.getMessage());
             }
         }
     }
 
-
+    /**
+     * A core function for google sign in, provided by firebase
+     * @param account
+     */
     private void firebaseAuthWithGoogleAccount(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
@@ -415,19 +430,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String uid = firebaseUser.getUid();
                         String email = firebaseUser.getEmail();
 
-                        Log.d(TAG, "onSuccess: Email: " + email);
-                        Log.d(TAG, "onSuccess: UID: " + uid);
                         //Check if user is new or existing
-                        if (authResult.getAdditionalUserInfo().isNewUser()){
+                        if (authResult.getAdditionalUserInfo().isNewUser()) {
                             //User Is New - Account Creation
-                            addAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
-                            Log.d(TAG, "onSuccess: Account Created...\n" + email);
-
+                            addAcctToDB(firebaseUser.getDisplayName(),
+                                    firebaseUser.getUid().toString(), " ", email);
+                            //Inform user
                             Toast.makeText(MainActivity.this, "Account Created...\n"
                                     + email, Toast.LENGTH_SHORT).show();
                         } else {
                             //existing user - Logged In
                             Log.d(TAG, "onSuccess: Existing User...\n" + email);
+                            //Inform user
                             Toast.makeText(MainActivity.this, "Existing User...\n"
                                     + email, Toast.LENGTH_SHORT).show();
                         }
@@ -445,13 +459,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * If an account is created via google sign in, we still need a reference to them in the DB, thus
+     * If an account is created via google sign in, we still need a reference to them in the DB,
+     * thus
      * this method does such.
      */
-    private void addAcctToDB(String fullName, String username, String phone, String email ) {
+    private void addAcctToDB(String fullName, String username, String phone, String email) {
 
-        User user = new User (fullName, username, phone, email);
-        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+        User user = new User(fullName, username, phone, email);
+        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
+                ".firebasedatabase.app").getReference("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -474,12 +490,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Begins the microsoft login process
+     */
     private void signInWithMicrosoft() {
+        //Create OAuth variable for firebase to connect with microsoft
         OAuthProvider.Builder provider = OAuthProvider.newBuilder("microsoft.com");
 
-        Task < AuthResult > pendingResultTask = firebaseAuth.getPendingAuthResult();
+        //Provided code from Firebase
+        Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
         if (pendingResultTask != null) {
-            pendingResultTask.addOnSuccessListener(new OnSuccessListener < AuthResult >
+            pendingResultTask.addOnSuccessListener(new OnSuccessListener<AuthResult>
                     () {
                 @Override
                 public void onSuccess(AuthResult authResult) {
@@ -494,20 +515,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
         } else {
             firebaseAuth.startActivityForSignInWithProvider(MainActivity.this, provider.build())
-                    .addOnSuccessListener(new OnSuccessListener < AuthResult > () {
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             isGuest = false;
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                            //Check if a user is new
                             if (authResult.getAdditionalUserInfo().isNewUser()) {
-                                addAcctToDB(" ", firebaseUser.getUid(), "0", firebaseUser.getEmail());
+                                //Add account to firebase realtime database
+                                addAcctToDB(" ", firebaseUser.getUid(), "0",
+                                        firebaseUser.getEmail());
                             }
-
+                            //Redirect to profile page
                             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    //Login with microsoft failed
                     Log.e("FAIL", "ERROR LOGIN: " + e);
                 }
             });
