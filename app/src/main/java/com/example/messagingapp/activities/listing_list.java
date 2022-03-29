@@ -144,7 +144,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             Log.d("bundle", String.valueOf(getArguments()));
             personalType = getArguments().getString("title");
             String[] parts = personalType.split(":");
-            titleView.setText(String.valueOf(parts[0]));
+            titleView.setText(String.valueOf(parts[0]+"'s Offers"));
             userId = parts[1];
             if(!userId.toString().equals("no")){
                 filtDict.put("author", userId);

@@ -1,5 +1,6 @@
 package com.example.messagingapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.example.messagingapp.objects.User;
 import com.google.firebase.auth.FirebaseAuth;
 //import com.squareup.picasso.Picasso;
 
@@ -30,6 +32,8 @@ public class listing_opened extends Fragment {
     String currentUserId;
     String authorId;
     Button completeListing;
+    Button messageButton;
+    String usernameAuthor;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,6 +98,7 @@ public class listing_opened extends Fragment {
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
         completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
+        messageButton = (Button) view.findViewById(R.id.message_button);
 
         //image.setImageDrawable();
         title.setText(listing.getTitle());
@@ -115,6 +120,21 @@ public class listing_opened extends Fragment {
         if(currentUserId == authorId ){
             completeListing.setVisibility(View.VISIBLE);
         }
+
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
+                Bundle send = new Bundle();
+                String user = usernameAuthor;
+                String authorrid = listing.getUser().toString();
+                String usidCombo = user+":"+authorrid;
+                send.putString(usidCombo, "title");
+                intent.putExtras(send);
+                startActivity(intent);
+
+            }
+        });
 
 
     }

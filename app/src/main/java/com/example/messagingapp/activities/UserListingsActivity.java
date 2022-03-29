@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.example.messagingapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -21,9 +22,10 @@ import java.util.ArrayList;
 
 public class UserListingsActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     BottomNavigationView bottomNavigationView;
+    String person;
     String userId;
     String titleTypeInfo;
-    String person;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +36,20 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
 
-        /*
+
         Bundle received  = getIntent().getExtras();
         if(received != null){
-           String parts[] = received.getString("");
-           userId = parts[0];
-           person = parts[1];
+            String nakdasd =received.getString("title");
+            String parts[] = received.getString("title").split(":");
+            Log.d("filter", "userlistingactivity: " + String.valueOf(nakdasd));
+           person = parts[0];
+           userId = parts[1];
         }
 
-         */
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         Log.d("filter", userId);
-        String titleTypeInfo = person + "'s Offers:" + userId;
+        String titleTypeInfo = person + ":" + userId;
 
         listing_list listing_list = new listing_list();
         FragmentManager fragmentManager = getSupportFragmentManager();

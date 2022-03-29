@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
     private CardView cardAddListing;
     private BottomNavigationView bottomNavigationView;
     private RelativeLayout activeListings;
+    private String passuser;
 
     //Firebase variables
     private FirebaseAuth firebaseAuth;
@@ -139,7 +140,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 //Change to !Guest
             case R.id.activeListingsOpen:
                 if (!MainActivity.isGuest){
-                    startActivity(new Intent(this, UserListingsActivity.class));
+                    //Bundle send = new Bundle();
+                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    String usidCombo = passuser+":"+id;
+                    Log.d("filter", usidCombo);
+                    //send.putString(usidCombo, "title");
+                    Intent intent = new Intent(this, UserListingsActivity.class);
+                    intent.putExtra("title", usidCombo);
+                    startActivity(intent);;
                 } else {
                     Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
                 }
@@ -202,7 +210,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Log.d("PROFILE", "Reading user info from Database...");
                     User user = snapshot.getValue(User.class);
+                    passuser = user.username;
                     fillUserInfoFields(user.fullName, user.username, user.phone);
+                    String passuser = user.username;
                 }
 
                 @Override
