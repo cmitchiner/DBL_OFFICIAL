@@ -25,7 +25,9 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></TextView>
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
 
         <ImageButton
             android:id="@+id/add_offer_butt"
@@ -35,7 +37,7 @@
             android:layout_marginRight="25dp"
             android:background="@drawable/bg_layout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
             app:srcCompat="@drawable/ic_add"
             app:tint="@color/white" />
 
