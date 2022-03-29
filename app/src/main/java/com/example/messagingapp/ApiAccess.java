@@ -71,6 +71,8 @@ public interface ApiAccess {
 
     );
 
+    @PATCH("/updatelisting")
+    Call<ResponseBody> updateListing(@Body RequestBody updates);
 
     @Multipart
     @POST("/addimg")
