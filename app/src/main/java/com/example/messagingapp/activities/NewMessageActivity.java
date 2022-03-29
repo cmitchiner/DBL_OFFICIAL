@@ -66,7 +66,7 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
             Log.d("filter", "userlistingactivity: " + String.valueOf(nakdasd));
             String person = parts[0];
             String userId = parts[1];
-            startChatWithUser(userId, person);
+            checkUserExists(person);
         }
     }
 

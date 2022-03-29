@@ -169,7 +169,7 @@ public class listing_opened extends Fragment {
                 User user = snapshot.getValue(User.class);
                 ratingBar.setRating(user.rating);
                 author.setText(user.fullName);
-                usernameAuthor = user.fullName;
+                usernameAuthor = user.username;
             }
 
             @Override
