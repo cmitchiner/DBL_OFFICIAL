@@ -41,6 +41,7 @@
 
 
         <LinearLayout
+            android:id="@+id/filterLinlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="3"
@@ -91,15 +92,24 @@
         </LinearLayout>
 
 
+        <Button
+            android:id="@+id/locationFiltButt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Filter By Location"
+            app:layout_constraintTop_toBottomOf="@id/filterLinlayout"
+            app:layout_constraintBottom_toTopOf="@id/bubble_scroll_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <HorizontalScrollView
             android:id="@+id/bubble_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/listingListTitle"
             app:layout_constraintBottom_toTopOf="@id/offerContainer"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/locationFiltButt">
 
             <LinearLayout
                 android:id="@+id/filt_bubble_cont"

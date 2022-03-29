@@ -33,8 +33,8 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
 
-
-        String userId = "user1";
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d("filter", userId);
         String titleTypeInfo = "My Offers:" + userId;
 
         listing_list listing_list = new listing_list();

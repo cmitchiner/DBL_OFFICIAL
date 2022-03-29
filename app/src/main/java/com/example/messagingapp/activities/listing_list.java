@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -75,6 +76,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     String personalType;
     String userId;
     Map<String, String> filtDict;
+    Button locationbutt;
 
     ApiAccess apiAccess;
 
@@ -237,6 +239,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         spinner = view.findViewById(R.id.filterCol);
         filterText = view.findViewById(R.id.filterInput);
         titleView = view.findViewById(R.id.listingListTitle);
+        locationbutt = view.findViewById(R.id.locationFiltButt);
         filtDict = new HashMap<>();
         selectListener = new SelectListener() {
             @Override
@@ -244,6 +247,13 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 rowOnClick(listFacade);
             }
         };
+
+        locationbutt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private void getData(){

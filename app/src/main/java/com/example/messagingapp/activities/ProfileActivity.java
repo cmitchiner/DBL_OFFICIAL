@@ -138,7 +138,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 break;
                 //Change to !Guest
             case R.id.activeListingsOpen:
-                if (MainActivity.isGuest){
+                if (!MainActivity.isGuest){
                     startActivity(new Intent(this, UserListingsActivity.class));
                 } else {
                     Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
