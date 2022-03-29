@@ -96,6 +96,7 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_layout"
                 android:drawableEnd="@drawable/ic_arrow"
+                android:drawableTint="@color/white"
                 android:elevation="5dp"
                 android:gravity="center_vertical"
                 android:padding="12dp"
@@ -123,11 +124,9 @@
                     android:id="@+id/warningCourseName"
                     android:layout_width="0dp"
                     android:layout_weight=".50"
-                    android:layout_marginRight="0dp"
                     android:layout_height="wrap_content"
                     android:text="Add a course name"
                     android:textColor="@color/red"
-                    android:layout_gravity="right"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -326,6 +325,15 @@
 
 <!--            </RelativeLayout>-->
 
+            <TextView
+                android:id="@+id/warningPicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Add a picture"
+                android:textColor="@color/red"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -345,7 +353,7 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="130dp"
+                    android:layout_marginStart="110dp"
                     android:background="@drawable/bg_layout"
                     android:elevation="5dp"
                     app:srcCompat="@drawable/ic_add"
@@ -397,7 +405,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
 
                 <TextView
                     android:id="@+id/txtPrice"
@@ -412,7 +421,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="100dp"
-                    android:layout_marginBottom="16dp"
+
                     app:boxBackgroundColor="@android:color/transparent"
                     app:boxCornerRadiusBottomEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -431,24 +440,33 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center">-->
 
-                <TextView
-                    android:id="@+id/warningLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add your location"
-                    android:textColor="@color/red"
-                    android:visibility="gone"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/warningLocation"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Add your location"-->
+<!--                    android:textColor="@color/red"-->
+<!--                    android:visibility="gone"/>-->
 
-            </RelativeLayout>
+<!--            </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_check"
+                    android:id="@+id/imgViewLocation"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone"
+                    app:tint="@color/colorPrimary" />
 
                 <Button
                     android:id="@+id/addLocationListButt"
@@ -456,7 +474,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/btn_bg"
-                    android:text="Add location to listing"></Button>
+                    android:text="Add location to listing"/>
             </RelativeLayout>
 
             <RelativeLayout

@@ -1,5 +1,6 @@
 package com.example.messagingapp.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -7,9 +8,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -29,10 +32,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.example.messagingapp.ApiAccess;
@@ -65,16 +71,16 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private EditText edtTxtTitle, edtTxtDescription, edtTxtCourseCode, edtTxtCourseName, edtTxtPrice, edtTxtISBN;
-    private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN, warningLocation;
+    private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN, warningPicture;
     private Button btnPublish;
     private ImageButton btnUploadPicture;
-    private ImageView imgView;
+    private ImageView imgView, imgViewLcation;
     private RadioButton rbBidding, rbSetPrice, rbNotes, rbSummary, rbBook;
     private RelativeLayout parent;
     private ArrayList<String> arrayList;
     private Dialog dialog;
     private TextInputLayout txtISBN;
-    private boolean ISBN = false, locationGiven = false;
+    private boolean ISBN = false, bidding = false, pictureUploaded = false;
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
@@ -97,7 +103,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         //Init On-Click Listeners
         btnPublish.setOnClickListener(this);
         btnUploadPicture.setOnClickListener(this);
-//        btnUploadDocument.setOnClickListener(this);
         rbBidding.setOnClickListener(this);
         rbSetPrice.setOnClickListener(this);
         textview.setOnClickListener(this);
@@ -128,19 +133,19 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             case R.id.btnUploadPicture:
                 selectImage();
                 break;
-//            case R.id.btnUploadDocument:
-//                chooseFile();
-//                break;
             case R.id.rbBidding:
                 txtPrice.setText("Starting price: ");
+                bidding = true;
                 break;
             case R.id.rbSetPrice:
                 txtPrice.setText("Set price: ");
+                bidding = false;
                 break;
             case R.id.testView:
                 searchableSpinner();
                 break;
             case R.id.rbBook:
+                // Make sure the user can fill in an ISBN, when 'Book' is selected
                 txtISBN.setVisibility(View.VISIBLE);
                 ISBN = true;
                 type = "Book";
@@ -157,23 +162,26 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.addLocationListButt:
                 getLocation();
-                locationGiven = true;
+                setLocationButt.setVisibility(View.GONE);
+                imgViewLcation.setVisibility(View.VISIBLE);
                 break;
-
         }
     }
 
-
+    /**
+     * Creates a dialog of a spinner with a searchbar
+     */
     private void searchableSpinner() {
-        dialog=new Dialog(AddListingActivity.this);
+        dialog = new Dialog(AddListingActivity.this);
         dialog.setContentView(R.layout.dialog_searchable_spinner);
         dialog.getWindow().setLayout(1000,1500);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
-        EditText editText=dialog.findViewById(R.id.edit_text);
-        ListView listView=dialog.findViewById(R.id.list_view);
-        ArrayAdapter<String> adapter=new ArrayAdapter<>(AddListingActivity.this, android.R.layout.simple_list_item_1,arrayList);
+        EditText editText = dialog.findViewById(R.id.edit_text);
+        ListView listView = dialog.findViewById(R.id.list_view);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(AddListingActivity.this, R.layout.simple_list_item, arrayList);
         listView.setAdapter(adapter);
+        // Code for the searchbar
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -203,45 +211,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         });
 
     }
-
-//        private void chooseFile() {
-//            //System.out.println(type2);
-//            Intent intent = new Intent();
-//            //intent.setType("application/pdf");
-//            intent.setType("application/pdf");
-//            intent.setAction(Intent.ACTION_GET_CONTENT);
-//            startActivityForResult(intent, 3 );
-//        }
-
-//        public String getStringPdf (Uri filepath){
-//            InputStream inputStream = null;
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            try {
-//                inputStream =  getContentResolver().openInputStream(filepath);
-//
-//                byte[] buffer = new byte[1024];
-//                byteArrayOutputStream = new ByteArrayOutputStream();
-//
-//                int bytesRead;
-//                while ((bytesRead = inputStream.read(buffer)) != -1) {
-//                    byteArrayOutputStream.write(buffer, 0, bytesRead);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                if (inputStream != null) {
-//                    try {
-//                        inputStream.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            byte[] pdfByteArray = byteArrayOutputStream.toByteArray();
-//
-//            return Base64.encodeToString(pdfByteArray, Base64.DEFAULT);
-//        }
 
         private void selectImage() {
             final CharSequence[] options = {"Take photo", "Choose image from gallery", "Cancel"};
@@ -274,11 +243,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode==2) {
+                // Image chosen from gallery
                 Uri selectedImage = data.getData();
                 imgView.setVisibility(View.VISIBLE);
                 imgView.setImageURI(selectedImage);
                 image = new File(selectedImage.getPath());
             } else if (requestCode==1) {
+                // Image taken while using app
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 new Thread(new Runnable() {
@@ -318,18 +289,17 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
                 }).start();
-
+                pictureUploaded = true;
                 imgView.setVisibility(View.VISIBLE);
                 imgView.setImageBitmap(imageBitmap);
             }
-//            else if (requestCode==3) {
-//                Uri filePath = data.getData();
-//                getStringPdf(filePath);
-//                Toast.makeText(this, "File chosen", Toast.LENGTH_SHORT).show();
-//            }
         }
 
-        private void initPublish() {
+    /**
+     * Sending the listing to the database when the publish button is clicked and if all required fields are filled in
+     */
+
+    private void initPublish() {
             Log.d(TAG, "initPublish: started");
 
                 Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
@@ -358,11 +328,20 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
                         int priceInt = (int) price;
                         long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-                        Listing listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), ISBNlong, null,
-                                "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        Listing listing;
+                        if (ISBN) {
+                            listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
+                                    ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        }else {
+                            listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
+                                    "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        }
+
                         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
                         ApiAccess apiAccess = retrofit.create(ApiAccess.class);
-                        Call<ResponseBody> call2 = apiAccess.addNewListing(listing);
+                        Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
                         call2.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -452,12 +431,16 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(this, "ISBN should only contain numbers", Toast.LENGTH_SHORT).show();
                     i = false;
                 }
+                if (edtTxtISBN.length()!=13) {
+                    Toast.makeText(this, "ISBN should contain 13 numbers", Toast.LENGTH_SHORT).show();
+                    i = false;
+                }
             }
-            if (!locationGiven) {
-                warningLocation.setVisibility(View.VISIBLE);
-                i =false;
+            if (!pictureUploaded) {
+                warningPicture.setVisibility(View.VISIBLE);
+                i = false;
             }else {
-                warningLocation.setVisibility(View.GONE);
+                warningPicture.setVisibility(View.GONE);
             }
             return i;
         }
@@ -465,6 +448,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void getLocation() {
         Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
     }
+
 
     /**
      * Inits all references to Activity_Add_Listing.xml and pulls the arraylist of university
@@ -479,7 +463,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             edtTxtPrice = findViewById(R.id.edtTxtPrice);
 
             btnPublish = findViewById(R.id.btnPublish);
-//            btnUploadDocument = findViewById(R.id.btnUploadDocument);
             btnUploadPicture = findViewById(R.id.btnUploadPicture);
 
             txtPrice = findViewById(R.id.txtPrice);
@@ -489,7 +472,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningUniversity = findViewById(R.id.warningUniversity);
             warningDescription = findViewById(R.id.warningDescription);
             warningISBN = findViewById(R.id.warningISBN);
-            warningLocation = findViewById(R.id.warningLocation);
+            warningPicture = findViewById(R.id.warningPicture);
             textview = findViewById(R.id.testView);
             txtISBN = findViewById(R.id.txtISBN);
 
@@ -501,6 +484,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
+            imgViewLcation = findViewById(R.id.imgViewLocation);
 
             setLocationButt = findViewById(R.id.addLocationListButt);
 
