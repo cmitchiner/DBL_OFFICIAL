@@ -96,7 +96,10 @@ public class ChatListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.chatContainer);
 
         //Query database for any existing conversations
-        Query query = firebaseFirestore.collection("Users").whereNotEqualTo("uid", firebaseAuth.getUid());
+        Query query = firebaseFirestore
+                .collection("Users")
+                .document(firebaseAuth.getCurrentUser().getUid())
+                .collection("ReceivingUsers");
 
         //Set the query for our recycler
         FirestoreRecyclerOptions<firebaseChatModel> allUsernames
@@ -109,13 +112,14 @@ public class ChatListFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull NoteViewHolder holder, int position, @NonNull firebaseChatModel model) {
                 //Set name of user
+                String usernameToChatWth = model.getName();
                 holder.usernameToChat.setText(model.getName());
                 //Set on click listener to redirect to specific chat when clicked
                 holder.currentCard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), SpecificChatActivity.class);
-                        intent.putExtra("name", model.getName());
+                        intent.putExtra("name", usernameToChatWth);
                         intent.putExtra("receiverUID", model.getUid());
                         startActivity(intent);
                     }
@@ -146,7 +150,6 @@ public class ChatListFragment extends Fragment {
             super(itemView);
             usernameToChat = itemView.findViewById(R.id.chat_row_name);
             currentCard = itemView.findViewById(R.id.chat_list_card_view);
-
         }
     }
     @Override

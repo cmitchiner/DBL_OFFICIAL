@@ -16,6 +16,9 @@
         android:theme="@style/Theme.MessagingApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.NewMessageActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.SpecificChatActivity"
             android:exported="false" />
         <activity

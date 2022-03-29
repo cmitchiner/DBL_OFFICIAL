@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,7 +66,6 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
     //Adapter + Linear layout for Recycler
     RecycleSpecificChatAdapter specificChatAdapter;
-    LinearLayoutManager linearLayoutManager;
 
     //Additional Variables
     Intent intent;
@@ -99,8 +99,8 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         //Grab sender/reciever name + UID
         senderName = firebaseAuth.getCurrentUser().getDisplayName();
         senderUID = firebaseAuth.getUid();
-        receiverUID = intent.getStringExtra("receiverUID");
-        receiverName = intent.getStringExtra("name");
+        receiverUID = getIntent().getStringExtra("receiverUID");
+        receiverName = getIntent().getStringExtra("name");
 
         //Create strings to represent chat rooms
         senderRoom = senderUID + receiverUID;
@@ -117,7 +117,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         messages = new ArrayList<>();
 
         //Init Recycler stuff
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         specificChatAdapter = new RecycleSpecificChatAdapter(SpecificChatActivity.this, messages);
         linearLayoutManager.setStackFromEnd(true); //This makes sure the older messages are at the top
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -132,6 +132,13 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         pullMessagesFromDatabase();
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        startActivity(new Intent(this, MessagesActivity.class));
     }
 
     @Override
@@ -171,6 +178,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         switch (view.getId()) {
             case R.id.backButtonSpecificChat:
                 //finish activity and go back
+                finish();
                 startActivity(new Intent(this, MessagesActivity.class));
                 break;
             case R.id.sendMessageBtn:
