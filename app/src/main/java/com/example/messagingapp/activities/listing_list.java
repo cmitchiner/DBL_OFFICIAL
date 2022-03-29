@@ -60,7 +60,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class listing_list extends Fragment implements AdapterView.OnItemSelectedListener {
     int count = 0;
-    private ArrayList<String> filtArray = new ArrayList<>();
     ArrayList<ListFacade> list = new ArrayList<>();
     RecyclerView recycler;
     RecycleOfferAdapter recycleOfferAdapter;

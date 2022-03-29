@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.google.firebase.auth.FirebaseAuth;
 //import com.squareup.picasso.Picasso;
 
 /**
@@ -25,6 +27,9 @@ import com.example.messagingapp.model.Listing;
 public class listing_opened extends Fragment {
     ListFacade listFacade;
     Listing listing;
+    String currentUserId;
+    String authorId;
+    Button completeListing;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +81,7 @@ public class listing_opened extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         listing = getArguments().getParcelable("listingFacade");
 
         ImageView image = (ImageView) view.findViewById(R.id.list_image);
@@ -87,6 +93,8 @@ public class listing_opened extends Fragment {
         TextView price = (TextView) view.findViewById(R.id.list_price);
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
+        completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
+
         //image.setImageDrawable();
         title.setText(listing.getTitle());
         author.setText(listing.getUser());
@@ -96,12 +104,16 @@ public class listing_opened extends Fragment {
         double priceEuro = listing.getPrice();
         price.setText(String.valueOf( priceEuro/100 + "€"));
         //rating.setText(getString(listing.getRating()));
-        Log.d("isbn", String.valueOf(listing.getIsbn()));
+
         if(!String.valueOf(listing.getIsbn()).equals("0")){
             isbn.setVisibility(View.VISIBLE);
             isbn.setText(String.valueOf(listing.getIsbn()));
         } else{
             isbn.setVisibility(View.INVISIBLE);
+        }
+
+        if(currentUserId == authorId ){
+            completeListing.setVisibility(View.VISIBLE);
         }
 
 
