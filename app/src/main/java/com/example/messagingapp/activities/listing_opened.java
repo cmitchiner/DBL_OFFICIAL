@@ -1,5 +1,6 @@
 package com.example.messagingapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,6 +88,7 @@ public class listing_opened extends Fragment {
         TextView price = (TextView) view.findViewById(R.id.list_price);
         TextView rating = (TextView) view.findViewById(R.id.list_rating);
         TextView isbn  = (TextView) view.findViewById(R.id.isbn);
+        ImageView backBtn = view.findViewById(R.id.backBtn);
         //image.setImageDrawable();
         title.setText(listing.getTitle());
         author.setText(listing.getUser());
@@ -103,6 +105,13 @@ public class listing_opened extends Fragment {
         } else{
             isbn.setVisibility(View.INVISIBLE);
         }
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), Listing_Activity.class));
+            }
+        });
 
 
     }
