@@ -130,6 +130,12 @@ public class listing_opened extends Fragment {
         messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String authIdCombo;
+                authIdCombo = usernameAuthor+":"+listing.getUser().toString();
+                Intent intent = new Intent(getActivity(), NewMessageActivity.class);
+                intent.putExtra("contact", authIdCombo);
+                startActivity(intent);
+
 
             }
         });
@@ -163,7 +169,7 @@ public class listing_opened extends Fragment {
                 User user = snapshot.getValue(User.class);
                 ratingBar.setRating(user.rating);
                 author.setText(user.fullName);
-                usernameAuthor = user.username;
+                usernameAuthor = user.fullName;
             }
 
             @Override
@@ -173,5 +179,4 @@ public class listing_opened extends Fragment {
         });
 
     }
-
 }

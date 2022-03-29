@@ -210,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Log.d("PROFILE", "Reading user info from Database...");
                     User user = snapshot.getValue(User.class);
-                    passuser = user.username;
+                    passuser = user.fullName;
                     fillUserInfoFields(user.fullName, user.username, user.phone);
                     String passuser = user.username;
                 }
