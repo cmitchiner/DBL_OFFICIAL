@@ -45,9 +45,6 @@ public interface ApiAccess {
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
                                      );
 
-    //@POST("/pushFiltDict")
-    //Call<ResponseBody> (@FieldMap Map<String, String> filtDict);
-
     //@GET("/listingsFiltered")
     //Call<>
 
@@ -76,4 +73,5 @@ public interface ApiAccess {
     @Multipart
     @POST("/img/test.png")
     Observable<ResponseBody> uploadImg(@Part MultipartBody.Part image);
+
 }

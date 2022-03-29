@@ -149,6 +149,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             if(!userId.toString().equals("no")){
                 filtDict.put("author", userId);
             }
+            filtDict.put("author", "");
             filtDict.put("title", "");
             filtDict.put("type", "");
             filtDict.put("university", "");

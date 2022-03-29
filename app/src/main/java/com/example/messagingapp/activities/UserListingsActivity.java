@@ -23,6 +23,7 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
     BottomNavigationView bottomNavigationView;
     String userId;
     String titleTypeInfo;
+    String person;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +34,19 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
 
+        /*
+        Bundle received  = getIntent().getExtras();
+        if(received != null){
+           String parts[] = received.getString("");
+           userId = parts[0];
+           person = parts[1];
+        }
+
+         */
+
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Log.d("filter", userId);
-        String titleTypeInfo = "My Offers:" + userId;
+        String titleTypeInfo = person + "'s Offers:" + userId;
 
         listing_list listing_list = new listing_list();
         FragmentManager fragmentManager = getSupportFragmentManager();
