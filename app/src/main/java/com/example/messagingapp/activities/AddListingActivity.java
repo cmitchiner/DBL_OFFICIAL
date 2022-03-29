@@ -58,6 +58,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Dialog dialog;
     private TextInputLayout txtISBN;
     private boolean ISBN = false;
+    private Button setLocationButt;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -84,6 +85,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbNotes.setOnClickListener(this);
         rbSummary.setOnClickListener(this);
         rbBook.setOnClickListener(this);
+        setLocationButt.setOnClickListener(this);
     }
 
     /**
@@ -121,8 +123,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 txtISBN.setVisibility(View.GONE);
                 ISBN = false;
                 break;
+            case R.id.locationFiltButt:
+                getLocation();
+                break;
+
         }
     }
+
 
     private void searchableSpinner() {
         dialog=new Dialog(AddListingActivity.this);
@@ -320,6 +327,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             return i;
         }
 
+    private void getLocation() {
+    }
+
     /**
      * Inits all references to Activity_Add_Listing.xml and pulls the arraylist of university
      * from strings.xml
@@ -360,6 +370,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             rbBook = findViewById(R.id.rbBook);
             parent = findViewById(R.id.parent);
             imgView = findViewById(R.id.imgView);
+
+            setLocationButt = findViewById(R.id.addLocationListButt);
 
             arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
             Collections.sort(arrayList);
