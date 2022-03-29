@@ -36,8 +36,8 @@ public interface ApiAccess {
     @GET("/listings")
     Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
 
-    @POST("/addlisting")
-    Call<Listing> addNewListing(@Body Listing list);
+    @POST("/updatelisting")
+    Call<ResponseBody> addNewListing(@Body Listing list);
 
     @GET("/listings/{id}")
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
@@ -71,4 +71,5 @@ public interface ApiAccess {
     @Multipart
     @POST("/img/test.png")
     Observable<ResponseBody> uploadImg(@Part MultipartBody.Part image);
+
 }
