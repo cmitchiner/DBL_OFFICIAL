@@ -7,11 +7,13 @@ import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.MessageModel;
 
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -69,7 +71,10 @@ public interface ApiAccess {
 
 
     @Multipart
-    @POST("/img/test.png")
-    Observable<ResponseBody> uploadImg(@Part MultipartBody.Part image);
+    @POST("/addimg")
+    Call<ResponseBody> uploadImg(@Part MultipartBody.Part image, @Query("apiKey") String apiKey);
+//    @FormUrlEncoded
+//    @POST("/addimg")
+//    Call<ResponseBody> uploadImg(@Field("image") File img, @Query("apiKey") String apiKey);
 
 }
