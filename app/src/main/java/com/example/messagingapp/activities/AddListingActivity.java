@@ -94,7 +94,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
-    FusedLocationProviderClient mFusedLocationClient;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -121,7 +120,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbBook.setOnClickListener(this);
         setLocationButt.setOnClickListener(this);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     /**
@@ -164,11 +162,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.rbNotes:
                 txtISBN.setVisibility(View.GONE);
+                warningISBN.setVisibility(View.GONE);
                 ISBN = false;
                 type = "Notes";
                 break;
             case R.id.rbSummary:
                 txtISBN.setVisibility(View.GONE);
+                warningISBN.setVisibility(View.GONE);
                 ISBN = false;
                 type = "Summary";
                 break;
@@ -234,6 +234,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     if (options[i].equals("Cancel")) {
                         dialogInterface.dismiss();
                         //TODO: Fix the bug that when Cancel is pressed, the publish button gives
+                        // This is a bug that Bartjan had, but I don't seem to have it
                     } else if(options[i].equals("Take photo")) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 1);
@@ -455,19 +456,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
     }
 
-    public boolean locationEnabled() {
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
 
 
     /**
