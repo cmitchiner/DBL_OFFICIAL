@@ -32,9 +32,7 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /**
-     * VARIABLES
-     **/
+    /** VARIABLES **/
     //Variables for references to activity_register.xml
     private Button registerBtn;
     private EditText registerFullNameEt, registerEmailEt, registerPasswordEt, registerUsernameEt;
@@ -91,8 +89,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     * Makes an email/pass authentication account with firebase, and posts a new User object
-     * to the firebase database.
+     * Calls all helper functions to verify fields are filled correctly and username is unique, then calls
+     * a function to begin firebase registration.
      */
     public void registerUser() {
         //Store all info from EditText fields
@@ -110,7 +108,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    //TODO: Write contract
+    /**
+     * Verifies the given paramters are non-empty, if not sets an error on the TextView and alerts the user
+     * @param fullName the full name to be checked
+     * @param username the username to be checked
+     * @param phone the phone to be checked
+     * @param email the email to be checked
+     * @param password the password to be checked
+     * @return
+     */
     public boolean allFieldsAreFilled(String fullName, String username, String phone, String email,
                                       String password) {
         if (fullName.isEmpty()) {
@@ -141,7 +147,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return true;
     }
 
-    //TODO: Write contract
+    /**
+     * Searches all User objects in database looking for one with username equal to passed param.
+     * @param username the username to search for
+     * @return true if username is unique, false if username is taken
+     */
     public boolean usernameIsAvailable(String username) {
         DatabaseReference ref = FirebaseDatabase.getInstance("" +
                 "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
@@ -171,7 +181,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return usernameIsUnique;
     }
 
-    //TODO: Write contract
+    /**
+     * Verifies the passed string is greater than or equal to 6 characters, and calls helper function
+     * to check that password is in the correct format.
+     * @param password the string to be checked
+     * @return true if password is valid, false if password is not
+     */
     public boolean passwordIsValid(String password) {
 
         if (password.length() < 6) {
@@ -194,18 +209,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * 6 characters long.
      *
      * @param password the password to be checked
-     * @return result = true if password is valid, result = false if password is invalid
+     * @return result = true if password follows format, result = false if password does not follow format
      */
     private boolean passwordFollowsFormat(final String password) {
-
+        //Create pattern and matcher variables
         Pattern pattern;
         Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{3,}$";
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,20}$";
 
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
 
     public void attemptFirebaseRegistration(String fullName, String username, String phone, String email,
                                             String password) {
@@ -261,17 +277,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
     }
 
+    /**
+     * sendVerificationEmail(): sends a verification email to the current firebase user
+     *
+     */
     private void sendVerificationEmail() {
+        //Grab current user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        //Use firebase api to send verification email
         firebaseUser.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            //Email sent successfully
                             Toast.makeText(RegisterActivity.this,
                                     "Verification email sent to " + firebaseUser.getEmail(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            //Error sending email
                             Toast.makeText(RegisterActivity.this,
                                     "Failed to send verification email.",
                                     Toast.LENGTH_SHORT).show();
@@ -280,21 +304,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 });
     }
 
-
+    /**
+     * Sets the firebase authentication accounts display name, note this is different
+     * from the user object stored in realtime DB.
+     * @param fullName the full name to be set on the authentication account
+     */
     private void setFirebaseDisplayName(String fullName) {
+        //Grab current user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
+        //Create a ProfileChangeRequest variable to send to firebase
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(fullName).build();
 
-
+        //Call firebase api update profile function with proper variable
         firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            //Display name set successfully
                             Log.d("REGISTER", "Display Name Set Successfully!");
                         } else {
+                            //Failed to set display name
                             Log.d("REGISTER", "Failed to set DisplayName");
                         }
                     }

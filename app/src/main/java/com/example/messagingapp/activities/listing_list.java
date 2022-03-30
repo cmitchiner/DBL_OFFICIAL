@@ -312,12 +312,16 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                             photos.add(array.getString(i));
                         }
                     }
+                    Location loc;
+                    if (listFacade.getLocation() != null) {
+                        loc = new Location("");
+                        String[] coords = listFacade.getLocation().split(";");
+                        loc.setLatitude(Double.valueOf(coords[0]));
+                        loc.setLongitude(Double.valueOf(coords[1]));
+                    } else {
+                        loc = null;
+                    }
 
-
-                    Location loc = new Location("");
-                    String[] coords = listFacade.getLocation().split(";");
-                    loc.setLatitude(Double.valueOf(coords[0]));
-                    loc.setLongitude(Double.valueOf(coords[1]));
 
                     Listing list;
 

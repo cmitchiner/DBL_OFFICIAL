@@ -242,56 +242,58 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode==2) {
-                // Image chosen from gallery
-                Uri selectedImage = data.getData();
-                imgView.setVisibility(View.VISIBLE);
-                imgView.setImageURI(selectedImage);
-                image = new File(selectedImage.getPath());
-            } else if (requestCode==1) {
-                // Image taken while using app
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        image = new File(getApplicationContext().getCacheDir(), "image");
-                        try {
-                            //create a file to write bitmap data
-                            File f = new File(getApplicationContext().getCacheDir(), "image");
-                            f.createNewFile();
-
-                            //Convert bitmap to byte array
-                            Bitmap bitmap = imageBitmap;
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
-                            byte[] bitmapdata = bos.toByteArray();
-
-                            //write the bytes in file
-                            FileOutputStream fos = null;
+            if (data != null) {
+                if (requestCode == 2) {
+                    // Image chosen from gallery
+                    Uri selectedImage = data.getData();
+                    imgView.setVisibility(View.VISIBLE);
+                    imgView.setImageURI(selectedImage);
+                    image = new File(selectedImage.getPath());
+                } else if (requestCode == 1) {
+                    // Image taken while using app
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            image = new File(getApplicationContext().getCacheDir(), "image");
                             try {
-                                fos = new FileOutputStream(f);
+                                //create a file to write bitmap data
+                                File f = new File(getApplicationContext().getCacheDir(), "image");
+                                f.createNewFile();
+
+                                //Convert bitmap to byte array
+                                Bitmap bitmap = imageBitmap;
+                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                                byte[] bitmapdata = bos.toByteArray();
+
+                                //write the bytes in file
+                                FileOutputStream fos = null;
+                                try {
+                                    fos = new FileOutputStream(f);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    fos.write(bitmapdata);
+                                    fos.flush();
+                                    fos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                image = f;
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
-                            }
-                            try {
-                                fos.write(bitmapdata);
-                                fos.flush();
-                                fos.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            image = f;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
-                    }
-                }).start();
-                pictureUploaded = true;
-                imgView.setVisibility(View.VISIBLE);
-                imgView.setImageBitmap(imageBitmap);
+                    }).start();
+                    pictureUploaded = true;
+                    imgView.setVisibility(View.VISIBLE);
+                    imgView.setImageBitmap(imageBitmap);
+                }
             }
         }
 

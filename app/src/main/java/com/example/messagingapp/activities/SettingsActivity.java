@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
 
+    /** VARIABLES **/
     //Variables for references to activity_settings.xml
     private TextView fullNameTv, emailTv;
     private Button logoutBtn, changePassBtn;
@@ -22,6 +23,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     //Variable for Firebase Authentication
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+
+    /** METHODS **/
 
     /** onCreate() is a method that runs before a user see's the current activity
      *
@@ -91,10 +94,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
      * @post @code{FirebaseAuth.getCurrentUser() == null}
      */
     private void logoutUser() {
+        //Make sure they are not guest to prevent errors with signing out
         if (!MainActivity.isGuest) {
             firebaseAuth.signOut();
         }
+        //Inform user of log out
         Toast.makeText(SettingsActivity.this, "Logged Out!", Toast.LENGTH_SHORT).show();
+        //Redirect to sign in page
         startActivity(new Intent(this, MainActivity.class));
     }
 

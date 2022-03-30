@@ -56,9 +56,7 @@ import java.util.Date;
 
 public class SpecificChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /**
-     * VARIABLE DECLARATIONS
-     **/
+    /** VARIABLES **/
     //Variables for References to XML
     EditText messageET;
     ImageButton backBtn;
@@ -93,9 +91,18 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
     //Additional Variables
     Intent intent;
 
+    /** METHODS **/
+
+    /** onCreate() is a method that runs before a user see's the current activity
+     *
+     * @param savedInstanceState the previous state of the app to be loaded
+     * @post All variables are initialized and Auth Tokens are setup correctly
+     * @returns void
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Assign proper XMl file
         setContentView(R.layout.activity_specific_chat);
 
         //Init references to XML file
@@ -155,11 +162,15 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                 .child(senderRoom)
                 .child("Messages");
 
+        //Get all previous messages or new messages from database
         pullMessagesFromDatabase();
 
 
     }
 
+    /**
+     * Overrides the default android os back button functionality
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -167,20 +178,35 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         startActivity(new Intent(this, MessagesActivity.class));
     }
 
+    /**
+     * Method that runs on activity start
+     */
     @Override
     public void onStart() {
         super.onStart();
+        //Inform chat adapter for recycler to update information
         specificChatAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Method that runs on activity stop
+     */
     @Override
     public void onStop() {
         super.onStop();
         if (specificChatAdapter != null) {
+            //Inform chat adapter for recycler to update information
             specificChatAdapter.notifyDataSetChanged();
         }
     }
 
+    /**
+     * pullMessagesFromDataBase() : grabs all messages stored on database and stores them
+     * in the messages ArrayList
+     *
+     * @modifies messages
+     * @post if any previous messages exist, messages will contain them
+     */
     private void pullMessagesFromDatabase() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -200,6 +226,11 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+    /**
+     * onClick(): holds all the On-Click listeners for any elements on the screen
+     *
+     * @param view a view of all elements present on the screen
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -220,11 +251,16 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                 }
                 break;
             case R.id.attachImageBtn:
+                //Begin image upload process
                 selectImage();
                 break;
         }
     }
 
+    /**
+     * Creates a prompt for the user to select how they would like to upload their image and
+     * then starts the correct android activity.
+     */
     private void selectImage() {
         final CharSequence[] options = {"Choose image from gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(SpecificChatActivity.this);
@@ -244,16 +280,31 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         builder.show();
     }
 
+    /**
+     * Listens for an activity result and then performs action based on request code
+     * ** currently being used to see what option the user selected when uploading image.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) {
-            Uri selectedImage = data.getData();
-            image = new File(selectedImage.getPath());
-            sendMessage("", selectedImage);
+        if (data != null) {
+            if (requestCode == 2) {
+                Uri selectedImage = data.getData();
+                image = new File(selectedImage.getPath());
+                sendMessage("", selectedImage);
+            }
         }
     }
 
+    /**
+     * Stores the passed file with name UID in the firebase cloud storage database
+     * @param file a Uid representing the location of the file
+     * @param UID a unique identifier to find the image, this should be the message UID
+ *
+     */
     private void storeImage(Uri file, String UID) {
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
         StorageReference storageReference = storage.getReference();
@@ -263,12 +314,14 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                //Nothing to do, image was uploaded succesfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                //Image upload failed, inform user
+                Toast.makeText(SpecificChatActivity.this, "Failed to send image",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
