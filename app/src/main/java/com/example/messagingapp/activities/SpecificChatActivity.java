@@ -303,7 +303,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
      * Stores the passed file with name UID in the firebase cloud storage database
      * @param file a Uid representing the location of the file
      * @param UID a unique identifier to find the image, this should be the message UID
- *
+     *
      */
     private void storeImage(Uri file, String UID) {
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
@@ -314,7 +314,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                //Nothing to do, image was uploaded succesfully
+                //Nothing to do, image was uploaded successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -326,6 +326,13 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+    /**
+     * Sends a message or image, by creating a new Message Object and uploading it to the database
+     *
+     * @param messageToSend the text of the message to send
+     * @param file the location of the image to send
+     *
+     */
     private void sendMessage(String messageToSend, Uri file) {
         //Pull current time for time stamp
         Date date = new Date();

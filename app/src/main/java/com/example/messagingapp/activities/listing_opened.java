@@ -1,5 +1,8 @@
 package com.example.messagingapp.activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,24 +38,41 @@ import com.google.firebase.database.ValueEventListener;
  * Use the {@link listing_opened#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_opened extends Fragment {
-    ListFacade listFacade;
-    Listing listing;
-    String currentUserId;
-    String authorId;
-    Button completeListing;
-    Button messageButton;
-    String usernameAuthor;
+public class listing_opened extends Fragment implements View.OnClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    /**
+     * VARIABLES
+     **/
+    //Variables to hold listing object, and data parsing class list facade
+    private ListFacade listFacade;
+    private Listing listing;
+    private Context context;
+
+    //Declare variables for XML references
+    private Button completeListing;
+    private Button messageButton;
+    private RatingBar ratingBar;
+    private TextView title, author, description, university, courseCode, price, isbn;
+    private ImageView backBtn;
+    private FirebaseDatabase firebaseRating;
+
+    //Variables to hold information about listing
+    private String usernameAuthor;
+    private String currentUserId;
+    private String authorId;
+    private double priceEuro;
+
+    //Default fragment variables
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    /** METHODS **/
+
+    /**
+     * DEFAULT CONSTRUCTOR
+     **/
     public listing_opened() {
         // Required empty public constructor
     }
@@ -64,7 +85,6 @@ public class listing_opened extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment listing_opened.
      */
-    // TODO: Rename and change types and number of parameters
     public static listing_opened newInstance(String param1, String param2) {
         listing_opened fragment = new listing_opened();
         Bundle args = new Bundle();
@@ -73,6 +93,7 @@ public class listing_opened extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,79 +114,62 @@ public class listing_opened extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //Grab current user, and listing object
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         listing = getArguments().getParcelable("listingFacade");
 
-        ImageView image = (ImageView) view.findViewById(R.id.list_image);
-        TextView title = (TextView) view.findViewById(R.id.list_title);
-        TextView author = (TextView) view.findViewById(R.id.list_author);
-        TextView description = (TextView) view.findViewById(R.id.list_desc);
-        TextView university = (TextView) view.findViewById(R.id.list_university);
-        TextView courseCode = (TextView) view.findViewById(R.id.list_code);
-        TextView price = (TextView) view.findViewById(R.id.list_price);
-        TextView isbn  = (TextView) view.findViewById(R.id.isbn);
-        ImageView backBtn = view.findViewById(R.id.backBtn);
-        final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-        completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
-        messageButton = (Button) view.findViewById(R.id.message_button);
+        context = view.getContext();
 
-        //image.setImageDrawable();
+        //init references to XML
+        ImageView image = view.findViewById(R.id.list_image);
+        title = view.findViewById(R.id.list_title);
+        author = view.findViewById(R.id.list_author);
+        description = view.findViewById(R.id.list_desc);
+        university = view.findViewById(R.id.list_university);
+        courseCode = view.findViewById(R.id.list_code);
+        price = view.findViewById(R.id.list_price);
+        isbn = view.findViewById(R.id.isbn);
+        backBtn = view.findViewById(R.id.backBtn);
+        ratingBar = view.findViewById(R.id.ratingBar);
+        completeListing = view.findViewById(R.id.MarkAsComplete);
+        messageButton = view.findViewById(R.id.message_button);
+
+        //Fill text for listings
         title.setText(listing.getTitle());
         description.setText(listing.getDescription());
         university.setText(listing.getUniversity());
         courseCode.setText(listing.getCourseCode());
-        double priceEuro = listing.getPrice();
-        price.setText(String.valueOf( priceEuro/100 + "€"));
-
-        if(!String.valueOf(listing.getIsbn()).equals("0")){
+        priceEuro = listing.getPrice();
+        price.setText(String.valueOf(priceEuro / 100 + "€"));
+        authorId = listing.getUser();
+        //Check if listing has an ISBN or not
+        if (!String.valueOf(listing.getIsbn()).equals("0")) {
             isbn.setVisibility(View.VISIBLE);
             isbn.setText(String.valueOf(listing.getIsbn()));
-        } else{
+        } else {
             isbn.setVisibility(View.INVISIBLE);
         }
-
-        if(currentUserId == authorId ){
+        //Check if current user is the creator of the listing, and show complete button if so
+        if (currentUserId.equals(authorId)) {
             completeListing.setVisibility(View.VISIBLE);
+        } else {
+            completeListing.setVisibility(View.GONE);
         }
 
-        messageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!MainActivity.isGuest) {
-                    String authIdCombo;
-                    authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
-                    Intent intent = new Intent(getActivity(), NewMessageActivity.class);
-                    intent.putExtra("contact", authIdCombo);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-        author.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String user = usernameAuthor;
-                String authorrid = listing.getUser().toString();
-                String usidCombo = user+":"+authorrid;
-                Log.d("filter", usidCombo);
-                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
-                intent.putExtra("title", usidCombo);
-                startActivity(intent);
-            }
-        });
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().onBackPressed();
-            }
-        });
+        //Setup on click listeners
+        messageButton.setOnClickListener(this);
+        author.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
+        completeListing.setOnClickListener(this);
 
         //insert rating of user here
-        FirebaseDatabase firebaseRating = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app/");
+        firebaseRating = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
+                ".firebasedatabase.app/");
+        fillRatingField();
+
+    }
+
+    private void fillRatingField() {
         DatabaseReference ref = firebaseRating.getReference("Users").child(listing.getUser());
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -181,6 +185,65 @@ public class listing_opened extends Fragment {
                 Log.d("Metoo", "failed to read user rating");
             }
         });
+    }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.message_button:
+                if (!MainActivity.isGuest) {
+                    String authIdCombo;
+                    authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
+                    Intent intent = new Intent(getActivity(), NewMessageActivity.class);
+                    intent.putExtra("contact", authIdCombo);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.list_author:
+                String user = usernameAuthor;
+                String authorrid = listing.getUser().toString();
+                String usidCombo = user + ":" + authorrid;
+                Log.d("filter", usidCombo);
+                Intent intent = new Intent(getActivity(), UserListingsActivity.class);
+                intent.putExtra("title", usidCombo);
+                startActivity(intent);
+                break;
+            case R.id.backBtn:
+                getActivity().onBackPressed();
+                break;
+            case R.id.MarkAsComplete:
+                //Prompt user for username of who they sold too
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.prompt_sold_listing, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setView(promptsView);
+                final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // get user input and set it to result
+                                        // edit text
+                                        Log.d("COMPLETED_LISTING", userInput.getText().toString());
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+                break;
+        }
     }
 }

@@ -75,7 +75,12 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         }
     }
 
-    //TODO: write contract
+    /**
+     * Pulls data from text fields on screen, and calls helper functions to verify it is
+     * in correct password format.
+     *
+     * @post if data is valid, begin password change process
+     */
     private void changePassword() {
         String oldPass = oldPassEt.getText().toString().trim();
         String newPass = newPassEt.getText().toString().trim();
@@ -83,13 +88,20 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
         //Verify all fields are not empty
         if (allFieldsValid(oldPass, newPass, confNewPass)) {
+            //Attempt to change
             attemptChangePassRequest(oldPass, newPass);
         }
-        //Verify newPassword meets criteria
-        //Attempt to change
     }
 
-    //TODO: write contract
+    /**
+     * Verifies all fields are non empty, password is greater than 6 characters, password is in correct
+     * format, and confirmation password is equivalent to old password
+     *
+     * @param oldPass the users old password to be checked
+     * @param newPass the new password to be checked
+     * @param confNewPass the confirmation of the new password to be checked
+     * @return true if all fields are valid and in correct format
+     */
     private boolean allFieldsValid(String oldPass, String newPass, String confNewPass) {
         if (oldPass.isEmpty()) {
             oldPassEt.setError("You must provide your previous password!");
@@ -141,21 +153,33 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         return matcher.matches();
     }
 
+    /**
+     * Authenticates the user with their old password, then updates password to given
+     * param newPass.
+     *
+     * @param oldPass the old password to be used for reauthentication
+     * @param newPass the new password the user wants
+     */
     private void attemptChangePassRequest(String oldPass, String newPass) {
+        //Get current user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        //Create auth credential for authentication
         AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), oldPass);
         firebaseUser.reauthenticate(credential)
             .addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
+                        //Old password was correct, and user has been authenticated, begin change process
                         firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
+                                    //Password updated successfully
                                     Toast.makeText(ChangePasswordActivity.this, "Password Updated!", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
                                 } else {
+                                    //Password failed to update
                                     Toast.makeText(ChangePasswordActivity.this, "Error Password not updated", Toast.LENGTH_LONG).show();
                                 }
 
@@ -166,6 +190,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    //Failed to authenticate user with old password
                     Toast.makeText(ChangePasswordActivity.this, "Incorrect Old Password OR Using Google Account", Toast.LENGTH_LONG).show();
                 }
         });
