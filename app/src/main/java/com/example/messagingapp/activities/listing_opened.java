@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 //import com.squareup.picasso.Picasso;
 
 /**
@@ -108,7 +109,11 @@ public class listing_opened extends Fragment {
         final RatingBar ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         completeListing = (Button) view.findViewById(R.id.MarkAsComplete);
         messageButton = (Button) view.findViewById(R.id.message_button);
-
+        if(listing.getPhotos().get(0) != null) {
+            String url = getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?"+getResources().getString(R.string.apiDevKey);
+            Log.d("URL", url);
+            Picasso.get().load(getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?apiKey="+getResources().getString(R.string.apiDevKey)).into(image);
+        }
         //image.setImageDrawable();
         title.setText(listing.getTitle());
         description.setText(listing.getDescription());

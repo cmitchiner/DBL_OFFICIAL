@@ -306,12 +306,13 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
                 try {
                     ArrayList<String> photos = new ArrayList<>();
-                    JSONArray array = data.optJSONArray("photos");
-                    if(array != null) {
-                        for(int i = 0; i < array.length(); i++) {
-                            photos.add(array.getString(i));
-                        }
-                    }
+                    photos.add(data.optString("photos"));
+//                    JSONArray array = data.optJSONArray("photos");
+//                    if(array != null) {
+//                        for(int i = 0; i < array.length(); i++) {
+//                            photos.add(array.getString(i));
+//                        }
+//                    }
                     Location loc;
                     if (listFacade.getLocation() != null) {
                         loc = new Location("");
@@ -338,7 +339,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                     }
 
                     openListing(list);
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
