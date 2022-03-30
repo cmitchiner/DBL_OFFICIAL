@@ -332,11 +332,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         Listing listing;
                         if (ISBN) {
                             long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-                            listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
+                            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
                                     ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                                     edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                         }else {
-                            listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
+                            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
                                     "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                                     edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
                         }
