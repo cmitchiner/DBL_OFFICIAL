@@ -7,6 +7,8 @@ import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.MessageModel;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -29,7 +31,18 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ * Interface ApiAccess for retrofit method specification
+ */
 public interface ApiAccess {
+
+    /**
+     * Retrofit specification for getting the details of a bidding listing
+     *
+     * @param aucId
+     * @param apiKey
+     * @return
+     */
     @GET("/auction")
     Call<BiddingData> getAuctionDetails(@Query("aucId") int aucId, @Query("apiKey") String apiKey);
 
@@ -72,7 +85,7 @@ public interface ApiAccess {
     );
 
     @PATCH("/updatelisting")
-    Call<ResponseBody> updateListing(@Body RequestBody updates);
+    Call<ResponseBody> updateListing(@Body JSONObject updates);
 
     @Multipart
     @POST("/addimg")

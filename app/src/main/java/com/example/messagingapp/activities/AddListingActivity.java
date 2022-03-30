@@ -329,9 +329,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         }
                         double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
                         int priceInt = (int) price;
-                        long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
                         Listing listing;
                         if (ISBN) {
+                            long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
                             listing = new Listing(photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
                                     ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                                     edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());

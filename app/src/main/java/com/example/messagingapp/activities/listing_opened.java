@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 //import com.squareup.picasso.Picasso;
 
 /**
@@ -65,6 +66,8 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     //Default fragment variables
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -85,6 +88,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
      * @param param2 Parameter 2.
      * @return A new instance of fragment listing_opened.
      */
+    // TODO: Rename and change types and number of parameters
     public static listing_opened newInstance(String param1, String param2) {
         listing_opened fragment = new listing_opened();
         Bundle args = new Bundle();
@@ -247,3 +251,14 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         }
     }
 }
+
+
+
+//
+//        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+//        apiAccess = retrofit.create(ApiAccess.class);
+//        JSONObject json = new JSONObject();
+//        json.put("sold", *INSERT BOOLEAN HERE*)
+//        Call<ResponseBody> call = apiAccess.updateListing()
+//
+//
