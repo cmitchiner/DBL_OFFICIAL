@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -65,6 +67,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -95,6 +99,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private String type = "Notes";
     private File image;
 
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 101;
+    private double latitude;
+    private double longitude;
+
 
     /** onCreate() is a method that runs before a user see's the current activity
      *
@@ -119,6 +128,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbSummary.setOnClickListener(this);
         rbBook.setOnClickListener(this);
         setLocationButt.setOnClickListener(this);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
     }
 
@@ -417,18 +428,18 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             }else {
                 warningUniversity.setVisibility(View.GONE);
             }
-            if (edtTxtCourseCode.getText().toString().equals("")) {
-                warningCourseCode.setVisibility(View.VISIBLE);
-                i =  false;
-            }else {
-                warningCourseCode.setVisibility(View.GONE);
-            }
-            if (edtTxtCourseName.getText().toString().equals("")) {
-                warningCourseName.setVisibility(View.VISIBLE);
-                i =  false;
-            }else {
-                warningCourseName.setVisibility(View.GONE);
-            }
+//            if (edtTxtCourseCode.getText().toString().equals("")) {
+//                warningCourseCode.setVisibility(View.VISIBLE);
+//                i =  false;
+//            }else {
+//                warningCourseCode.setVisibility(View.GONE);
+//            }
+//            if (edtTxtCourseName.getText().toString().equals("")) {
+//                warningCourseName.setVisibility(View.VISIBLE);
+//                i =  false;
+//            }else {
+//                warningCourseName.setVisibility(View.GONE);
+//            }
             if (edtTxtDescription.getText().toString().equals("")) {
                 warningDescription.setVisibility(View.VISIBLE);
                 i = false;
@@ -443,18 +454,89 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     i = false;
                 }
             }
-            if (!pictureUploaded) {
-                warningPicture.setVisibility(View.VISIBLE);
-                i = false;
-            }else {
-                warningPicture.setVisibility(View.GONE);
-            }
+//            if (!pictureUploaded) {
+//                warningPicture.setVisibility(View.VISIBLE);
+//                i = false;
+//            }else {
+//                warningPicture.setVisibility(View.GONE);
+//            }
             return i;
         }
 
+//    private void getLocation() {
+//        Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+//    }
+
+    //TODO: Stop the emulator from crashing when trying to receive location
+
+    @SuppressLint("MissingPermission")
     private void getLocation() {
-        Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+        if (locationEnabled()) {
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    Location location = task.getResult();
+                    if (location == null) {
+                        requestNewLocationData();
+                    } else {
+                        //store to database here
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+
+                        Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
     }
+
+    private String getAddress(double latitude, double longitude) {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String address = addresses.get(0).getAddressLine(0);
+            return address;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "Something went wrong";
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest = LocationRequest.create();
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
+                Looper.myLooper());
+    }
+
+    public boolean locationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+        }
+    };
+
 
 
 
@@ -475,12 +557,12 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
             txtPrice = findViewById(R.id.txtPrice);
             warningTitle = findViewById(R.id.warningTitle);
-            warningCourseCode = findViewById(R.id.warningCourseCode);
-            warningCourseName = findViewById(R.id.warningCourseName);
+            //warningCourseCode = findViewById(R.id.warningCourseCode);
+            //warningCourseName = findViewById(R.id.warningCourseName);
             warningUniversity = findViewById(R.id.warningUniversity);
             warningDescription = findViewById(R.id.warningDescription);
             warningISBN = findViewById(R.id.warningISBN);
-            warningPicture = findViewById(R.id.warningPicture);
+            //warningPicture = findViewById(R.id.warningPicture);
             textview = findViewById(R.id.testView);
             txtISBN = findViewById(R.id.txtISBN);
 
