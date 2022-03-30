@@ -10,7 +10,6 @@
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_add_black.xml" value="0.288" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.288" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_baseline_euro_24.xml" value="0.288" />
-        <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_check.xml" value="0.288" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_course_name.xml" value="0.288" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_course_name2.xml" value="0.288" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/ic_listings.xml" value="0.288" />
@@ -20,8 +19,13 @@
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_profile.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/dialog_searchable_spinner.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/20191639/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/simple_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/20201995/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened.xml" value="0.25" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_add_listing.xml" value="0.264" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_messages.xml" value="0.12360688956433637" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/activity_user_listings.xml" value="0.1160081053698075" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_list.xml" value="0.1160081053698075" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened.xml" value="0.32036613272311215" />
+        <entry key="..\:/Users/20202921/StudioProjects/DBL_OFFICIAL/app/src/main/res/layout/fragment_listing_opened_bid.xml" value="0.264" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/bg_chat_bar.xml" value="0.267" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/bg_layout.xml" value="0.3485" />
         <entry key="..\:/Users/Charlie/AndroidStudioProjects/DBL_OFFICIAL/app/src/main/res/drawable/bg_listing_card.xml" value="0.3485" />
