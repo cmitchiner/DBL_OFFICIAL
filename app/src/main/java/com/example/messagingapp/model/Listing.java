@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Listing implements Parcelable {
+    private String listID;
     private ArrayList<String> photo;
     private int price;
     private String type;
@@ -22,7 +23,8 @@ public class Listing implements Parcelable {
     private String courseCode;
     private String userId;
 
-    public Listing(ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+        this.listID = id;
         this.photo = photo;
         this.price = price;
         this.type = type;
@@ -38,7 +40,8 @@ public class Listing implements Parcelable {
         this.courseCode = courseCode;
         this.userId = userId;
     }
-    public Listing(ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+        this.listID = id;
         this.photo = photo;
         this.price = price;
         this.type = type;
@@ -56,6 +59,7 @@ public class Listing implements Parcelable {
     }
 
     protected Listing(Parcel in) {
+        listID = in.readString();
         photo = in.readArrayList(String.class.getClassLoader());
         price = in.readInt();
         type = in.readString();
@@ -88,6 +92,7 @@ public class Listing implements Parcelable {
         return this.photo;
     }
     public void addPhoto(String Photo){ this.photo.add(Photo); }
+    public String getListId() {return this.listID; }
 
     public int getPrice(){ return this.price;}
     public void setPrice(int price){this.price = price; }
@@ -145,6 +150,7 @@ public class Listing implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(listID);
         parcel.writeList(photo);
         parcel.writeInt(price);
         parcel.writeString(type);

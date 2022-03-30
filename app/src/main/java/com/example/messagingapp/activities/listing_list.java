@@ -327,12 +327,12 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                     Listing list;
 
                     if (listFacade.getType() == "book") {
-                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
                     } else {
-                         list = new Listing(photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
