@@ -353,7 +353,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 Log.d(null,  "BIG Fail");
-
+                                t.printStackTrace();
                             }
                         });
                     }
@@ -361,6 +361,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.d(null,  "BIG Fail");
+                        t.printStackTrace();
 
 
                     }

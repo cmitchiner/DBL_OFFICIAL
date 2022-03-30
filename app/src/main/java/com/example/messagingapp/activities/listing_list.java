@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -326,12 +327,17 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
                     Listing list;
 
-                    if (listFacade.getType() == "book") {
+                    if (listFacade.getType().toLowerCase().equals("book")) {
+
                          list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
+                                Log.d("TYPE", "BOOK");
+
                     } else {
+                        Log.d("TYPE", "ELSE STATEMENT FOR SOME REASON");
+
                          list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),

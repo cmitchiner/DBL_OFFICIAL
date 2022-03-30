@@ -54,7 +54,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.title.setText(rower.getTitle());
         holder.title.setTag(rower.getTitle());
         holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
-        switch(rower.getType()) {
+        switch(rower.getType().toLowerCase()) {
             case "book":
                 holder.offerType.setImageResource(R.drawable.ic_book);
                 break;
