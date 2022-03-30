@@ -238,7 +238,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="Add an ISBN number"
+                android:text="ISBN should contain 13 numbers and start with 978 or 979"
                 android:textColor="@color/red"
                 android:visibility="gone"/>
 
@@ -264,7 +264,7 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@color/primary_blue"
                     android:inputType="number"
-                    android:text="" />
+                    android:text="97" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -474,7 +474,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/btn_bg"
-                    android:text="Add location to listing"/>
+                    android:text="Add location to listing" />
             </RelativeLayout>
 
             <RelativeLayout

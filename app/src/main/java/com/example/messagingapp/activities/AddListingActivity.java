@@ -3,14 +3,17 @@ package com.example.messagingapp.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
@@ -34,9 +37,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -74,9 +83,10 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN, warningPicture;
     private Button btnPublish;
     private ImageButton btnUploadPicture;
-    private ImageView imgView, imgViewLcation;
+    private ImageView imgView, imgViewLocation;
     private RadioButton rbBidding, rbSetPrice, rbNotes, rbSummary, rbBook;
     private RelativeLayout parent;
+    private ConstraintLayout ActivityProfileLayout;
     private ArrayList<String> arrayList;
     private Dialog dialog;
     private TextInputLayout txtISBN;
@@ -84,6 +94,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
+    FusedLocationProviderClient mFusedLocationClient;
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -96,7 +107,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_listing);
-
         //Init references to activity_add_listing.xml
         initViews();
 
@@ -110,6 +120,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbSummary.setOnClickListener(this);
         rbBook.setOnClickListener(this);
         setLocationButt.setOnClickListener(this);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     /**
@@ -163,7 +175,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             case R.id.addLocationListButt:
                 getLocation();
                 setLocationButt.setVisibility(View.GONE);
-                imgViewLcation.setVisibility(View.VISIBLE);
+                imgViewLocation.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -221,6 +233,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (options[i].equals("Cancel")) {
                         dialogInterface.dismiss();
+                        //TODO: Fix the bug that when Cancel is pressed, the publish button gives
                     } else if(options[i].equals("Take photo")) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 1);
@@ -376,7 +389,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      */
     private void showSnackBar() {
             Log.d(TAG, "showSnackBar: started");
-            Snackbar.make(parent, "Offer added", Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(ActivityProfileLayout, "Offer added", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Dismiss", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -422,20 +435,10 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 warningDescription.setVisibility(View.GONE);
             }
             if (ISBN) {
-                if(edtTxtISBN.getText().toString().equals("")) {
-                    warningISBN.setVisibility(View.VISIBLE);
-                    i = false;
-                }else {
+                if(edtTxtISBN.getText().toString().matches("^[0-9]+$") && edtTxtISBN.getText().toString().matches("^97[8-9].*$") && edtTxtISBN.length()==13) {
                     warningISBN.setVisibility(View.GONE);
-                }
-                if (edtTxtISBN.getText().toString().matches("^[0-9]+$")) {
-
-                } else {
-                    Toast.makeText(this, "ISBN should only contain numbers", Toast.LENGTH_SHORT).show();
-                    i = false;
-                }
-                if (edtTxtISBN.length()!=13) {
-                    Toast.makeText(this, "ISBN should contain 13 numbers", Toast.LENGTH_SHORT).show();
+                }else {
+                    warningISBN.setVisibility(View.VISIBLE);
                     i = false;
                 }
             }
@@ -451,6 +454,20 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void getLocation() {
         Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
     }
+
+    public boolean locationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+        }
+    };
 
 
     /**
@@ -486,8 +503,10 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             rbBook = findViewById(R.id.rbBook);
 
             parent = findViewById(R.id.parent);
+            ActivityProfileLayout = findViewById(R.id.ActivityProfileLayout);
             imgView = findViewById(R.id.imgView);
-            imgViewLcation = findViewById(R.id.imgViewLocation);
+
+            imgViewLocation = findViewById(R.id.imgViewLocation);
 
             setLocationButt = findViewById(R.id.addLocationListButt);
 
