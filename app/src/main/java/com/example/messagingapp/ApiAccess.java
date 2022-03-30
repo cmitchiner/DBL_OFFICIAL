@@ -7,6 +7,8 @@ import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.model.MessageModel;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ public interface ApiAccess {
     );
 
     @PATCH("/updatelisting")
-    Call<ResponseBody> updateListing(@Body RequestBody updates);
+    Call<ResponseBody> updateListing(@Body JSONObject updates);
 
     @Multipart
     @POST("/addimg")

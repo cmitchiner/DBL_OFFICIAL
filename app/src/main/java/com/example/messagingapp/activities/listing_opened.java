@@ -189,3 +189,14 @@ public class listing_opened extends Fragment {
 
     }
 }
+
+
+
+//
+//        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+//        apiAccess = retrofit.create(ApiAccess.class);
+//        JSONObject json = new JSONObject();
+//        json.put("sold", *INSERT BOOLEAN HERE*)
+//        Call<ResponseBody> call = apiAccess.updateListing()
+//
+//
