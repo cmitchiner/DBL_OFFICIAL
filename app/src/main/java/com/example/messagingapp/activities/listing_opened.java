@@ -171,6 +171,11 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         } else {
             completeListing.setVisibility(View.GONE);
         }
+        if(listing.getPhotos().get(0) != null) {
+            String url = getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?"+getResources().getString(R.string.apiDevKey);
+            Log.d("URL", url);
+            Picasso.get().load(getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?apiKey="+getResources().getString(R.string.apiDevKey)).into(image);
+        }
 
         //Setup on click listeners
         messageButton.setOnClickListener(this);
