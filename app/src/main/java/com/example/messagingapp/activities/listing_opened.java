@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
@@ -32,6 +33,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 //import com.squareup.picasso.Picasso;
 
 /**
@@ -45,7 +58,6 @@ public class listing_opened extends Fragment implements View.OnClickListener {
      * VARIABLES
      **/
     //Variables to hold listing object, and data parsing class list facade
-    private ListFacade listFacade;
     private Listing listing;
     private Context context;
 
@@ -55,7 +67,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     private RatingBar ratingBar;
     private TextView title, author, description, university, courseCode, price, isbn;
     private ImageView backBtn;
-    private FirebaseDatabase firebaseRating;
+    private FirebaseDatabase firebaseDatabase;
 
     //Variables to hold information about listing
     private String usernameAuthor;
@@ -167,14 +179,14 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         completeListing.setOnClickListener(this);
 
         //insert rating of user here
-        firebaseRating = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
+        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
                 ".firebasedatabase.app/");
         fillRatingField();
 
     }
 
     private void fillRatingField() {
-        DatabaseReference ref = firebaseRating.getReference("Users").child(listing.getUser());
+        DatabaseReference ref = firebaseDatabase.getReference("Users").child(listing.getUser());
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -233,6 +245,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                                     public void onClick(DialogInterface dialog, int id) {
                                         // get user input and set it to result
                                         // edit text
+                                        checkUserExists(userInput.getText().toString());
                                         Log.d("COMPLETED_LISTING", userInput.getText().toString());
                                     }
                                 })
@@ -250,15 +263,70 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+    /**
+     * checkUserExists(): checks if a given username exists and if found calls startChatWithUser()
+     *
+     * @param userToCheck the username the current user wants to chat with
+     */
+    private void checkUserExists(String userToCheck) {
+        //References the users branch on our database
+        DatabaseReference ref = firebaseDatabase.getReference("Users");
+
+        //Attempt to find a User Class in database with passed String receiverUsername
+        ref.orderByChild("username").equalTo(userToCheck).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) { //Receiving user found
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                User user = snapshot1.getValue(User.class);
+                                //snapshot1.getKey() contains the receiving users UID
+                                Toast.makeText(getActivity(),
+                                        "Listing marked as sold to: " + user.fullName,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else { //Receiving user not found, alert current user
+                            Toast.makeText(getActivity(),
+                                    "This user does not exist!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    //Database request was canceled.
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("REGISTER", error.getMessage());
+                    }
+                });
+    }
+
+    private void markListingAsSold() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("list_id", listing.getDescription());
+            json.put("sold", true);
+        } catch (JSONException e) {
+
+        }
+        Call<ResponseBody> call = apiAccess.updateListing(json);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
 }
 
 
 
-//
-//        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-//        apiAccess = retrofit.create(ApiAccess.class);
-//        JSONObject json = new JSONObject();
-//        json.put("sold", *INSERT BOOLEAN HERE*)
-//        Call<ResponseBody> call = apiAccess.updateListing()
-//
-//
+
+
+
