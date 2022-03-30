@@ -282,6 +282,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 User user = snapshot1.getValue(User.class);
                                 //snapshot1.getKey() contains the receiving users UID
+                                markListingAsSold();
                                 Toast.makeText(getActivity(),
                                         "Listing marked as sold to: " + user.fullName,
                                         Toast.LENGTH_LONG).show();
@@ -305,7 +306,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         ApiAccess apiAccess = retrofit.create(ApiAccess.class);
         JSONObject json = new JSONObject();
         try {
-            json.put("list_id", listing.getDescription());
+            json.put("list_id", listing.getListId());
             json.put("sold", true);
         } catch (JSONException e) {
 
