@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -63,7 +64,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
 
     //Declare variables for XML references
     private Button completeListing;
-    private Button messageButton;
+    private ImageButton messageButton;
     private RatingBar ratingBar;
     private TextView title, author, description, university, courseCode, price, isbn;
     private ImageView backBtn;

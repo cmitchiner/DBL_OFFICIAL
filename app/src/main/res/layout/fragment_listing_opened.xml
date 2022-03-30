@@ -26,19 +26,21 @@
 
         <TextView
             android:id="@+id/list_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="-24dp"
             android:layout_marginTop="15dp"
-            android:layout_marginEnd="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="30dp"
             android:gravity="center_horizontal"
             android:text="Title of a very cool listing"
+            android:autoSizeTextType="uniform"
+            android:maxLines="1"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
             android:textColor="@color/primary_blue"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/report_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/backBtn">
 
@@ -82,7 +84,7 @@
             android:layout_height="46dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="5dp"
             android:layout_marginBottom="10dp"
             android:text="Completed"
             android:includeFontPadding="false"
@@ -90,20 +92,21 @@
             android:maxLines="1"
             android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toTopOf="@+id/list_image"
-            app:layout_constraintEnd_toStartOf="@+id/report_button"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tit_line"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/report_button"
-            android:layout_width="106dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@android:color/transparent"
+            app:tint="@color/primary_blue"
+            android:src="@drawable/ic_baseline_report_24"
             android:text="Report"
-            app:layout_constraintBottom_toTopOf="@+id/list_image"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/tit_line" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/message_button" app:layout_constraintTop_toBottomOf="@+id/tit_line" />
 
 
         <ImageView
@@ -191,6 +194,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="@drawable/bg_search_bar"
+            android:padding="10dp"
             android:ems="10"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -202,18 +207,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_code" />
 
-        <Button
+        <ImageButton
             android:id="@+id/message_button"
-            android:layout_width="107dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_message_24"
+            app:tint="@color/primary_blue"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Contact"
-            app:layout_constraintBottom_toTopOf="@+id/list_desc"
+            android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/list_image" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <RatingBar
             android:id="@+id/ratingBar"
