@@ -132,7 +132,9 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //Grab current user, and listing object
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        if(!MainActivity.isGuest){
+            currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
         listing = getArguments().getParcelable("listingFacade");
 
         context = view.getContext();
@@ -167,10 +169,14 @@ public class listing_opened extends Fragment implements View.OnClickListener {
             isbn.setVisibility(View.INVISIBLE);
         }
         //Check if current user is the creator of the listing, and show complete button if so
-        if (currentUserId.equals(authorId)) {
-            completeListing.setVisibility(View.VISIBLE);
-        } else {
+        if(MainActivity.isGuest) {
             completeListing.setVisibility(View.GONE);
+        } else{
+            if (currentUserId.equals(authorId)) {
+                completeListing.setVisibility(View.VISIBLE);
+            } else {
+                completeListing.setVisibility(View.GONE);
+            }
         }
         if(listing.getPhotos().get(0) != null) {
             String url = getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?"+getResources().getString(R.string.apiDevKey);
