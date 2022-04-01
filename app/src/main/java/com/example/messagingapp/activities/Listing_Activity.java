@@ -3,6 +3,7 @@ package com.example.messagingapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +54,13 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
                 startActivity(new Intent(this,ProfileActivity.class));
                 return true;
             case R.id.messages:
-                startActivity(new Intent(this, MessagesActivity.class));
+                if (MainActivity.isGuest) {
+                    Toast.makeText(this, "This feature is not available for " +
+                            "guests!", Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    startActivity(new Intent(this, MessagesActivity.class));
+                }
                 return true;
 
         }

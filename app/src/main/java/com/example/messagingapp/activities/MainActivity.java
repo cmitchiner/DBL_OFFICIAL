@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("MissingPermission")
     public Location getLocation() {
         Location location = new Location("location");
-
         if (checkPermission()) {
             if (locationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {

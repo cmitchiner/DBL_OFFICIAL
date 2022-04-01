@@ -1,11 +1,13 @@
 package com.example.messagingapp.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -40,6 +42,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
@@ -103,6 +106,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     int PERMISSION_ID = 101;
     private double latitude;
     private double longitude;
+    //private Location location;
+    Location location = new Location("location");
 
 
     /** onCreate() is a method that runs before a user see's the current activity
@@ -470,29 +475,38 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     //TODO: Stop the emulator from crashing when trying to receive location
 
     @SuppressLint("MissingPermission")
-    private void getLocation() {
+    private Location getLocation() {
+        //Location location = new Location("location");
         //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
-        if (locationEnabled()) {
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if (location == null) {
-                        requestNewLocationData();
-                    } else {
-                        //store to database here
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-
-                        Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+        if (checkPermission()) {
+            if (locationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            
+                            //store to database here
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            });
-        } else {
-            Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+                });
+            } else {
+                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+
+        }else {
+            askPermissionLoc();
         }
+        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
+        return location;
     }
 
     private String getAddress(double latitude, double longitude) {
@@ -537,6 +551,19 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         }
     };
 
+    public boolean checkPermission() {
+
+        return ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void askPermissionLoc() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
 
 
 
