@@ -262,6 +262,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                             //If snapshot exists it means we found a match, however we also need to
                             //verify the match is not our current username because it is possible
                             //the user never changed their username
+                            if( usernameEt.length() < 4 ){
+                                usernameEt.setError("Username is too short");
+                            }
+                            if( usernameEt.length() > 21 ){
+                                usernameEt.setError("Username is too long");
+                            }
                             if (snapshot.exists() && !username.equals(currentUsername)) {
                                 usernameEt.setError("Username is already in use!");
                                 usernameEt.requestFocus();
