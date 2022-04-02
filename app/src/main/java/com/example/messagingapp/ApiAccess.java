@@ -13,6 +13,7 @@ import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -52,6 +53,9 @@ public interface ApiAccess {
                                               @Query("secondUser") String userId2);
     @GET("/listings")
     Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
+
+    @POST("/filterlisting")
+    Call<ArrayList<ListFacade>> getFilteredInfo(@Query("apiKey") String apikey, @Body JSONObject json);
 
     @POST("/updatelisting")
     Call<ResponseBody> addNewListing(@Body Listing list, @Query("apiKey") String apiKey);
