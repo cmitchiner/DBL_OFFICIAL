@@ -67,6 +67,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,6 +102,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
+
+    Retrofit retrofit;
+    ApiAccess apiAccess;
 
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 101;
@@ -334,72 +338,95 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void initPublish() {
             Log.d(TAG, "initPublish: started");
 
-                Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-                ApiAccess apiAccess = retrofit.create(ApiAccess.class);
-                RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
-                MultipartBody.Part img = MultipartBody.Part.createFormData("photo", image.getName(), part);
-                Call<ResponseBody> uploadImg = apiAccess.uploadImg(img, getResources().getString(R.string.apiDevKey));
-                uploadImg.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(!response.isSuccessful()) {
-                            return;
-                        }
-                        JSONObject data;
-                        try {
-                            String extraData = response.body().string();
-                            data = new JSONObject(extraData);
-                        } catch (Exception e) {
-                            return;
-                        }
-                        ArrayList<String> photoString = new ArrayList<>();
-                        JSONArray photos = data.optJSONArray("photos");
-                        for(int i = 0; i < photos.length(); i++){
-                            photoString.add(photos.optString(i));
-                        }
-                        double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
-                        int priceInt = (int) price;
-                        Listing listing;
-                        if (ISBN) {
-                            long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-                            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
-                                    ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        }else {
-                            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
-                                    "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        }
-
-                        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-                        ApiAccess apiAccess = retrofit.create(ApiAccess.class);
-                        Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
-                        call2.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                showSnackBar();
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Log.d(null,  "BIG Fail");
-                                t.printStackTrace();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.d(null,  "BIG Fail");
-                        t.printStackTrace();
-
-
-                    }
-                });
+                retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+                apiAccess = retrofit.create(ApiAccess.class);
+                if(image != null) {
+                    RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
+                    MultipartBody.Part img = MultipartBody.Part.createFormData("photo", image.getName(), part);
+                    uploadImage(img);
+                } else {
+                    ArrayList<String> temp = new ArrayList<>();
+                    temp.add("PLACEHOLDER");
+                    uploadListing(temp);
+                }
                 startActivity(new Intent(this, ProfileActivity.class));
 
         }
 
+
+    /**
+     * Function that takes a Multipart Image and uploads it to the backend, then invokes upload listing
+     *
+     * @param image the image to be uploaded
+     */
+    private void uploadImage(MultipartBody.Part image) {
+            Call<ResponseBody> uploadImg = apiAccess.uploadImg(image, getResources().getString(R.string.apiDevKey));
+            uploadImg.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(!response.isSuccessful()) {
+                        return;
+                    }
+                    JSONObject data;
+                    try {
+                        String extraData = response.body().string();
+                        data = new JSONObject(extraData);
+                    } catch (Exception e) {
+                        return;
+                    }
+                    ArrayList<String> photoString = new ArrayList<>();
+                    JSONArray photos = data.optJSONArray("photos");
+                    for(int i = 0; i < photos.length(); i++){
+                        photoString.add(photos.optString(i));
+                    }
+                    uploadListing(photoString);
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+
+        }
+
+    /**
+     * Method that uploads a listing to the database
+     *
+     * @param photoString An arraylist containing the names of the photos to be added
+     */
+    private void uploadListing(ArrayList<String> photoString) {
+            double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
+            int priceInt = (int) price;
+            Listing listing;
+            if (ISBN) {
+                long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
+                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
+                        ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                        edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            }else {
+                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
+                        "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                        edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            }
+            Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
+            call2.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(!response.isSuccessful()){
+                        return;
+                    }
+                    showSnackBar();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }
 
     /**
      * Shows a snackbar when successfully published listing
