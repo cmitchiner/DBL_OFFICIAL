@@ -54,8 +54,8 @@ public interface ApiAccess {
     @GET("/listings")
     Call<ArrayList<ListFacade>> getInfo(@Query("apiKey") String apiKey, @Query("numberRows") int numberRows);
 
-    @POST("/filterlisting")
-    Call<ArrayList<ListFacade>> getFilteredInfo(@Query("apiKey") String apikey, @Body JSONObject json);
+    @POST("/listings")
+    Call<ArrayList<ListFacade>> getFilteredInfo(@Query("apiKey") String apikey, @Body Map<String, ArrayList<String>> json);
 
     @POST("/updatelisting")
     Call<ResponseBody> addNewListing(@Body Listing list, @Query("apiKey") String apiKey);
@@ -63,10 +63,6 @@ public interface ApiAccess {
     @GET("/listings/{id}")
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
                                      );
-
-    //@FormUrlEncoded
-    @POST("/pushFilterDict")
-    Call<ResponseBody> pushDict(@FieldMap Map<String, String> filtDict, @Query("apiKey") String apiKey);
 
     //@GET("/listingsFiltered")
     //Call<>
