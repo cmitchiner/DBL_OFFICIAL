@@ -123,6 +123,8 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        apiAccess = retrofit.create(ApiAccess.class);
 
     }
 
@@ -139,6 +141,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
 
         //getting the Views for every view component
@@ -166,6 +169,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             if(!userId.toString().equals("no")){
                 titleView.setText(String.valueOf(parts[0]+"'s Offers"));
                 filtDict.get("author").add(userId);
+                Log.d("filter", String.valueOf(filtDict));
                 filter();
 
             }else{
@@ -231,7 +235,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         });
 
         //initializing arrays
-        getData();
+        if(userId.toString().equals("no")) {
+            getData();
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(manager);
@@ -271,6 +277,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onClick(View view) {
 
+
             }
         });
     }
@@ -278,8 +285,6 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     private void getData(){
         int rowNum = 150;
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-        apiAccess = retrofit.create(ApiAccess.class);
         Call<ArrayList<ListFacade>> listingQuery = apiAccess.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
         listingQuery.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
@@ -456,7 +461,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
     //Function to filter listings
      public void filter() {
-        Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
+        //Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
         pushDictionary(filtDict);
 
     }
@@ -464,6 +469,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
 
     public void pushDictionary(Map<String, ArrayList<String>> filtDict){
+        Log.d("filter", "this triggers: "+String.valueOf(filtDict));
         Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
         pushDict.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
