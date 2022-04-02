@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -178,10 +179,13 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                 completeListing.setVisibility(View.GONE);
             }
         }
-        if(listing.getPhotos().get(0) != null) {
+        if(!listing.getPhotos().get(0).equals("PLACEHOLDER")) {
             String url = getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?"+getResources().getString(R.string.apiDevKey);
             Log.d("URL", url);
             Picasso.get().load(getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?apiKey="+getResources().getString(R.string.apiDevKey)).into(image);
+        } else {
+            Drawable img = getContext().getDrawable(R.drawable.ic_baseline_no_photography_24);
+            image.setImageDrawable(img);
         }
 
         //Setup on click listeners
