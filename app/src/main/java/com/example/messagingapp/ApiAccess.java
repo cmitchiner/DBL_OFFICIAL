@@ -60,6 +60,10 @@ public interface ApiAccess {
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
                                      );
 
+    //@FormUrlEncoded
+    @POST("/pushFilterDict")
+    Call<ResponseBody> pushDict(@FieldMap Map<String, String> filtDict, @Query("apiKey") String apiKey);
+
     //@GET("/listingsFiltered")
     //Call<>
 
@@ -90,6 +94,7 @@ public interface ApiAccess {
     @Multipart
     @POST("/addimg")
     Call<ResponseBody> uploadImg(@Part MultipartBody.Part image, @Query("apiKey") String apiKey);
+
 //    @FormUrlEncoded
 //    @POST("/addimg")
 //    Call<ResponseBody> uploadImg(@Field("image") File img, @Query("apiKey") String apiKey);

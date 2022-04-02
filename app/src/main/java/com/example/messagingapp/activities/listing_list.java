@@ -36,6 +36,7 @@ import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.google.protobuf.Api;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -141,6 +142,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         initViewsAndVars(view);
         //Set Title and add filter, depending on how listing list was started
         Log.d("filter", String.valueOf(getArguments()));
+        filtDict = new HashMap<>();
         if(getArguments() != null){
 
             Log.d("bundle", String.valueOf(getArguments()));
@@ -197,7 +199,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                         Addbubble(filtCol+":"+filtContent);
                         filtDict.put(filtCol, filtContent);
                         Log.d("filter", String.valueOf(filtDict));
-                        filter();
+                        //filter();
                     }
                     return true;
                 }
@@ -273,6 +275,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
                 if(!response.isSuccessful()) {
+                    Toast.makeText(getContext(), "no response ", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 list = response.body();
@@ -441,8 +444,38 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     }
 
     //Function to filter listings
-    public void filter() {
-        Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
+     public void filter() {
+            Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
+        pushDictionary(filtDict);
+
     }
+
+
+
+    public void pushDictionary(Map<String, String> filtDict){
+        //Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        //ApiAccess apiAccess = retrofit.create(ApiAccess.class);
+       Call<ResponseBody> pushDict = apiAccess.pushDict(filtDict,getResources().getString(R.string.apiDevKey) );
+        pushDict.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(getContext(), "no response ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getContext(), "Filtered by: ", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getContext(), "failed ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+    }
+
 }
+
 

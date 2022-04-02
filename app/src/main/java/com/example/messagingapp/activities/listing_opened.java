@@ -168,6 +168,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         } else {
             isbn.setVisibility(View.INVISIBLE);
         }
+
         //Check if current user is the creator of the listing, and show complete button if so
         if(MainActivity.isGuest) {
             completeListing.setVisibility(View.GONE);
