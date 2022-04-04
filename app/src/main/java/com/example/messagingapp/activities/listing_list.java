@@ -205,18 +205,22 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 if(i == EditorInfo.IME_ACTION_SEARCH) {
 
                     filtContent = textView.getText().toString().trim();
-                    filterText.clearFocus();
                     Log.d("filter", "kur");
                     if(!filtContent.isEmpty()) {
-                        Addbubble(filtCol+":"+filtContent);
-
-                        filtDict.get(filtCol).add(filtContent);
-                        filter();
+                        if(!filtDict.get(filtCol).contains(filtContent)){
+                            Addbubble(filtCol+":"+filtContent);
+                            filtDict.get(filtCol).add(filtContent);
+                            filter();
+                        } else{
+                            Toast.makeText(getActivity(), "Already filtering by " + filtContent, Toast.LENGTH_SHORT).show();
+                        }
 
                         Log.d("filter", String.valueOf(filtDict));
                     }
                     return true;
                 }
+                filterText.setText("");
+                filterText.clearFocus();
                 return false;
             }
         });
@@ -306,7 +310,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     }
 
 
-    //On click listner for the rows
+    //On click listner for the rows. Requests the full listing data before opening the fragment
     public void rowOnClick(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
         getFullData.enqueue(new Callback<ResponseBody>() {
@@ -376,13 +380,12 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         });
     }
 
-    //Swaps fragment with the correpsonding fragment, depending on the value of isBid
+    //Swaps listing list fragment with the opened listing fragment, depending on the value of isBid
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
 
-
-        if(!list.getIsBid()){
+        if(!list.getIsBid()) {
             listing_opened listing_opened = new listing_opened();
             listing_opened.setArguments(bundle);
 
@@ -434,10 +437,8 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
          */
     }
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
-
+    public void onNothingSelected(AdapterView<?> adapterView) { }
+    // Method to create the ui bubble after entering a filter in the searchbar
     public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
         View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
