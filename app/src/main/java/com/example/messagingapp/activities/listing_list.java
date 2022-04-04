@@ -467,7 +467,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     }
 
 
-
+    //Pushes dictionary to the server, and changes the contents of the recycler view
     public void pushDictionary(Map<String, ArrayList<String>> filtDict){
         Log.d("filter", "this triggers: "+String.valueOf(filtDict));
         Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
