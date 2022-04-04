@@ -1,9 +1,18 @@
 package com.example.messagingapp.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -36,15 +46,24 @@ import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.protobuf.Api;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -83,6 +102,14 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
 
     ApiAccess apiAccess;
+
+    //Location varibles
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 101;
+    private double latitude;
+    private double longitude;
+    //private Location location;
+    Location location = new Location("location");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -280,8 +307,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         locationbutt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                getLocation();
             }
         });
     }
@@ -410,6 +436,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
+        Log.d("filter", "filtCol: " + filtCol);
         //Makes spinner text white
         /*switch (filtCol){
             String[] empty;
@@ -490,9 +517,103 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
             }
         });
+    }
 
 
+    @SuppressLint("MissingPermission")
+    private Location getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        //Location location = new Location("location");
+        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+        if (checkPermission()) {
+            if (locationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
 
+                            //store to database here
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+                            if(!filtDict.get("location").contains(latitude + ";" + longitude)){
+                                filtDict.get("location").add(latitude + ";" + longitude);
+                                Log.d("filter", "dict after location filt: " + String.valueOf(filtDict));
+                            }
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+
+        }else {
+            askPermissionLoc();
+        }
+        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
+        return location;
+    }
+
+    private String getAddress(double latitude, double longitude) {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String address = addresses.get(0).getAddressLine(0);
+            return address;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "Something went wrong";
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest = LocationRequest.create();
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
+                Looper.myLooper());
+    }
+
+    public boolean locationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+        }
+    };
+
+    public boolean checkPermission() {
+
+        return ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void askPermissionLoc() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
 
