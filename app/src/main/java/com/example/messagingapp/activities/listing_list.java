@@ -76,8 +76,11 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     TextView titleView;
     String personalType;
     String userId;
-    Map<String, String> filtDict;
+    Map<String, ArrayList<String>> filtDict;
     Button locationbutt;
+
+    ArrayList<String> type;
+
 
     ApiAccess apiAccess;
 
@@ -120,6 +123,8 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        apiAccess = retrofit.create(ApiAccess.class);
 
     }
 
@@ -138,11 +143,21 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         super.onViewCreated(view, savedInstanceState);
 
 
+
         //getting the Views for every view component
         initViewsAndVars(view);
         //Set Title and add filter, depending on how listing list was started
         Log.d("filter", String.valueOf(getArguments()));
         filtDict = new HashMap<>();
+        filtDict.put("author", new ArrayList<String>());
+        filtDict.put("title", new ArrayList<String>());
+        filtDict.put("type",    new ArrayList<String>());
+        filtDict.put("university", new ArrayList<String>());
+        filtDict.put("course_code", new ArrayList<String>());
+        filtDict.put("isbn", new ArrayList<String>());
+        filtDict.put("location", new ArrayList<String>());
+        Log.d("filter", String.valueOf(filtDict));
+
         if(getArguments() != null){
 
             Log.d("bundle", String.valueOf(getArguments()));
@@ -153,19 +168,15 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             titleView.setText(String.valueOf(parts[0]+"'s Offers"));
             if(!userId.toString().equals("no")){
                 titleView.setText(String.valueOf(parts[0]+"'s Offers"));
-                filtDict.put("author", userId);
+                filtDict.get("author").add(userId);
+                Log.d("filter", String.valueOf(filtDict));
+                filter();
+
             }else{
                 titleView.setText(String.valueOf("Offers"));
             }
 
-            filtDict.put("author", "");
-            filtDict.put("title", "");
-            filtDict.put("type", "");
-            filtDict.put("university", "");
-            filtDict.put("course_code", "");
-            filtDict.put("isbn", "");
-            filtDict.put("location", "");
-            Log.d("filter", String.valueOf(filtDict));
+
         }
 
 
@@ -192,14 +203,17 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if(i == EditorInfo.IME_ACTION_SEARCH) {
+
                     filtContent = textView.getText().toString().trim();
                     filterText.clearFocus();
                     Log.d("filter", "kur");
                     if(!filtContent.isEmpty()) {
                         Addbubble(filtCol+":"+filtContent);
-                        filtDict.put(filtCol, filtContent);
+
+                        filtDict.get(filtCol).add(filtContent);
+                        filter();
+
                         Log.d("filter", String.valueOf(filtDict));
-                        //filter();
                     }
                     return true;
                 }
@@ -221,7 +235,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         });
 
         //initializing arrays
-        getData();
+        if(userId.toString().equals("no")) {
+            getData();
+        }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(manager);
@@ -261,6 +277,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onClick(View view) {
 
+
             }
         });
     }
@@ -268,8 +285,6 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     private void getData(){
         int rowNum = 150;
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-        apiAccess = retrofit.create(ApiAccess.class);
         Call<ArrayList<ListFacade>> listingQuery = apiAccess.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
         listingQuery.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
@@ -391,7 +406,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     //On Item selected events for spinner. TODO set suggested text
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        filtCol = (adapterView.getItemAtPosition(i).toString());
+        filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
         //Makes spinner text white
         /*switch (filtCol){
             String[] empty;
@@ -434,9 +449,10 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 CharSequence bubText = bubble_text.getText();
                 String parts[] = bubText.toString().split(":");
                 Log.d("bubble", "removed filter " + bubble_text.getText() );
-                filtDict.remove(parts[0], parts[1]);
+                filtDict.get(parts[0]).remove(parts[1]);
                 Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
+                filter();
             }
         });
         filt_cont.addView(bubble);
@@ -445,36 +461,40 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
     //Function to filter listings
      public void filter() {
-            Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
+        //Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
         pushDictionary(filtDict);
 
     }
 
 
 
-    public void pushDictionary(Map<String, String> filtDict){
-        //Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-        //ApiAccess apiAccess = retrofit.create(ApiAccess.class);
-       Call<ResponseBody> pushDict = apiAccess.pushDict(filtDict,getResources().getString(R.string.apiDevKey) );
-        pushDict.enqueue(new Callback<ResponseBody>() {
+    public void pushDictionary(Map<String, ArrayList<String>> filtDict){
+        Log.d("filter", "this triggers: "+String.valueOf(filtDict));
+        Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
+        pushDict.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(getContext(), "no response ", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(getContext(), "Filtered by: ", Toast.LENGTH_SHORT).show();
+
+                list = response.body();
+                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
+                recycler.setAdapter(recycleOfferAdapter);
+
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getContext(), "failed ", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
+
             }
         });
 
 
 
     }
+
+
 
 }
 
