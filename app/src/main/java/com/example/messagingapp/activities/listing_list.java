@@ -97,6 +97,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     String userId;
     Map<String, ArrayList<String>> filtDict;
     Button locationbutt;
+    Location userLocation;
 
     ArrayList<String> type;
 
@@ -308,6 +309,10 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             @Override
             public void onClick(View view) {
                 getLocation();
+                userLocation = getLocation();
+                Addbubble("location:Within 5km");
+                Log.d("filter",String.valueOf( userLocation));
+                filter();
             }
         });
     }
@@ -477,7 +482,11 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 CharSequence bubText = bubble_text.getText();
                 String parts[] = bubText.toString().split(":");
                 Log.d("bubble", "removed filter " + bubble_text.getText() );
-                filtDict.get(parts[0]).remove(parts[1]);
+                if(parts[0].equals("location")){
+                    filtDict.get(parts[0]).remove(0);
+                } else{
+                    filtDict.get(parts[0]).remove(parts[1]);
+                }
                 Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
                 filter();
@@ -505,8 +514,32 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 if(!response.isSuccessful()){
                     return;
                 }
-
                 list = response.body();
+
+                //To be removed?
+                if(!filtDict.get("location").isEmpty()){
+                    Log.d("filter", "????");
+                    ArrayList<ListFacade> toRemove = new ArrayList<>();
+                    for(ListFacade item:list){
+                        Location loc;
+                        if(item.getLocation() == null){
+                            toRemove.add(item);
+                            Log.d("filter", "Kek empty thus removed");
+                        } else {
+                            loc = new Location("");
+                            String[] coords = item.getLocation().split(";");
+                            loc.setLatitude(Double.valueOf(coords[0]));
+                            loc.setLongitude(Double.valueOf(coords[1]));
+                            float[] distance = new float[2];
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
+                            Log.d("filter",String.valueOf(distance[0]));
+                            if(distance[0] < 5000){
+                                toRemove.add(item);
+                            }
+                        }
+                    }
+                    list.removeAll(toRemove);
+                }
                 recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
 
@@ -517,6 +550,10 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
             }
         });
+    }
+
+    private void locationDistance(){
+
     }
 
 
