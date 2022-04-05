@@ -413,12 +413,9 @@ public class listing_list extends Fragment {
 //                            photos.add(array.getString(i));
 //                        }
 //                    }
-                    Location loc;
+                    String loc;
                     if (listFacade.getLocation() != null) {
-                        loc = new Location("");
-                        String[] coords = listFacade.getLocation().split(";");
-                        loc.setLatitude(Double.valueOf(coords[0]));
-                        loc.setLongitude(Double.valueOf(coords[1]));
+                        loc = listFacade.getLocation();
                     } else {
                         loc = null;
                     }

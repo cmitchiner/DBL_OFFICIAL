@@ -102,7 +102,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
-    Location locString;
+    String locString;
 
     Retrofit retrofit;
     ApiAccess apiAccess;
@@ -405,7 +405,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             if (ISBN) {
                 long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
                 listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
-                        ISBNlong, locString, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                        ISBNlong,locString , "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                         edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
             }else {
                 listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString,
@@ -420,7 +420,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     if(!response.isSuccessful()){
                         return;
                     }
-                    showSnackBar();
+                    //showSnackBar();
                 }
 
                 @Override
@@ -433,6 +433,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     /**
      * Shows a snackbar when successfully published listing
      */
+    /*
     private void showSnackBar() {
             Log.d(TAG, "showSnackBar: started");
             Snackbar.make(ActivityProfileLayout, "Offer added", Snackbar.LENGTH_INDEFINITE)
@@ -443,6 +444,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         }
                     }).show();
         }
+
+     */
 
     /**
      * Validates that all the required fields are non-empty
@@ -520,7 +523,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                             //store to database here
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            locString = location;
+                            locString = latitude + ";" + longitude;
                             //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
                             Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
                         }
