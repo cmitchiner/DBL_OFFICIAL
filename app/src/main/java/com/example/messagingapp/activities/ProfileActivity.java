@@ -359,6 +359,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                         Toast.makeText(ProfileActivity.this,
                                 "Username updated successfully",
                                 Toast.LENGTH_SHORT).show();
+                        usernameEt.setError(null);
+
                     } else {
                         Toast.makeText(ProfileActivity.this,
                                 "Failed to update username! Try again!",

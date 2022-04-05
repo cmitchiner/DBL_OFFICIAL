@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.messagingapp.objects.User;
@@ -21,8 +22,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FacebookAuthActivity extends MainActivity {
 
@@ -65,6 +71,20 @@ public class FacebookAuthActivity extends MainActivity {
 
     }
 
+    private void getToken() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
+    }
+    private void updateToken(String token) {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        Map<String, Object> data = new HashMap<>();
+        data.put("Token", "test");
+        firebaseFirestore.collection("Tokens")
+                .document(firebaseAuth.getCurrentUser().getUid())
+                .set(data)
+                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED"))
+                .addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
+    }
+
     private void handleFacebookAccessToken(AccessToken token) {
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -74,6 +94,7 @@ public class FacebookAuthActivity extends MainActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            getToken();
                             MainActivity.isGuest = false;
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             if (task.getResult().getAdditionalUserInfo().isNewUser()) {

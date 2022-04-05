@@ -208,9 +208,15 @@ public class listing_opened extends Fragment implements View.OnClickListener {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                ratingBar.setRating(user.rating);
-                author.setText(user.fullName);
-                usernameAuthor = user.username;
+                if (user != null) {
+                    ratingBar.setRating(user.rating);
+                    author.setText(user.fullName);
+                    usernameAuthor = user.username;
+                } else {
+                    ratingBar.setRating(0.0f);
+                    author.setText("ERROR");
+                }
+
             }
 
             @Override
