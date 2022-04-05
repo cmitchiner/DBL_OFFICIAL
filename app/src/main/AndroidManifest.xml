@@ -43,10 +43,12 @@
 
         <activity
             android:name=".activities.Listing_Activity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".activities.UserListingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".activities.ChangePasswordActivity"
             android:exported="false" />
@@ -61,7 +63,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.ProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
@@ -77,7 +80,8 @@
         <activity
             android:name=".activities.AddListingActivity"
             android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

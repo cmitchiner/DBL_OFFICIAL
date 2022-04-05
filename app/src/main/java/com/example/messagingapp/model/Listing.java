@@ -15,7 +15,7 @@ public class Listing implements Parcelable {
     private boolean sold;
     private String title;
     private long isbn;
-    private Location location;
+    private String location;
     private String language;
     private String auc_id;
     private String description;
@@ -23,7 +23,7 @@ public class Listing implements Parcelable {
     private String courseCode;
     private String userId;
 
-    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn, String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;
@@ -40,7 +40,7 @@ public class Listing implements Parcelable {
         this.courseCode = courseCode;
         this.userId = userId;
     }
-    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, Location location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;
@@ -67,7 +67,7 @@ public class Listing implements Parcelable {
         sold = in.readByte() != 0;
         title = in.readString();
         isbn = in.readLong();
-        location = in.readParcelable(Location.class.getClassLoader());
+        location = in.readString();
         language = in.readString();
         auc_id = in.readString();
         description = in.readString();
@@ -114,8 +114,8 @@ public class Listing implements Parcelable {
     public long getIsbn(){ return this.isbn; }
     public void setIsbn(long isbn){ this.isbn = isbn; }
 
-    public Location getlocation() { return this.location; }
-    public void setLocation(Location location) { this.location = location; }
+    public String getlocation() { return this.location; }
+    public void setLocation(String location) { this.location = location; }
 
     public String getLanguage() { return this.language; }
     public void setLanguage(String language) { this.language = language; }
@@ -158,7 +158,7 @@ public class Listing implements Parcelable {
         parcel.writeByte((byte) (sold ? 1 : 0));
         parcel.writeString(title);
         parcel.writeLong(isbn);
-        parcel.writeParcelable(location, i);
+        parcel.writeString(location);
         parcel.writeString(language);
         parcel.writeString(auc_id);
         parcel.writeString(description);

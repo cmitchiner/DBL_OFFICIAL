@@ -89,7 +89,7 @@ public interface ApiAccess {
     );
 
     @PATCH("/updatelisting")
-    Call<ResponseBody> updateListing(@Body JSONObject updates);
+    Call<ResponseBody> updateListing(@Body JSONObject updates, @Query("apiKey") String apiKey);
 
     @Multipart
     @POST("/addimg")

@@ -1,9 +1,18 @@
 package com.example.messagingapp.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -36,15 +46,24 @@ import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.protobuf.Api;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -60,9 +79,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements AdapterView.OnItemSelectedListener {
+public class listing_list extends Fragment {
     int count = 0;
-    ArrayList<ListFacade> list = new ArrayList<>();
+
+    //Components
+    TextView titleView;
     RecyclerView recycler;
     RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
@@ -70,19 +91,31 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     ImageButton addListingButton;
     Spinner spinner;
     AutoCompleteTextView filterText;
-    String filtCol;
-    String filtContent;
-    SelectListener selectListener;
-    TextView titleView;
-    String personalType;
-    String userId;
-    Map<String, ArrayList<String>> filtDict;
     Button locationbutt;
 
-    ArrayList<String> type;
+    String filtCol;
+    String filtContent;
+    String personalType;
+    String userId;
+    Location userLocation;
 
+    //Arraylists for items for recyclerview
+    Map<String, ArrayList<String>> filtDict;
+    ArrayList<ListFacade> list = new ArrayList<>();
 
+    //Listner interface
+    SelectListener selectListener;
+
+    //Retrofit interface
     ApiAccess apiAccess;
+
+    //Location varibles
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 101;
+    private double latitude;
+    private double longitude;
+    //private Location location;
+    Location location = new Location("location");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,8 +177,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
 
 
-        //getting the Views for every view component
+        //Initiating variables, arrays and components
         initViewsAndVars(view);
+
         //Set Title and add filter, depending on how listing list was started
         Log.d("filter", String.valueOf(getArguments()));
         filtDict = new HashMap<>();
@@ -166,60 +200,106 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             userId = parts[1];
 
             titleView.setText(String.valueOf(parts[0]+"'s Offers"));
-            if(!userId.toString().equals("no")){
+            if( !userId.toString().equals("no") ) {
                 titleView.setText(String.valueOf(parts[0]+"'s Offers"));
                 filtDict.get("author").add(userId);
                 Log.d("filter", String.valueOf(filtDict));
                 filter();
 
-            }else{
+            }else {
                 titleView.setText(String.valueOf("Offers"));
             }
-
-
         }
 
-
-        //Creating Spinner for filter column selection
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
-                , R.array.filterColumns, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-        //Making the drop down menu show up on text field click
-        filterText.setOnClickListener(new View.OnClickListener() {
+        //Setting up spinner
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                //filterText.showDropDown();
-            }
-        });
+            public void run() {
 
+                //Creating Spinner for filter column selection
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
+                        , R.array.filterColumns, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
+                        Log.d("filter", "filtCol: " + filtCol);
+                        //Makes spinner text white
+        /*switch (filtCol){
+            String[] empty;
+            case "Title":
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1,  ));
+                break;
+            case "Type":
+                String[] types = {"book", "notes", "summary"};
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, types));
+                break;
+            case "University":
+                String[] university = getResources().getStringArray(R.array.Universities);
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, university));
+                break;
+            case "Course code":
+                break;
+            case "ISBN":
+                break;
+        }
+        filterText.showDropDown();
 
-        //Setting up text view for filtering
+         */
 
-        //Adding event listner for soft input
-        filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_SEARCH) {
-
-                    filtContent = textView.getText().toString().trim();
-                    filterText.clearFocus();
-                    Log.d("filter", "kur");
-                    if(!filtContent.isEmpty()) {
-                        Addbubble(filtCol+":"+filtContent);
-
-                        filtDict.get(filtCol).add(filtContent);
-                        filter();
-
-                        Log.d("filter", String.valueOf(filtDict));
                     }
-                    return true;
-                }
-                return false;
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                //Making the drop down menu show up on text field click
+                filterText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //filterText.showDropDown();
+                    }
+                });
+
+
+                //Setting up text view for filtering
+
+                //Adding event listner for soft input
+                filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                        if(i == EditorInfo.IME_ACTION_SEARCH) {
+
+                            filtContent = textView.getText().toString().trim();
+                            Log.d("filter", "kur");
+                            if(!filtContent.isEmpty()) {
+                                if(!filtDict.get(filtCol).contains(filtContent)){
+                                    Addbubble(filtCol+":"+filtContent);
+                                    filtDict.get(filtCol).add(filtContent);
+                                    filter();
+                                } else{
+                                    Toast.makeText(getActivity(), "Already filtering by " + filtContent, Toast.LENGTH_SHORT).show();
+                                }
+
+                                Log.d("filter", String.valueOf(filtDict));
+                            }
+                            return true;
+                        }
+                        filterText.setText("");
+                        filterText.clearFocus();
+                        return false;
+                    }
+                });
+
             }
-        });
+        }).start();
 
         //Setting Add Listing button
         addListingButton.setOnClickListener(new View.OnClickListener() {
@@ -229,14 +309,14 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                     //Deny add listing capability to guests
                     Toast.makeText(getActivity(), "This feature is not allowed for guests", Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivity(new Intent(getActivity(), AddListingActivity.class));
+                    startActivity(new Intent(getContext(), AddListingActivity.class));
                 }
             }
         });
 
         //initializing arrays
         if(userId.toString().equals("no")) {
-            getData();
+            filter();
         }
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -248,7 +328,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                     count++;
                     progressBar.setVisibility(View.VISIBLE);
                     if(count < 100){
-                        getData();
+                        filter();
                     }
                 }
             }
@@ -276,8 +356,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         locationbutt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                getLocation();
+                Addbubble("location:Within 5km");
+                filter();
             }
         });
     }
@@ -306,7 +387,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     }
 
 
-    //On click listner for the rows
+    //On click listner for the rows. Requests the full listing data before opening the fragment
     public void rowOnClick(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
         getFullData.enqueue(new Callback<ResponseBody>() {
@@ -332,12 +413,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 //                            photos.add(array.getString(i));
 //                        }
 //                    }
-                    Location loc;
+                    String loc;
                     if (listFacade.getLocation() != null) {
-                        loc = new Location("");
-                        String[] coords = listFacade.getLocation().split(";");
-                        loc.setLatitude(Double.valueOf(coords[0]));
-                        loc.setLongitude(Double.valueOf(coords[1]));
+                        loc = listFacade.getLocation();
                     } else {
                         loc = null;
                     }
@@ -376,13 +454,12 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
         });
     }
 
-    //Swaps fragment with the correpsonding fragment, depending on the value of isBid
+    //Swaps listing list fragment with the opened listing fragment, depending on the value of isBid
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
 
-
-        if(!list.getIsBid()){
+        if(!list.getIsBid()) {
             listing_opened listing_opened = new listing_opened();
             listing_opened.setArguments(bundle);
 
@@ -403,41 +480,7 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
     }
 
-    //On Item selected events for spinner. TODO set suggested text
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
-        //Makes spinner text white
-        /*switch (filtCol){
-            String[] empty;
-            case "Title":
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1,  ));
-                break;
-            case "Type":
-                String[] types = {"book", "notes", "summary"};
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, types));
-                break;
-            case "University":
-                String[] university = getResources().getStringArray(R.array.Universities);
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, university));
-                break;
-            case "Course code":
-                break;
-            case "ISBN":
-                break;
-        }
-        filterText.showDropDown();
-
-         */
-    }
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
-
+    // Method to create the ui bubble after entering a filter in the searchbar
     public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
         View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
@@ -449,7 +492,11 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 CharSequence bubText = bubble_text.getText();
                 String parts[] = bubText.toString().split(":");
                 Log.d("bubble", "removed filter " + bubble_text.getText() );
-                filtDict.get(parts[0]).remove(parts[1]);
+                if(parts[0].equals("location")){
+                    filtDict.get(parts[0]).remove(0);
+                } else{
+                    filtDict.get(parts[0]).remove(parts[1]);
+                }
                 Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
                 filter();
@@ -477,8 +524,37 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
                 if(!response.isSuccessful()){
                     return;
                 }
-
                 list = response.body();
+
+                //To be removed?
+                if(!filtDict.get("location").isEmpty()){
+                    Log.d("filter", "????");
+                    ArrayList<ListFacade> toRemove = new ArrayList<>();
+                    for(ListFacade item:list){
+                        Location loc;
+                        Log.d("filter", "before if item.location == null");
+                        if(item.getLocation() == null){
+                            Log.d("filter", "item location: " + String.valueOf(item.getLocation()));
+
+                            toRemove.add(item);
+                            Log.d("filter", "Kek empty thus removed");
+                        } else {
+                            Log.d("filter", "location elseer ");
+                            loc = new Location("");
+                            String[] coords = item.getLocation().split(";");
+                            loc.setLatitude(Double.valueOf(coords[0]));
+                            loc.setLongitude(Double.valueOf(coords[1]));
+                            Log.d("filter", "user location, lat: " + String.valueOf(userLocation.getLatitude()) + "long: " + userLocation.getLongitude() );
+                            float[] distance = new float[2];
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
+                            Log.d("filter", "distance between: " + String.valueOf(distance[0]));
+                            if(distance[0] > 5000){
+                                toRemove.add(item);
+                            }
+                        }
+                    }
+                    list.removeAll(toRemove);
+                }
                 recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
 
@@ -489,9 +565,107 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
             }
         });
+    }
 
 
+    @SuppressLint("MissingPermission")
+    private Location getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        //Location location = new Location("location");
+        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+        if (checkPermission()) {
+            if (locationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
 
+                            //store to database here
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            userLocation = new Location("");
+                            userLocation.setLatitude(latitude);
+                            userLocation.setLongitude(longitude);
+                            Log.d("filter", "userLocation: " + String.valueOf(userLocation));
+                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+                            if(!filtDict.get("location").contains(latitude + ";" + longitude)){
+                                filtDict.get("location").add(latitude + ";" + longitude);
+                                Log.d("filter", "dict after location filt: " + String.valueOf(filtDict));
+                            }
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+
+        }else {
+            askPermissionLoc();
+        }
+        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
+        return location;
+    }
+
+    private String getAddress(double latitude, double longitude) {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String address = addresses.get(0).getAddressLine(0);
+            return address;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "Something went wrong";
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest = LocationRequest.create();
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
+                Looper.myLooper());
+    }
+
+    public boolean locationEnabled() {
+        LocationManager locationManager =
+                (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+        }
+    };
+
+    public boolean checkPermission() {
+
+        return ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void askPermissionLoc() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
 
