@@ -205,9 +205,17 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
         fullNameEt.setText(currentFullName);
         usernameEt.setText(currentUsername);
         phoneEt.setText(currentPhone);
+        if (fullNameEt.getText().toString().equals(" ")) {
+            fullNameEt.setError("Please enter your full name");
+            fullNameEt.requestFocus();
+        }
         if (currentUsername.equals(fireBaseUser.getUid().toString())) {
             usernameEt.setError("Please change your username!");
             usernameEt.requestFocus();
+        }
+        if (phoneEt.getText().toString().equals("0")) {
+            phoneEt.setError("Please enter your phone number");
+            phoneEt.requestFocus();
         }
     }
 
@@ -377,6 +385,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                         Toast.makeText(ProfileActivity.this,
                                 "Phone number updated successfully",
                                 Toast.LENGTH_SHORT).show();
+                        phoneEt.setError(null);
                     } else {
                         /** User info failed to be updated in database **/
                         Toast.makeText(ProfileActivity.this,
