@@ -523,7 +523,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                             //store to database here
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            locString = latitude + ";" + longitude;
+                            String loString = latitude + ";" + longitude;
+                            locString =  String.format(Locale.ROOT, "%010.5f;%010.5f", latitude,longitude);
                             //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
                             Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
                         }

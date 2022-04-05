@@ -280,7 +280,7 @@ public class listing_list extends Fragment {
                             filtContent = textView.getText().toString().trim();
                             Log.d("filter", "kur");
                             if(!filtContent.isEmpty()) {
-                                if(!filtDict.get(filtCol).contains(filtContent)){
+                                if(!filtDict.get(filtCol).contains( filtContent) || !filtDict.get("location").isEmpty() ){
                                     Addbubble(filtCol+":"+filtContent);
                                     filtDict.get(filtCol).add(filtContent);
                                     filter();
