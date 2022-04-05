@@ -357,9 +357,7 @@ public class listing_list extends Fragment {
             @Override
             public void onClick(View view) {
                 getLocation();
-                userLocation = getLocation();
                 Addbubble("location:Within 5km");
-                Log.d("filter",String.valueOf( userLocation));
                 filter();
             }
         });
@@ -537,18 +535,23 @@ public class listing_list extends Fragment {
                     ArrayList<ListFacade> toRemove = new ArrayList<>();
                     for(ListFacade item:list){
                         Location loc;
+                        Log.d("filter", "before if item.location == null");
                         if(item.getLocation() == null){
+                            Log.d("filter", "item location: " + String.valueOf(item.getLocation()));
+
                             toRemove.add(item);
                             Log.d("filter", "Kek empty thus removed");
                         } else {
+                            Log.d("filter", "location elseer ");
                             loc = new Location("");
                             String[] coords = item.getLocation().split(";");
                             loc.setLatitude(Double.valueOf(coords[0]));
                             loc.setLongitude(Double.valueOf(coords[1]));
+                            Log.d("filter", "user location, lat: " + String.valueOf(userLocation.getLatitude()) + "long: " + userLocation.getLongitude() );
                             float[] distance = new float[2];
                             Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
-                            Log.d("filter",String.valueOf(distance[0]));
-                            if(distance[0] < 5000){
+                            Log.d("filter", "distance between: " + String.valueOf(distance[0]));
+                            if(distance[0] > 5000){
                                 toRemove.add(item);
                             }
                         }
@@ -586,6 +589,10 @@ public class listing_list extends Fragment {
                             //store to database here
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+                            userLocation = new Location("");
+                            userLocation.setLatitude(latitude);
+                            userLocation.setLongitude(longitude);
+                            Log.d("filter", "userLocation: " + String.valueOf(userLocation));
                             //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
                             Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
                             if(!filtDict.get("location").contains(latitude + ";" + longitude)){

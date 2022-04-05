@@ -328,7 +328,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         } catch (JSONException e) {
 
         }
-        Call<ResponseBody> call = apiAccess.updateListing(json);
+        Call<ResponseBody> call = apiAccess.updateListing(json, getResources().getString(R.string.apiDevKey));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
