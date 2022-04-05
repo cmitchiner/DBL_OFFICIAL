@@ -142,7 +142,12 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
                                 //Pull stored user class from database
                                 User user = snapshot1.getValue(User.class);
                                 //snapshot1.getKey() contains the receiving users UID
-                                startChatWithUser(snapshot1.getKey(), user.fullName);
+                                if (!snapshot1.getKey().equals( firebaseAuth.getCurrentUser().getUid())) {
+                                    startChatWithUser(snapshot1.getKey(), user.fullName);
+                                } else {
+                                    Toast.makeText(NewMessageActivity.this,
+                                            "You cannot chat with yourself", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         } else { //Receiving user not found, alert current user
                             Toast.makeText(NewMessageActivity.this,
