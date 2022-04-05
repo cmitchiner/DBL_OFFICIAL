@@ -4,12 +4,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.activities.ChatListFragment;
@@ -49,6 +51,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
         builder.setSmallIcon(R.drawable.ic_baseline_circle_notifications_24);
+        builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
         builder.setContentTitle(user.fullName);
         builder.setContentText(message.getData().get("message"));
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(

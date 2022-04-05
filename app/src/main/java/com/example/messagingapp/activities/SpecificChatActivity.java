@@ -462,25 +462,29 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                             }
                         }
                     });
-        try {
-            JSONArray tokens = new JSONArray();
-            tokens.put(receiverToken);
+        if (receiverToken != null) {
+            try {
+                JSONArray tokens = new JSONArray();
+                tokens.put(receiverToken);
 
-            JSONObject data = new JSONObject();
-            data.put("userId", firebaseAuth.getCurrentUser().getUid());
-            data.put("name", firebaseAuth.getCurrentUser().getDisplayName());
-            data.put("token", senderToken);
-            data.put("message", messageToSend);
+                JSONObject data = new JSONObject();
+                data.put("userId", firebaseAuth.getCurrentUser().getUid());
+                data.put("name", firebaseAuth.getCurrentUser().getDisplayName());
+                data.put("token", senderToken);
+                data.put("message", messageToSend);
 
-            JSONObject body = new JSONObject();
-            body.put(Constants.REMOTE_MSG_DATA, data);
-            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
+                JSONObject body = new JSONObject();
+                body.put(Constants.REMOTE_MSG_DATA, data);
+                body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
 
-            sendNotification(body.toString());
+                sendNotification(body.toString());
 
-        } catch (Exception exception) {
-            Log.d("NOTIFICATION", "Error: " + exception.getMessage());
+            } catch (Exception exception) {
+                Log.d("NOTIFICATION", "Error: " + exception.getMessage());
 
+            }
+        } else {
+            Log.d("NOTIFICATION", "NOT SENT BECAUSE OTHER USER LOGGED OUT");
         }
             //Clear text field so they can send another message
             messageET.setText(null);
