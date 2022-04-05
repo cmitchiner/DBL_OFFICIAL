@@ -102,6 +102,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
+    Location locString;
 
     Retrofit retrofit;
     ApiAccess apiAccess;
@@ -404,13 +405,14 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             if (ISBN) {
                 long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
                 listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
-                        ISBNlong, null, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                        ISBNlong, locString, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                         edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
             }else {
-                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), null,
+                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString,
                         "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
                         edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
             }
+            Log.d("adder", "listing location: " + String.valueOf(listing.getlocation()));
             Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
             call2.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -518,6 +520,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                             //store to database here
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+                            locString = location;
                             //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
                             Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
                         }
