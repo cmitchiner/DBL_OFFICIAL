@@ -309,7 +309,7 @@ public class listing_list extends Fragment {
                     //Deny add listing capability to guests
                     Toast.makeText(getActivity(), "This feature is not allowed for guests", Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivity(new Intent(getActivity(), AddListingActivity.class));
+                    startActivity(new Intent(getContext(), AddListingActivity.class));
                 }
             }
         });
@@ -328,7 +328,7 @@ public class listing_list extends Fragment {
                     count++;
                     progressBar.setVisibility(View.VISIBLE);
                     if(count < 100){
-                        getData();
+                        filter();
                     }
                 }
             }
