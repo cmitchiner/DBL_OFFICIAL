@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,11 +12,6 @@ import android.widget.Toast;
 import com.example.messagingapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -102,14 +96,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void logoutUser() {
         //Make sure they are not guest to prevent errors with signing out
         if (!MainActivity.isGuest) {
-            FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            DocumentReference documentReference = firebaseFirestore.collection("Tokens")
-                    .document(firebaseAuth.getCurrentUser().getUid());
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put("Token", FieldValue.delete());
-            documentReference.update(updates)
-                    .addOnSuccessListener(unused -> Log.d("TOKEN", "Token deleted"))
-                    .addOnFailureListener(e -> Log.d("TOKEN", "Error deleting token: " + e));
             firebaseAuth.signOut();
         }
         //Inform user of log out

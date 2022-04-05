@@ -27,11 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.messagingapp.adapters.RecycleSpecificChatAdapter;
-import com.example.messagingapp.network.ApiClient;
-import com.example.messagingapp.network.ApiService;
 import com.example.messagingapp.objects.Message;
 import com.example.messagingapp.R;
-import com.example.messagingapp.utilities.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,19 +39,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -66,10 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SpecificChatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -91,8 +74,6 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
     //Variables to store info about sender/reciever
     String receiverName, senderName, receiverUID, senderUID, currentTime;
     String receiverRoom, senderRoom;
-    String senderToken, receiverToken;
-
     ArrayList<Message> messages;
 
     //Date Variables
@@ -181,44 +162,10 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                 .child(senderRoom)
                 .child("Messages");
 
-        //Set receiver token
-        pullTokens();
         //Get all previous messages or new messages from database
         pullMessagesFromDatabase();
 
 
-    }
-
-    private void pullTokens() {
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = firebaseFirestore.collection("Tokens")
-                .document(receiverUID);
-        DocumentReference documentReference2 = firebaseFirestore.collection("Tokens")
-                .document(senderUID);
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
-                        receiverToken = documentSnapshot.get("Token", String.class);
-                        Log.d("TOKEN", "Receiver: " + receiverToken);
-                    }
-                }
-            }
-        });
-        documentReference2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
-                        senderToken = documentSnapshot.get("Token", String.class);
-                        Log.d("TOKEN", "Sender: " + senderToken);
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -379,40 +326,6 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    private void sendNotification(String messageBody) {
-        ApiClient.getClient().create(ApiService.class).sendMessage(
-                Constants.getRemoteMsgHeaders(),
-                messageBody
-        ).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        if (response.body() != null) {
-                            JSONObject responseJson = new JSONObject(response.body());
-                            JSONArray results = responseJson.getJSONArray("results");
-                            if (responseJson.getInt("failure") == 1) {
-                                JSONObject error = (JSONObject) results.get(0);
-                                Log.d("NOTIFICATION", error.getString("error"));
-                                return;
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d("NOTIFICATION", "Notification sent successfully");
-                } else {
-                    Log.d("NOTIFICATION", "Error: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                Log.d("NOTIFICATION", t.getMessage());
-            }
-        });
-    }
-
     /**
      * Sends a message or image, by creating a new Message Object and uploading it to the database
      *
@@ -462,26 +375,6 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                             }
                         }
                     });
-        try {
-            JSONArray tokens = new JSONArray();
-            tokens.put(receiverToken);
-
-            JSONObject data = new JSONObject();
-            data.put("userId", firebaseAuth.getCurrentUser().getUid());
-            data.put("name", firebaseAuth.getCurrentUser().getDisplayName());
-            data.put("token", senderToken);
-            data.put("message", messageToSend);
-
-            JSONObject body = new JSONObject();
-            body.put(Constants.REMOTE_MSG_DATA, data);
-            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
-
-            sendNotification(body.toString());
-
-        } catch (Exception exception) {
-            Log.d("NOTIFICATION", "Error: " + exception.getMessage());
-
-        }
             //Clear text field so they can send another message
             messageET.setText(null);
     }

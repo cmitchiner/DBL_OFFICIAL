@@ -79,9 +79,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Use the {@link listing_list#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class listing_list extends Fragment implements AdapterView.OnItemSelectedListener {
+public class listing_list extends Fragment {
     int count = 0;
-    ArrayList<ListFacade> list = new ArrayList<>();
+
+    //Components
+    TextView titleView;
     RecyclerView recycler;
     RecycleOfferAdapter recycleOfferAdapter;
     ProgressBar progressBar;
@@ -89,19 +91,22 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
     ImageButton addListingButton;
     Spinner spinner;
     AutoCompleteTextView filterText;
+    Button locationbutt;
+
     String filtCol;
     String filtContent;
-    SelectListener selectListener;
-    TextView titleView;
     String personalType;
     String userId;
-    Map<String, ArrayList<String>> filtDict;
-    Button locationbutt;
     Location userLocation;
 
-    ArrayList<String> type;
+    //Arraylists for items for recyclerview
+    Map<String, ArrayList<String>> filtDict;
+    ArrayList<ListFacade> list = new ArrayList<>();
 
+    //Listner interface
+    SelectListener selectListener;
 
+    //Retrofit interface
     ApiAccess apiAccess;
 
     //Location varibles
@@ -172,8 +177,9 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
 
 
-        //getting the Views for every view component
+        //Initiating variables, arrays and components
         initViewsAndVars(view);
+
         //Set Title and add filter, depending on how listing list was started
         Log.d("filter", String.valueOf(getArguments()));
         filtDict = new HashMap<>();
@@ -194,64 +200,106 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
             userId = parts[1];
 
             titleView.setText(String.valueOf(parts[0]+"'s Offers"));
-            if(!userId.toString().equals("no")){
+            if( !userId.toString().equals("no") ) {
                 titleView.setText(String.valueOf(parts[0]+"'s Offers"));
                 filtDict.get("author").add(userId);
                 Log.d("filter", String.valueOf(filtDict));
                 filter();
 
-            }else{
+            }else {
                 titleView.setText(String.valueOf("Offers"));
             }
-
-
         }
 
-
-        //Creating Spinner for filter column selection
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
-                , R.array.filterColumns, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-        //Making the drop down menu show up on text field click
-        filterText.setOnClickListener(new View.OnClickListener() {
+        //Setting up spinner
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View view) {
-                //filterText.showDropDown();
-            }
-        });
+            public void run() {
 
+                //Creating Spinner for filter column selection
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
+                        , R.array.filterColumns, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
+                        Log.d("filter", "filtCol: " + filtCol);
+                        //Makes spinner text white
+        /*switch (filtCol){
+            String[] empty;
+            case "Title":
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1,  ));
+                break;
+            case "Type":
+                String[] types = {"book", "notes", "summary"};
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, types));
+                break;
+            case "University":
+                String[] university = getResources().getStringArray(R.array.Universities);
+                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
+                        android.R.layout.simple_list_item_1, university));
+                break;
+            case "Course code":
+                break;
+            case "ISBN":
+                break;
+        }
+        filterText.showDropDown();
 
-        //Setting up text view for filtering
+         */
 
-        //Adding event listner for soft input
-        filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_SEARCH) {
-
-                    filtContent = textView.getText().toString().trim();
-                    Log.d("filter", "kur");
-                    if(!filtContent.isEmpty()) {
-                        if(!filtDict.get(filtCol).contains(filtContent)){
-                            Addbubble(filtCol+":"+filtContent);
-                            filtDict.get(filtCol).add(filtContent);
-                            filter();
-                        } else{
-                            Toast.makeText(getActivity(), "Already filtering by " + filtContent, Toast.LENGTH_SHORT).show();
-                        }
-
-                        Log.d("filter", String.valueOf(filtDict));
                     }
-                    return true;
-                }
-                filterText.setText("");
-                filterText.clearFocus();
-                return false;
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                //Making the drop down menu show up on text field click
+                filterText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //filterText.showDropDown();
+                    }
+                });
+
+
+                //Setting up text view for filtering
+
+                //Adding event listner for soft input
+                filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                        if(i == EditorInfo.IME_ACTION_SEARCH) {
+
+                            filtContent = textView.getText().toString().trim();
+                            Log.d("filter", "kur");
+                            if(!filtContent.isEmpty()) {
+                                if(!filtDict.get(filtCol).contains(filtContent)){
+                                    Addbubble(filtCol+":"+filtContent);
+                                    filtDict.get(filtCol).add(filtContent);
+                                    filter();
+                                } else{
+                                    Toast.makeText(getActivity(), "Already filtering by " + filtContent, Toast.LENGTH_SHORT).show();
+                                }
+
+                                Log.d("filter", String.valueOf(filtDict));
+                            }
+                            return true;
+                        }
+                        filterText.setText("");
+                        filterText.clearFocus();
+                        return false;
+                    }
+                });
+
             }
-        });
+        }).start();
 
         //Setting Add Listing button
         addListingButton.setOnClickListener(new View.OnClickListener() {
@@ -437,39 +485,6 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
     }
 
-    //On Item selected events for spinner. TODO set suggested text
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
-        Log.d("filter", "filtCol: " + filtCol);
-        //Makes spinner text white
-        /*switch (filtCol){
-            String[] empty;
-            case "Title":
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1,  ));
-                break;
-            case "Type":
-                String[] types = {"book", "notes", "summary"};
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, types));
-                break;
-            case "University":
-                String[] university = getResources().getStringArray(R.array.Universities);
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, university));
-                break;
-            case "Course code":
-                break;
-            case "ISBN":
-                break;
-        }
-        filterText.showDropDown();
-
-         */
-    }
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) { }
     // Method to create the ui bubble after entering a filter in the searchbar
     public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
@@ -550,10 +565,6 @@ public class listing_list extends Fragment implements AdapterView.OnItemSelected
 
             }
         });
-    }
-
-    private void locationDistance(){
-
     }
 
 

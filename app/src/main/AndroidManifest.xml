@@ -80,7 +80,8 @@
         <activity
             android:name=".activities.AddListingActivity"
             android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

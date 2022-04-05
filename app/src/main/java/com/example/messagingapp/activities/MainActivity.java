@@ -45,14 +45,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -177,19 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void getToken() {
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
-    }
-    private void updateToken(String token) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("Token", token);
-        firebaseFirestore.collection("Tokens")
-                .document(firebaseAuth.getCurrentUser().getUid())
-                .set(data)
-                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED"))
-                .addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
-    }
-
     /**
      * Checks if a user is already logged in, and automatically redirects to profile activity
      *
@@ -200,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //if user is already signed in then go to profile activity
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            getToken();
             Log.d(TAG, "checkUser: User Already Signed In");
             isGuest = false;
             startActivity(new Intent(this, ProfileActivity.class));
@@ -334,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 //Login SUCCESS: Redirect to Profile
-                                getToken();
                                 if (firebaseAuth.getCurrentUser().isEmailVerified()) {
                                     isGuest = false;
                                     startActivity(new Intent(MainActivity.this,
@@ -429,7 +408,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onSuccess(AuthResult authResult) {
                         //login success
                         Log.d(TAG, "onSuccess: Logged In");
-                        getToken();
                         isGuest = false;
                         //Get logged-in user
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -451,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Log.d(TAG, "onSuccess: Existing User...\n" + email);
                             //Inform user
                             Toast.makeText(MainActivity.this, "Existing User...\n"
-                                    + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+                                    + email, Toast.LENGTH_SHORT).show();
                         }
                         //Start profile activity
                         startActivity(new Intent(MainActivity.this, ProfileActivity.class));
@@ -526,7 +504,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            getToken();
                             isGuest = false;
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                             //Check if a user is new
