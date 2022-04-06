@@ -117,6 +117,8 @@ public class listing_list extends Fragment {
     //private Location location;
     Location location = new Location("location");
 
+    Thread worker;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -363,27 +365,102 @@ public class listing_list extends Fragment {
         });
     }
 
-    private void getData(){
-        int rowNum = 150;
-
-        Call<ArrayList<ListFacade>> listingQuery = apiAccess.getInfo(getResources().getString(R.string.apiDevKey), rowNum);
-        listingQuery.enqueue(new Callback<ArrayList<ListFacade>>() {
+    //Pushes dictionary to the server, and changes the contents of the recycler view
+    public void pushDictionary(Map<String, ArrayList<String>> filtDict){
+        Log.d("filter", "this triggers: "+String.valueOf(filtDict));
+        Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
+        pushDict.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
             public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
-                if(!response.isSuccessful()) {
-                    Toast.makeText(getContext(), "no response ", Toast.LENGTH_SHORT).show();
+                if(!response.isSuccessful()){
                     return;
                 }
                 list = response.body();
+
+                //To be removed?
+                if(!filtDict.get("location").isEmpty()){
+                    Log.d("filter", "????");
+                    ArrayList<ListFacade> toRemove = new ArrayList<>();
+                    for(ListFacade item:list){
+                        Location loc;
+                        Log.d("filter", "before if item.location == null");
+                        if(item.getLocation() == null){
+                            Log.d("filter", "item location: " + String.valueOf(item.getLocation()));
+
+                            toRemove.add(item);
+                            Log.d("filter", "Kek empty thus removed");
+                        } else {
+                            Log.d("filter", "location elseer ");
+                            loc = new Location("");
+                            String[] coords = item.getLocation().split(";");
+                            loc.setLatitude(Double.valueOf(coords[0]));
+                            loc.setLongitude(Double.valueOf(coords[1]));
+                            Log.d("filter", "user location, lat: " + String.valueOf(userLocation.getLatitude()) + "long: " + userLocation.getLongitude() );
+                            float[] distance = new float[2];
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
+                            Log.d("filter", "distance between: " + String.valueOf(distance[0]));
+                            if(distance[0] > 5000){
+                                toRemove.add(item);
+                            }
+                        }
+                    }
+                    list.removeAll(toRemove);
+                }
                 recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
+
             }
 
             @Override
             public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
-                Log.d(null, t.getMessage());
+
             }
         });
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private Location getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        //Location location = new Location("location");
+        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
+        if (checkPermission()) {
+            if (locationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+
+                            //store to database here
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            userLocation = new Location("");
+                            userLocation.setLatitude(latitude);
+                            userLocation.setLongitude(longitude);
+                            Log.d("filter", "userLocation: " + String.valueOf(userLocation));
+                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
+                            if(!filtDict.get("location").contains(latitude + ";" + longitude)){
+                                filtDict.get("location").add(latitude + ";" + longitude);
+                                Log.d("filter", "dict after location filt: " + String.valueOf(filtDict));
+                            }
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(getActivity(), "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+
+        }else {
+            askPermissionLoc();
+        }
+        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
+        return location;
     }
 
 
@@ -514,103 +591,7 @@ public class listing_list extends Fragment {
     }
 
 
-    //Pushes dictionary to the server, and changes the contents of the recycler view
-    public void pushDictionary(Map<String, ArrayList<String>> filtDict){
-        Log.d("filter", "this triggers: "+String.valueOf(filtDict));
-        Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
-        pushDict.enqueue(new Callback<ArrayList<ListFacade>>() {
-            @Override
-            public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
-                if(!response.isSuccessful()){
-                    return;
-                }
-                list = response.body();
 
-                //To be removed?
-                if(!filtDict.get("location").isEmpty()){
-                    Log.d("filter", "????");
-                    ArrayList<ListFacade> toRemove = new ArrayList<>();
-                    for(ListFacade item:list){
-                        Location loc;
-                        Log.d("filter", "before if item.location == null");
-                        if(item.getLocation() == null){
-                            Log.d("filter", "item location: " + String.valueOf(item.getLocation()));
-
-                            toRemove.add(item);
-                            Log.d("filter", "Kek empty thus removed");
-                        } else {
-                            Log.d("filter", "location elseer ");
-                            loc = new Location("");
-                            String[] coords = item.getLocation().split(";");
-                            loc.setLatitude(Double.valueOf(coords[0]));
-                            loc.setLongitude(Double.valueOf(coords[1]));
-                            Log.d("filter", "user location, lat: " + String.valueOf(userLocation.getLatitude()) + "long: " + userLocation.getLongitude() );
-                            float[] distance = new float[2];
-                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
-                            Log.d("filter", "distance between: " + String.valueOf(distance[0]));
-                            if(distance[0] > 5000){
-                                toRemove.add(item);
-                            }
-                        }
-                    }
-                    list.removeAll(toRemove);
-                }
-                recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
-                recycler.setAdapter(recycleOfferAdapter);
-
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
-
-            }
-        });
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private Location getLocation() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        //Location location = new Location("location");
-        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
-        if (checkPermission()) {
-            if (locationEnabled()) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-
-                            //store to database here
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            userLocation = new Location("");
-                            userLocation.setLatitude(latitude);
-                            userLocation.setLongitude(longitude);
-                            Log.d("filter", "userLocation: " + String.valueOf(userLocation));
-                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
-                            if(!filtDict.get("location").contains(latitude + ";" + longitude)){
-                                filtDict.get("location").add(latitude + ";" + longitude);
-                                Log.d("filter", "dict after location filt: " + String.valueOf(filtDict));
-                            }
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(getActivity(), "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-
-        }else {
-            askPermissionLoc();
-        }
-        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
-        return location;
-    }
 
     private String getAddress(double latitude, double longitude) {
         Geocoder geocoder;

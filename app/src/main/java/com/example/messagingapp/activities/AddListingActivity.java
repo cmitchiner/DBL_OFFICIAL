@@ -277,7 +277,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (data != null) {
+        Log.d("data","data: " + String.valueOf(data));
+            if (data != null && data.getExtras() != null ) {
                 if (requestCode == 2) {
                     // Image chosen from gallery
                     Uri selectedImage = data.getData();
