@@ -91,14 +91,12 @@ public class Listing implements Parcelable {
     public ArrayList<String> getPhotos(){
         return this.photo;
     }
-    public void addPhoto(String Photo){ this.photo.add(Photo); }
+
     public String getListId() {return this.listID; }
 
     public int getPrice(){ return this.price;}
-    public void setPrice(int price){this.price = price; }
 
     public String getType(){ return this.type;}
-    public void setType( String type){ this.type = type; }
 
     public int getReportCounter(){ return this.reportCounter; }
     public void setReportCounter(int repCounter){ this.reportCounter = repCounter; }
@@ -106,19 +104,14 @@ public class Listing implements Parcelable {
     public boolean getSold(){
         return this.sold;
     }
-    public void setSold(boolean sold){ this.sold = sold; }
 
     public String getTitle(){ return this.title; }
-    public void setTitle(String title){ this.title = title; }
 
     public long getIsbn(){ return this.isbn; }
-    public void setIsbn(long isbn){ this.isbn = isbn; }
 
     public String getlocation() { return this.location; }
-    public void setLocation(String location) { this.location = location; }
 
     public String getLanguage() { return this.language; }
-    public void setLanguage(String language) { this.language = language; }
 
     public String getAucId() { return this.auc_id; }
 
@@ -126,10 +119,8 @@ public class Listing implements Parcelable {
     public void setDescription(String description) { this.description = description; }
 
     public String getUniversity() { return this.university; }
-    public void setUniversity(String university) { this.university = university; }
 
     public String getCourseCode() { return this.courseCode; }
-    public void setCourseCode(String courseCode) { this.courseCode = courseCode; }
 
     public String getUser() { return userId; }
 

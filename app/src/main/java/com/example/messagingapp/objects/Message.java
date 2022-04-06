@@ -34,7 +34,6 @@ public class Message {
         this.senderID = senderID;
         this.timestamp = timestamp;
         this.currentTime = currentTime;
-        //this.isNew = isNew;
         this.isImage = false;
         this.uniqueID = UUID.randomUUID().toString();
     }
@@ -42,7 +41,6 @@ public class Message {
         this.senderID = senderID;
         this.timestamp = timestamp;
         this.currentTime = currentTime;
-        //this.isNew = isNew;
         this.isImage = true;
         this.uniqueID = UUID.randomUUID().toString();
     }
@@ -54,13 +52,7 @@ public class Message {
     public void setImage(Boolean image) {
         isImage = image;
     }
-//    public Boolean getIsNew() {
-//        return isNew;
-//    }
-//
-//    public void setIsNew(Boolean aNew) {
-//        isNew = aNew;
-//    }
+
     public String getMessage() {
         return message;
     }

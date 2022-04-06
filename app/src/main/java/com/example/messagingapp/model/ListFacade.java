@@ -65,39 +65,30 @@ public class ListFacade implements Parcelable {
     };
 
     public String getList_iD(){return this.list_iD;}
-    public void setList_iD(String listId){this.list_iD = listId;}
 
     public String getTitle(){ return this.title; }
-    public void setTitle(String title){this.title = title;}
 
     public int getPrice(){
         return this.price;
     }
-    public void setPrice(int price){this.price = price;}
 
     public String getType(){
         return this.type;
     }
-    public void setType(String type){this.type = type;}
 
     public String getCourseCode(){
         return courseCode;
     }
-    public void setCourseCode(String courseCode){this.courseCode = courseCode;}
 
     public String getUniversity(){
         return this.university;
     }
-    public void setUniversity(String university){this.university = university;}
 
     public boolean getIsBid(){return this.isBid;}
-    public void setBid(boolean isBid){this.isBid = isBid;}
 
     public Long getIsbn(){ return this.isbn; }
-    public void setIsbn(Long isbn) { this.isbn = isbn; }
 
     public String getLocation(){ return this.location; }
-    public void setLocation(String location){ this.location = location; }
 
     @Override
     public int describeContents() {
