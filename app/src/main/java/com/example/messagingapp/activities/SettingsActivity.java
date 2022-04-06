@@ -79,8 +79,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logoutBtn:
-                MainActivity.isGuest = false;
                 logoutUser();
+                MainActivity.isGuest = false;
                 break;
             case R.id.changePassBtn:
                 if (!MainActivity.isGuest) {
