@@ -421,6 +421,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     if(!response.isSuccessful()){
                         return;
                     }
+                    Toast.makeText(AddListingActivity.this, "Listing successfully created", Toast.LENGTH_SHORT).show();
                     //showSnackBar();
                 }
 
