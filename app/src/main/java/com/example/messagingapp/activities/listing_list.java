@@ -117,7 +117,7 @@ public class listing_list extends Fragment {
     //private Location location;
     Location location = new Location("location");
 
-    Thread worker;
+    boolean jelmersScuf;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -339,6 +339,7 @@ public class listing_list extends Fragment {
     }
 
     private void initViewsAndVars(View view) {
+        jelmersScuf = false;
         recycler = view.findViewById(R.id.offerContainer);
         progressBar = view.findViewById(R.id.idPBLoading);
         nested_scroll = view.findViewById(R.id.nested_scroll);
@@ -375,6 +376,7 @@ public class listing_list extends Fragment {
                 if(!response.isSuccessful()){
                     return;
                 }
+                jelmersScuf = true;
                 list = response.body();
 
                 //To be removed?
@@ -413,9 +415,14 @@ public class listing_list extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("filter", "shit is fucked yo");
 
             }
         });
+        //if(!jelmersScuf){
+        //    pushDictionary(filtDict);
+        //}
     }
 
 
