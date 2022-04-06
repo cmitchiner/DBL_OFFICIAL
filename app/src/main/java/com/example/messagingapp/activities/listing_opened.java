@@ -66,6 +66,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     //Declare variables for XML references
     private Button completeListing;
     private ImageButton messageButton;
+    private Button buyButton;
     private RatingBar ratingBar;
     private TextView title, author, description, university, courseCode, price, isbn;
     private ImageView backBtn;
@@ -153,6 +154,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         ratingBar = view.findViewById(R.id.ratingBar);
         completeListing = view.findViewById(R.id.MarkAsComplete);
         messageButton = view.findViewById(R.id.message_button);
+        buyButton = view.findViewById(R.id.buyButton);
 
         //Fill text for listings
         title.setText(listing.getTitle());
@@ -163,6 +165,11 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         price.setText(String.valueOf(priceEuro / 100 + "€"));
         authorId = listing.getUser();
         //Check if listing has an ISBN or not
+        if(currentUserId.equals(authorId)){
+            buyButton.setVisibility(View.INVISIBLE);
+        }else{
+            buyButton.setVisibility(View.VISIBLE);
+        }
         if (!String.valueOf(listing.getIsbn()).equals("0")) {
             isbn.setVisibility(View.VISIBLE);
             isbn.setText(String.valueOf(listing.getIsbn()));
@@ -191,6 +198,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
 
         //Setup on click listeners
         messageButton.setOnClickListener(this);
+        buyButton.setOnClickListener(this);
         author.setOnClickListener(this);
         backBtn.setOnClickListener(this);
         completeListing.setOnClickListener(this);
@@ -230,6 +238,17 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.message_button:
+                if (!MainActivity.isGuest) {
+                    String authIdCombo;
+                    authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
+                    Intent intent = new Intent(getActivity(), NewMessageActivity.class);
+                    intent.putExtra("contact", authIdCombo);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.buyButton:
                 if (!MainActivity.isGuest) {
                     String authIdCombo;
                     authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
