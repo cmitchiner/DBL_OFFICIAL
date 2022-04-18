@@ -111,12 +111,7 @@ public class Listing implements Parcelable {
 
     public String getlocation() { return this.location; }
 
-    public String getLanguage() { return this.language; }
-
-    public String getAucId() { return this.auc_id; }
-
     public String getDescription() { return this.description; }
-    public void setDescription(String description) { this.description = description; }
 
     public String getUniversity() { return this.university; }
 
@@ -128,11 +123,6 @@ public class Listing implements Parcelable {
         return false;
     }
 
-    public void getAuction(){
-    }
-
-    public void report(String reason){
-    }
 
     @Override
     public int describeContents() {

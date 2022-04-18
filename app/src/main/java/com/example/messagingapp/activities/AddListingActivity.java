@@ -84,6 +84,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Activity for creating and adding a listing to the app
+ */
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -146,14 +149,16 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     /**
      * onClick(): holds all the On-Click listeners for any elements on the screen
      *
-     * @param v a view of all elements present on the screen
+     * @param v the view that gets clicked on
      */
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
+            //Publish the listing
             case R.id.btnPublish:
                 if (validateData()) {
                 new Thread(new Runnable() {
+                    // New thread to upload data in the background instead of on the ui thread
                     @Override
                     public void run() {
                         initPublish();
@@ -161,38 +166,45 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 }).start();} else {
                     Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();}
                 break;
+            //Get an image from the camera or gallery
             case R.id.btnUploadPicture:
                 selectImage();
                 break;
+            // If selling style is set to bidding
             case R.id.rbBidding:
                 txtPrice.setText("Starting price: ");
                 bidding = true;
                 break;
+            // If selling style is set to a set price
             case R.id.rbSetPrice:
                 txtPrice.setText("Set price: ");
                 bidding = false;
                 break;
+            // If the textview for filling in the university is pressed
             case R.id.testView:
                 searchableSpinner();
                 break;
+            // Make sure the user can fill in an ISBN, when 'Book' is selected
             case R.id.rbBook:
-                // Make sure the user can fill in an ISBN, when 'Book' is selected
                 txtISBN.setVisibility(View.VISIBLE);
                 ISBN = true;
                 type = "Book";
                 break;
+            // When the user selects notes the isbn shouldn't be shown
             case R.id.rbNotes:
                 txtISBN.setVisibility(View.GONE);
                 warningISBN.setVisibility(View.GONE);
                 ISBN = false;
                 type = "Notes";
                 break;
+            // When the user selects summary the isbn should also not be shown
             case R.id.rbSummary:
                 txtISBN.setVisibility(View.GONE);
                 warningISBN.setVisibility(View.GONE);
                 ISBN = false;
                 type = "Summary";
                 break;
+            // When add location is pressed call the getLocation function
             case R.id.addLocationListButt:
                 getLocation();
                 setLocationButt.setVisibility(View.GONE);
@@ -202,7 +214,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Creates a dialog of a spinner with a searchbar
+     * Creates a dialog of a spinner with a searchbar for selecting a university
      */
     private void searchableSpinner() {
         dialog = new Dialog(AddListingActivity.this);
@@ -216,19 +228,20 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         listView.setAdapter(adapter);
         // Code for the searchbar
         editText.addTextChangedListener(new TextWatcher() {
+            // We ignore this callback as we don't need it
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                return;
             }
-
+            //
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(s);
             }
-
+            // We ignore this callback as we don't need it
             @Override
             public void afterTextChanged(Editable s) {
-
+                return;
             }
         });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -254,8 +267,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (options[i].equals("Cancel")) {
                         dialogInterface.dismiss();
-                        //TODO: Fix the bug that when Cancel is pressed, the publish button gives
-                        // This is a bug that Bartjan had, but I don't seem to have it
                     } else if(options[i].equals("Take photo")) {
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(intent, 1);
@@ -277,7 +288,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-        Log.d("data","data: " + String.valueOf(data));
             if (data != null && data.getExtras() != null ) {
                 if (requestCode == 2) {
                     // Image chosen from gallery
@@ -336,7 +346,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     /**
      * Sending the listing to the database when the publish button is clicked and if all required fields are filled in
      */
-
     private void initPublish() {
             Log.d(TAG, "initPublish: started");
 
@@ -422,7 +431,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                         return;
                     }
                     Toast.makeText(AddListingActivity.this, "Listing successfully created", Toast.LENGTH_SHORT).show();
-                    //showSnackBar();
                 }
 
                 @Override
@@ -432,22 +440,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             });
         }
 
-    /**
-     * Shows a snackbar when successfully published listing
-     */
-    /*
-    private void showSnackBar() {
-            Log.d(TAG, "showSnackBar: started");
-            Snackbar.make(ActivityProfileLayout, "Offer added", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Dismiss", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
-        }
-
-     */
 
     /**
      * Validates that all the required fields are non-empty
@@ -467,18 +459,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             }else {
                 warningUniversity.setVisibility(View.GONE);
             }
-//            if (edtTxtCourseCode.getText().toString().equals("")) {
-//                warningCourseCode.setVisibility(View.VISIBLE);
-//                i =  false;
-//            }else {
-//                warningCourseCode.setVisibility(View.GONE);
-//            }
-//            if (edtTxtCourseName.getText().toString().equals("")) {
-//                warningCourseName.setVisibility(View.VISIBLE);
-//                i =  false;
-//            }else {
-//                warningCourseName.setVisibility(View.GONE);
-//            }
             if (edtTxtDescription.getText().toString().equals("")) {
                 warningDescription.setVisibility(View.VISIBLE);
                 i = false;
@@ -493,25 +473,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                     i = false;
                 }
             }
-//            if (!pictureUploaded) {
-//                warningPicture.setVisibility(View.VISIBLE);
-//                i = false;
-//            }else {
-//                warningPicture.setVisibility(View.GONE);
-//            }
             return i;
         }
-
-//    private void getLocation() {
-//        Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
-//    }
 
     //TODO: Stop the emulator from crashing when trying to receive location
 
     @SuppressLint("MissingPermission")
     private Location getLocation() {
-        //Location location = new Location("location");
-        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
         if (checkPermission()) {
             if (locationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -541,7 +509,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         }else {
             askPermissionLoc();
         }
-        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
         return location;
     }
 
@@ -620,12 +587,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
             txtPrice = findViewById(R.id.txtPrice);
             warningTitle = findViewById(R.id.warningTitle);
-            //warningCourseCode = findViewById(R.id.warningCourseCode);
-            //warningCourseName = findViewById(R.id.warningCourseName);
             warningUniversity = findViewById(R.id.warningUniversity);
             warningDescription = findViewById(R.id.warningDescription);
             warningISBN = findViewById(R.id.warningISBN);
-            //warningPicture = findViewById(R.id.warningPicture);
             textview = findViewById(R.id.testView);
             txtISBN = findViewById(R.id.txtISBN);
 
