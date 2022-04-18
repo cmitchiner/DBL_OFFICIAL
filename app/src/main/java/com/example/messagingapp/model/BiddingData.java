@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 public class BiddingData {
 
     @SerializedName("auc_id")
-    private int aucId;  //ID of auction entry
+    private String aucId;  //ID of auction entry
     @SerializedName("starting_price")
     private int startingPrice;  //Starting price of auction in cents
     @SerializedName("current_price")
@@ -23,7 +23,7 @@ public class BiddingData {
 
     private ZonedDateTime date = null;
 
-    public int getAucId() {
+    public String getAucId() {
         return aucId;
     }
 
