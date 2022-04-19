@@ -32,19 +32,32 @@ import java.util.Map;
 
 public class FacebookAuthActivity extends MainActivity {
 
+    /** VARIABLES **/
     CallbackManager callbackManager;
+    //Firebase authentication variable
     FirebaseAuth firebaseAuth;
+
+    /**
+     * onCreate() is the first method that runs when the activity is started
+     *
+     * @param savedInstanceState the previous state of the app to be loaded
+     * @post All variables are initialized and Auth Tokens are setup correctly
+     * @returns void
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //init firebase auth
         firebaseAuth = FirebaseAuth.getInstance();
-
+        //Create callback manager
         callbackManager = CallbackManager.Factory.create();
 
+        //Init login manager for facebook and get proper access token
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
+                    /** LISTENERS FOR SUCCESSFUL LOGIN, CANCELED LOGIN, and ERROR */
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         handleFacebookAccessToken(loginResult.getAccessToken());
@@ -62,22 +75,40 @@ public class FacebookAuthActivity extends MainActivity {
                 });
     }
 
+    /**
+     * After login is successful, this function is called
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         //Pass the activity result back to the Facebook SDK
         callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
+    /**
+     * When a user is signed out there token is deleted, thus when they sign in we need to recreate the
+     * notification token, this grabs a new token
+     */
     private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
+
+    /**
+     * Updates the token on the database
+     * @param token the token to be sent to the database
+     */
     private void updateToken(String token) {
+        //Reference the firestore database
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        //Store token in hashmap to pass to DB
         Map<String, Object> data = new HashMap<>();
-        data.put("Token", "test");
+        data.put("Token", token);
+
+        //Store hashamp in proper collection
         firebaseFirestore.collection("Tokens")
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .set(data)
@@ -85,6 +116,11 @@ public class FacebookAuthActivity extends MainActivity {
                 .addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
     }
 
+    /**
+     * Attempts to use firebase OAuth to start facebook login
+     *
+     * @param token token to authorize facebook login
+     */
     private void handleFacebookAccessToken(AccessToken token) {
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -92,18 +128,21 @@ public class FacebookAuthActivity extends MainActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        //LOGIN SUCCESS
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Update UI with the signed-in user's information
                             getToken();
                             MainActivity.isGuest = false;
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            //Store user in the database
                             if (task.getResult().getAdditionalUserInfo().isNewUser()) {
                                 addAcctToDB(user.getDisplayName(), user.getUid(), "", "Facebook Account");
                             } else {
                                 Toast.makeText(FacebookAuthActivity.this, "Existing User found, signing in...", Toast.LENGTH_SHORT).show();
+                                //Redirect to profile activity
                                 startActivity(new Intent(FacebookAuthActivity.this, ProfileActivity.class));
                             }
-                        } else {
+                        } else { //LOGIN FAIL
                             // If sign in fails, display a message to the user.
                             Toast.makeText(FacebookAuthActivity.this, "" + task.getException(), Toast.LENGTH_LONG).show();
                         }
