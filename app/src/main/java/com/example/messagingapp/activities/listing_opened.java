@@ -248,17 +248,6 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.buyButton:
-                if (!MainActivity.isGuest) {
-                    String authIdCombo;
-                    authIdCombo = usernameAuthor + ":" + listing.getUser().toString();
-                    Intent intent = new Intent(getActivity(), NewMessageActivity.class);
-                    intent.putExtra("contact", authIdCombo);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
-                }
-                break;
             case R.id.list_author:
                 String user = usernameAuthor;
                 String authorrid = listing.getUser().toString();

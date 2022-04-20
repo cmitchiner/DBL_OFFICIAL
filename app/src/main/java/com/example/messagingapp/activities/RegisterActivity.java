@@ -194,32 +194,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             registerPasswordEt.requestFocus();
             return false;
         }
-        if (!passwordFollowsFormat(password)) {
+        if (!ChangePasswordActivity.passwordFollowsFormat(password)) {
             registerPasswordEt.setError("Password must have at least one: capital letter, " +
                     "special character, and number");
             registerPasswordEt.requestFocus();
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks if a password is in an acceptable format:
-     * at least one special character, at least one capital, at least one number, and at least
-     * 6 characters long.
-     *
-     * @param password the password to be checked
-     * @return result = true if password follows format, result = false if password does not follow format
-     */
-    private boolean passwordFollowsFormat(final String password) {
-        //Create pattern and matcher variables
-        Pattern pattern;
-        Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,20}$";
-
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-        return matcher.matches();
     }
 
 

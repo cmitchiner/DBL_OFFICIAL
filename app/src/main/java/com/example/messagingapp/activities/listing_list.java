@@ -232,6 +232,7 @@ public class listing_list extends Fragment {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
                         Log.d("filter", "filtCol: " + filtCol);
+                        //Makes spinner text white
 
                     }
 
@@ -463,12 +464,6 @@ public class listing_list extends Fragment {
                 try {
                     ArrayList<String> photos = new ArrayList<>();
                     photos.add(data.optString("photos"));
-//                    JSONArray array = data.optJSONArray("photos");
-//                    if(array != null) {
-//                        for(int i = 0; i < array.length(); i++) {
-//                            photos.add(array.getString(i));
-//                        }
-//                    }
                     String loc;
                     if (listFacade.getLocation() != null) {
                         loc = listFacade.getLocation();
