@@ -25,7 +25,7 @@ public class ListFacade implements Parcelable {
     @SerializedName("location")
     private String location;
 
-    //Construtor
+    //ListFacade constructor
     public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode,
                       String auniversity, boolean aisBid, Long aisbn, String alocation ){
         list_iD = iD;
@@ -39,7 +39,7 @@ public class ListFacade implements Parcelable {
         location = alocation;
 
     }
-
+    //Getting values to the parcel object
     protected ListFacade(Parcel in) {
         list_iD = in.readString();
         title = in.readString();
@@ -64,30 +64,39 @@ public class ListFacade implements Parcelable {
         }
     };
 
+    //Getter for list_iD
     public String getList_iD(){return this.list_iD;}
 
+    //Getter for title
     public String getTitle(){ return this.title; }
 
+    //Getter for price
     public int getPrice(){
         return this.price;
     }
 
+    //Getter for type
     public String getType(){
         return this.type;
     }
 
+    //Getter for courseCode
     public String getCourseCode(){
         return courseCode;
     }
 
+    //Getter for university
     public String getUniversity(){
         return this.university;
     }
 
+    //Getter for isBid
     public boolean getIsBid(){return this.isBid;}
 
+    //Getter for isbn
     public Long getIsbn(){ return this.isbn; }
 
+    //Getter for location
     public String getLocation(){ return this.location; }
 
     @Override
@@ -95,6 +104,7 @@ public class ListFacade implements Parcelable {
         return 0;
     }
 
+    //Writing values to the parcel object
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(list_iD);

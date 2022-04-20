@@ -26,7 +26,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     private ArrayList<String> filterss = new ArrayList<>();
     private SelectListener listner;
 
-    //constructor
+    //Adapter constructor
     public RecycleOfferAdapter(Context context, ArrayList<ListFacade> listFacadeList, SelectListener listner){
         this.context = context;
         this.listner = listner;
@@ -42,6 +42,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
     }
 
+    //Setting values to the row item (viewHolder)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListFacade rower = listFacadeList.get(holder.getAdapterPosition());
@@ -54,6 +55,8 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.title.setText(rower.getTitle());
         holder.title.setTag(rower.getTitle());
         holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
+
+        //Adding the icon representing the type of listing
         switch(rower.getType().toLowerCase()) {
             case "book":
                 holder.offerType.setImageResource(R.drawable.ic_book);
@@ -81,8 +84,8 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         return listFacadeList.size();
     }
 
+    // creating variables for the text views.
     public class ViewHolder extends RecyclerView.ViewHolder {
-        // creating variables for our text views.
         private final TextView title;
         private final TextView price;
         private final ImageView offerType;
@@ -97,9 +100,9 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         private String location;
         private double priceEuro;
 
+        // initializing text views.
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // initializing our text views.
             title = itemView.findViewById(R.id.Title);
             price = itemView.findViewById(R.id.OfferPriceRow);
             offerType = itemView.findViewById(R.id.OfferTypeRow);

@@ -117,8 +117,6 @@ public class listing_list extends Fragment {
     //private Location location;
     Location location = new Location("location");
 
-    boolean jelmersScuf;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -158,6 +156,7 @@ public class listing_list extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //Creating retrofit object
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
         apiAccess = retrofit.create(ApiAccess.class);
 
@@ -177,12 +176,10 @@ public class listing_list extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
         //Initiating variables, arrays and components
         initViewsAndVars(view);
 
-        //Set Title and add filter, depending on how listing list was started
+        //Creating dictionary for filtering and instantiating arrays per filter type
         Log.d("filter", String.valueOf(getArguments()));
         filtDict = new HashMap<>();
         filtDict.put("author", new ArrayList<String>());
@@ -194,6 +191,8 @@ public class listing_list extends Fragment {
         filtDict.put("location", new ArrayList<String>());
         Log.d("filter", String.valueOf(filtDict));
 
+
+        //Set Title and add filters, depending on how listing list was started
         if(getArguments() != null){
 
             Log.d("bundle", String.valueOf(getArguments()));
@@ -202,12 +201,15 @@ public class listing_list extends Fragment {
             userId = parts[1];
 
             titleView.setText(String.valueOf(parts[0]+"'s Offers"));
+
+            //If listing list is started from profile, or from opened listing:
             if( !userId.toString().equals("no") ) {
                 titleView.setText(String.valueOf(parts[0]+"'s Offers"));
                 filtDict.get("author").add(userId);
                 Log.d("filter", String.valueOf(filtDict));
                 filter();
 
+                //If listing list is stated from nav bar:
             }else {
                 titleView.setText(String.valueOf("Offers"));
             }
@@ -218,41 +220,18 @@ public class listing_list extends Fragment {
             @Override
             public void run() {
 
-                //Creating Spinner for filter column selection
+                //Creating Spinner and setting adapter for filter column selection
                 ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
                         , R.array.filterColumns, android.R.layout.simple_spinner_item);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
+
+                //Onclick listener to set chosen spinner item as the filter type
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         filtCol = (adapterView.getItemAtPosition(i).toString().toLowerCase());
                         Log.d("filter", "filtCol: " + filtCol);
-                        //Makes spinner text white
-        /*switch (filtCol){
-            String[] empty;
-            case "Title":
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1,  ));
-                break;
-            case "Type":
-                String[] types = {"book", "notes", "summary"};
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, types));
-                break;
-            case "University":
-                String[] university = getResources().getStringArray(R.array.Universities);
-                filterText.setAdapter(new ArrayAdapter<String>(getContext(),
-                        android.R.layout.simple_list_item_1, university));
-                break;
-            case "Course code":
-                break;
-            case "ISBN":
-                break;
-        }
-        filterText.showDropDown();
-
-         */
 
                     }
 
@@ -262,18 +241,9 @@ public class listing_list extends Fragment {
                     }
                 });
 
-                //Making the drop down menu show up on text field click
-                filterText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //filterText.showDropDown();
-                    }
-                });
-
-
                 //Setting up text view for filtering
 
-                //Adding event listner for soft input
+                //Adding event listner for software keyboard input
                 filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -303,7 +273,7 @@ public class listing_list extends Fragment {
             }
         }).start();
 
-        //Setting Add Listing button
+        //Setting Add Listing button, which starts the addListingActivity
         addListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -316,11 +286,12 @@ public class listing_list extends Fragment {
             }
         });
 
-        //initializing arrays
+        //Adding listings, when listing list has been started from nav bar
         if(userId.toString().equals("no")) {
             filter();
         }
 
+        //Add more listings when the user scrolls down
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(manager);
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -338,8 +309,8 @@ public class listing_list extends Fragment {
 
     }
 
+    //Method that initiates View and variables
     private void initViewsAndVars(View view) {
-        jelmersScuf = false;
         recycler = view.findViewById(R.id.offerContainer);
         progressBar = view.findViewById(R.id.idPBLoading);
         nested_scroll = view.findViewById(R.id.nested_scroll);
@@ -349,6 +320,7 @@ public class listing_list extends Fragment {
         titleView = view.findViewById(R.id.listingListTitle);
         locationbutt = view.findViewById(R.id.locationFiltButt);
         filtDict = new HashMap<>();
+        //OnClick listener for RecyclerView rows
         selectListener = new SelectListener() {
             @Override
             public void onItemClicked(ListFacade listFacade) {
@@ -356,6 +328,8 @@ public class listing_list extends Fragment {
             }
         };
 
+        //OnClick listener for location button
+        //Gets the current location and creates a filter bubble
         locationbutt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -376,31 +350,25 @@ public class listing_list extends Fragment {
                 if(!response.isSuccessful()){
                     return;
                 }
-                jelmersScuf = true;
                 list = response.body();
 
-                //To be removed?
+                //Filtering by location by comparing current user and item locations
                 if(!filtDict.get("location").isEmpty()){
-                    Log.d("filter", "????");
                     ArrayList<ListFacade> toRemove = new ArrayList<>();
                     for(ListFacade item:list){
                         Location loc;
-                        Log.d("filter", "before if item.location == null");
                         if(item.getLocation() == null){
-                            Log.d("filter", "item location: " + String.valueOf(item.getLocation()));
-
                             toRemove.add(item);
-                            Log.d("filter", "Kek empty thus removed");
                         } else {
-                            Log.d("filter", "location elseer ");
                             loc = new Location("");
                             String[] coords = item.getLocation().split(";");
                             loc.setLatitude(Double.valueOf(coords[0]));
                             loc.setLongitude(Double.valueOf(coords[1]));
-                            Log.d("filter", "user location, lat: " + String.valueOf(userLocation.getLatitude()) + "long: " + userLocation.getLongitude() );
                             float[] distance = new float[2];
-                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(), distance);
-                            Log.d("filter", "distance between: " + String.valueOf(distance[0]));
+                            //Calculating distance between user and item location in meters
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(),
+                                    userLocation.getLatitude(), userLocation.getLongitude(),
+                                    distance);
                             if(distance[0] > 5000){
                                 toRemove.add(item);
                             }
@@ -408,6 +376,7 @@ public class listing_list extends Fragment {
                     }
                     list.removeAll(toRemove);
                 }
+                //Adding rows to recyclerView
                 recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
 
@@ -416,21 +385,14 @@ public class listing_list extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<ListFacade>> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("filter", "shit is fucked yo");
-
             }
         });
-        //if(!jelmersScuf){
-        //    pushDictionary(filtDict);
-        //}
     }
 
-
+    //Method to get the current location of the user
     @SuppressLint("MissingPermission")
     private Location getLocation() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        //Location location = new Location("location");
-        //Toast.makeText(this, "Location Received", Toast.LENGTH_SHORT).show();
         if (checkPermission()) {
             if (locationEnabled()) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -473,7 +435,8 @@ public class listing_list extends Fragment {
 
     //On click listner for the rows. Requests the full listing data before opening the fragment
     public void rowOnClick(ListFacade listFacade) {
-        Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),getResources().getString(R.string.apiDevKey) );
+        Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),
+                getResources().getString(R.string.apiDevKey) );
         getFullData.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -542,13 +505,13 @@ public class listing_list extends Fragment {
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         if(!list.getIsBid()) {
             listing_opened listing_opened = new listing_opened();
             listing_opened.setArguments(bundle);
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
 
@@ -556,8 +519,6 @@ public class listing_list extends Fragment {
             listing_opened_bid listing_opened_bid = new listing_opened_bid();
             listing_opened_bid.setArguments(bundle);
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
         }
@@ -567,22 +528,25 @@ public class listing_list extends Fragment {
     // Method to create the ui bubble after entering a filter in the searchbar
     public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
-        View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
+        View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont,
+                false);
         TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
         bubble_text.setText(query);
+
+        //OnClick listener to remove bubble and the corresponding filter
         bubble.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CharSequence bubText = bubble_text.getText();
                 String parts[] = bubText.toString().split(":");
-                Log.d("bubble", "removed filter " + bubble_text.getText() );
-                if(parts[0].equals("location")){
+                if(parts[0].equals("location")) {
                     filtDict.get(parts[0]).remove(0);
                 } else{
                     filtDict.get(parts[0]).remove(parts[1]);
                 }
                 Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
+                //Refresh rows
                 filter();
             }
         });
