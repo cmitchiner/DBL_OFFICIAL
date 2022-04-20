@@ -18,8 +18,10 @@ public class ListFacade implements Parcelable {
     private String courseCode;
     @SerializedName("university")
     private String university;
+    //True if the listing is a bid, false otherwise
     @SerializedName("isBid")
     private boolean isBid;
+    //Isbn code, if the listing is a book
     @SerializedName("isbn")
     private Long isbn;
     @SerializedName("location")

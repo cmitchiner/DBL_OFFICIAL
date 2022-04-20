@@ -20,7 +20,9 @@ import java.util.ArrayList;
 public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapter.ViewHolder> {
 
     private Context context;
+    //Array list that contains all listFacade objects
     private ArrayList<ListFacade> listFacadeList;
+    //Custom listener object, for row OnClick events
     private SelectListener listner;
 
     //Adapter constructor
