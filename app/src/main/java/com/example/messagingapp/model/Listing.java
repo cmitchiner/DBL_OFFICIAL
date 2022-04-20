@@ -60,7 +60,8 @@ public class Listing implements Parcelable {
         this.courseCode = courseCode;
         this.userId = userId;
     }
-    //Getting values to the parcel object
+
+    //Method for getting the values from the parcel object
     protected Listing(Parcel in) {
         listID = in.readString();
         photo = in.readArrayList(String.class.getClassLoader());

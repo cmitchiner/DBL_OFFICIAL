@@ -243,7 +243,7 @@ public class listing_list extends Fragment {
 
                 //Setting up text view for filtering
 
-                //Adding event listner for software keyboard input
+                //Adding event listener for software keyboard input
                 filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -309,7 +309,10 @@ public class listing_list extends Fragment {
 
     }
 
-    //Method that initiates View and variables
+    /**
+     * Method that initiates View and variables
+     * @param view
+     */
     private void initViewsAndVars(View view) {
         recycler = view.findViewById(R.id.offerContainer);
         progressBar = view.findViewById(R.id.idPBLoading);
@@ -340,7 +343,11 @@ public class listing_list extends Fragment {
         });
     }
 
-    //Pushes dictionary to the server, and changes the contents of the recycler view
+    /**
+     * Pushes filter dictionary to the server, then pulls listings based on the filters and
+     * refreshes the current listings on screen
+     * @param filtDict - contains the filters
+     */
     public void pushDictionary(Map<String, ArrayList<String>> filtDict){
         Log.d("filter", "this triggers: "+String.valueOf(filtDict));
         Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
@@ -350,6 +357,8 @@ public class listing_list extends Fragment {
                 if(!response.isSuccessful()){
                     return;
                 }
+
+                //Pushing the result of the pull request to the listFacade array list
                 list = response.body();
 
                 //Filtering by location by comparing current user and item locations
@@ -365,6 +374,7 @@ public class listing_list extends Fragment {
                             loc.setLatitude(Double.valueOf(coords[0]));
                             loc.setLongitude(Double.valueOf(coords[1]));
                             float[] distance = new float[2];
+
                             //Calculating distance between user and item location in meters
                             Location.distanceBetween(loc.getLatitude(), loc.getLongitude(),
                                     userLocation.getLatitude(), userLocation.getLongitude(),
@@ -409,12 +419,9 @@ public class listing_list extends Fragment {
                             userLocation = new Location("");
                             userLocation.setLatitude(latitude);
                             userLocation.setLongitude(longitude);
-                            Log.d("filter", "userLocation: " + String.valueOf(userLocation));
-                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
                             Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
                             if(!filtDict.get("location").contains(latitude + ";" + longitude)){
                                 filtDict.get("location").add(latitude + ";" + longitude);
-                                Log.d("filter", "dict after location filt: " + String.valueOf(filtDict));
                             }
                         }
                     }
@@ -428,12 +435,14 @@ public class listing_list extends Fragment {
         }else {
             askPermissionLoc();
         }
-        //Toast.makeText(this, "Return" + location, Toast.LENGTH_SHORT).show();
         return location;
     }
 
-
-    //On click listner for the rows. Requests the full listing data before opening the fragment
+    /**
+     * On click listener for the RecyclerView rows.Swaps fragments when a row is clicked.
+     * Requests the full listing data before opening the fragment
+     * @param listFacade
+     */
     public void rowOnClick(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),
                 getResources().getString(R.string.apiDevKey) );
@@ -467,20 +476,15 @@ public class listing_list extends Fragment {
                         loc = null;
                     }
 
-
                     Listing list;
 
                     if (listFacade.getType().toLowerCase().equals("book")) {
-
                          list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
-                                Log.d("TYPE", "BOOK");
 
                     } else {
-                        Log.d("TYPE", "ELSE STATEMENT FOR SOME REASON");
-
                          list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(),loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
@@ -491,7 +495,6 @@ public class listing_list extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -501,7 +504,11 @@ public class listing_list extends Fragment {
         });
     }
 
-    //Swaps listing list fragment with the opened listing fragment, depending on the value of isBid
+    /**
+     * Swaps listing list fragment with the opened listing fragment, depending on the value of isBid
+     * @param list - Listing object passed as a parameter to the corresponding fragment
+     * @post A new fragment is opened, with data taken from the list parameter
+     */
     public void openListing(Listing list) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("listingFacade", list);
@@ -525,7 +532,10 @@ public class listing_list extends Fragment {
 
     }
 
-    // Method to create the ui bubble after entering a filter in the searchbar
+    /**
+     * Method to create the ui bubble after entering a filter in the searchbar
+     * @param query- string representing the text input from the AutoCompleteTextView
+     */
     public void Addbubble(String query) {
         LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
         View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont,
@@ -544,19 +554,16 @@ public class listing_list extends Fragment {
                 } else{
                     filtDict.get(parts[0]).remove(parts[1]);
                 }
-                Log.d("filter", String.valueOf(filtDict));
                 filt_cont.removeView(v);
                 //Refresh rows
                 filter();
             }
         });
         filt_cont.addView(bubble);
-        Log.d("bubble","Bubble added");
     }
 
     //Function to filter listings
      public void filter() {
-        //Log.d("filter", "Filter column: " + filtCol + " filter content: " + filtContent);
         pushDictionary(filtDict);
 
     }

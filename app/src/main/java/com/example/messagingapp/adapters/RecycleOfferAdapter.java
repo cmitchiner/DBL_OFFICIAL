@@ -37,7 +37,12 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
     }
 
-    //Setting values to the the different components of the row (viewHolder)
+    /**
+     * Sets the values of the components of the row object to the values of the corresponding
+     * listFacade object
+     * @param holder - the row object
+     * @param position - the position of the row object
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListFacade rower = listFacadeList.get(holder.getAdapterPosition());
@@ -48,7 +53,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.priceEuro = rower.getPrice();
 
         holder.title.setText(rower.getTitle());
-        holder.title.setTag(rower.getTitle());
         holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
 
         //Adding the icon representing the type of listing
@@ -63,7 +67,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
                 holder.offerType.setImageResource(R.drawable.ic_baseline_fact_check_24);
                 break;
         }
-        holder.offerType.setTag(rower.getTitle());
         holder.courseId.setText(rower.getCourseCode());
         holder.university.setText(rower.getUniversity());
 

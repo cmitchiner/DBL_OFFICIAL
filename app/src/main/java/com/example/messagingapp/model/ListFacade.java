@@ -39,7 +39,7 @@ public class ListFacade implements Parcelable {
         location = alocation;
 
     }
-    //Getting values to the parcel object
+    //Method for getting the values from the parcel object
     protected ListFacade(Parcel in) {
         list_iD = in.readString();
         title = in.readString();
