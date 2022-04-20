@@ -1,15 +1,7 @@
 package com.example.messagingapp.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -21,20 +13,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.objects.User;
+import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,9 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -216,106 +202,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @post if @code{firstTime == true} then firstTime = False
      */
     private void firstTimeSetup() {
-        LocationTwo loc = new LocationTwo();
-        loc.askPermissionLoc();
+        LocationHandler.askPermissionLoc(this);
         if (firstTime) {
-            if (loc.checkPermission()) {
+            if (LocationHandler.checkPermission(getApplicationContext())) {
                 return;
             } else {
-                loc.askPermissionLoc();
+                LocationHandler.askPermissionLoc(this);
             }
             firstTime = false;
         }
     }
-    /**
-    /**
-     * Checks if the user already has granted permission to use the location
-     *
-     * @post if the user has granted permission, return true
 
-    public boolean checkPermission() {
-
-        return ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Asks the user for permission to use location
-
-    public void askPermissionLoc() {
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
-    /**
-     * Checks if location is turned on by device
-
-    public boolean locationEnabled() {
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    //TODO @Wouter: add comment for what this does
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
-
-    /**
-     * Requests location data
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
-
-        // Initializing LocationRequest
-        // object with appropriate methods
-        LocationRequest mLocationRequest = LocationRequest.create();
-        // setting LocationRequest
-        // on FusedLocationClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                Looper.myLooper());
-    }
-
-    /**
-     * Obtains the location from a user
-
-    @SuppressLint("MissingPermission")
-    public Location getLocation() {
-        Location location = new Location("location");
-        if (checkPermission()) {
-            if (locationEnabled()) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        Location location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                            //store to database here
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        } else {
-            askPermissionLoc();
-        }
-        return location;
-    }
-    */
     /**
      * loginUser(), logs a user in using the email + password specified in the EditText fields
      *

@@ -46,6 +46,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
+import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -110,13 +111,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     Retrofit retrofit;
     ApiAccess apiAccess;
 
-    FusedLocationProviderClient mFusedLocationClient;
-    int PERMISSION_ID = 101;
-    private double latitude;
-    private double longitude;
-    //private Location location;
-    Location location = new Location("location");
-
 
     /** onCreate() is a method that runs before a user see's the current activity
      *
@@ -141,8 +135,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         rbSummary.setOnClickListener(this);
         rbBook.setOnClickListener(this);
         setLocationButt.setOnClickListener(this);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
     }
 
@@ -207,8 +199,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             // When add location is pressed call the getLocation function
             case R.id.addLocationListButt:
                 getLocation();
-                setLocationButt.setVisibility(View.GONE);
-                imgViewLocation.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -476,98 +466,21 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             return i;
         }
 
-    //TODO: Stop the emulator from crashing when trying to receive location
-
-    @SuppressLint("MissingPermission")
-    private Location getLocation() {
-        if (checkPermission()) {
-            if (locationEnabled()) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-                            
-                            //store to database here
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            String loString = latitude + ";" + longitude;
-                            locString =  String.format(Locale.ROOT, "%010.5f;%010.5f", latitude,longitude);
-                            //Toast.makeText(AddListingActivity.this, "Location: " + location, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(AddListingActivity.this, getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-            } else {
-                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-
-        }else {
-            askPermissionLoc();
+    private void getLocation() {
+        try{
+            LocationHandler.getLocation(AddListingActivity.this, this, new LocationHandler.onLocationListener() {
+                @Override
+                public void onLocation(Location location) {
+                    locString = LocationHandler.toString(location);
+                    Toast.makeText(AddListingActivity.this, LocationHandler.getAddress(AddListingActivity.this, location), Toast.LENGTH_SHORT).show();
+                }
+            });
+            setLocationButt.setVisibility(View.GONE);
+            imgViewLocation.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Toast.makeText(AddListingActivity.this, e.getMessage() , Toast.LENGTH_SHORT).show();
         }
-        return location;
     }
-
-    private String getAddress(double latitude, double longitude) {
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String address = addresses.get(0).getAddressLine(0);
-            return address;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "Something went wrong";
-    }
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
-
-        // Initializing LocationRequest
-        // object with appropriate methods
-        LocationRequest mLocationRequest = LocationRequest.create();
-        // setting LocationRequest
-        // on FusedLocationClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                Looper.myLooper());
-    }
-
-    public boolean locationEnabled() {
-        LocationManager locationManager =
-                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
-
-    public boolean checkPermission() {
-
-        return ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void askPermissionLoc() {
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
 
 
     /**

@@ -74,6 +74,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
     /**
      * Sets the data for the view holders
+     *
      * @param holder
      * @param position
      */
@@ -84,16 +85,15 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
         //Create a reference to the firebase storaging containg message data
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
         StorageReference storageReference = storage.getReference().child(message.getUniqueID());
-
         //Check whether the view holder is for a sender or receiver
         if (holder.getClass() == SenderViewHolder.class) {
             //Sender view holder, set data accordingly
-            SenderViewHolder viewHolder = (SenderViewHolder) holder;
+            SenderViewHolder senderHolder = (SenderViewHolder) holder;
 
             if (message.getImage()) {    //Message is an image, set data accordingly
-                viewHolder.messageText.setVisibility(View.GONE);
-                viewHolder.timeOfMessage.setVisibility(View.GONE);
-                viewHolder.imageView.setVisibility(View.VISIBLE);
+                senderHolder.messageText.setVisibility(View.GONE);
+                senderHolder.timeOfMessage.setVisibility(View.GONE);
+                senderHolder.imageView.setVisibility(View.VISIBLE);
 
                 //Store image locally
                 try {
@@ -105,23 +105,23 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
                     storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            viewHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
+                            senderHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
                         }});
                 }
 
             } else { //not an image, set data accordingly
-                viewHolder.messageText.setVisibility(View.VISIBLE);
-                viewHolder.timeOfMessage.setVisibility(View.VISIBLE);
-                viewHolder.imageView.setVisibility(View.GONE);
-                viewHolder.messageText.setText(message.getMessage());
-                viewHolder.timeOfMessage.setText(message.getCurrentTime());
+                senderHolder.messageText.setVisibility(View.VISIBLE);
+                senderHolder.timeOfMessage.setVisibility(View.VISIBLE);
+                senderHolder.imageView.setVisibility(View.GONE);
+                senderHolder.messageText.setText(message.getMessage());
+                senderHolder.timeOfMessage.setText(message.getCurrentTime());
             }
         } else { //Receiver view holder
-            ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            ReceiverViewHolder receiverHolder = (ReceiverViewHolder) holder;
             if (message.getImage()) { //message is an image
-                viewHolder.messageText.setVisibility(View.GONE);
-                viewHolder.timeOfMessage.setVisibility(View.GONE);
-                viewHolder.imageView.setVisibility(View.VISIBLE);
+                receiverHolder.messageText.setVisibility(View.GONE);
+                receiverHolder.timeOfMessage.setVisibility(View.GONE);
+                receiverHolder.imageView.setVisibility(View.VISIBLE);
 
                 //Store image locally
                 try {
@@ -133,21 +133,22 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
                     storageReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            viewHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
+                            receiverHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
                         }});
                 }
             } else { //message is not an image
-                viewHolder.messageText.setVisibility(View.VISIBLE);
-                viewHolder.timeOfMessage.setVisibility(View.VISIBLE);
-                viewHolder.imageView.setVisibility(View.GONE);
-                viewHolder.messageText.setText(message.getMessage());
-                viewHolder.timeOfMessage.setText(message.getCurrentTime());
+                receiverHolder.messageText.setVisibility(View.VISIBLE);
+                receiverHolder.timeOfMessage.setVisibility(View.VISIBLE);
+                receiverHolder.imageView.setVisibility(View.GONE);
+                receiverHolder.messageText.setText(message.getMessage());
+                receiverHolder.timeOfMessage.setText(message.getCurrentTime());
             }
         }
     }
 
     /**
      * Getter that returns which type a message is, sent or received
+     *
      * @param position position of the array list
      * @return ITEM_SEND if message was sent, ITEM_RECEIVED if message was received
      */
@@ -196,6 +197,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
         }
     }
+
 
     /**
      * Class for the view holder for a recieved message

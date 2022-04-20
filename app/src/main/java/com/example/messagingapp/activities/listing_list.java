@@ -46,6 +46,7 @@ import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
+import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -338,8 +339,6 @@ public class listing_list extends Fragment {
             @Override
             public void onClick(View view) {
                 getLocation();
-                Addbubble("location:Within 5km");
-                filter();
             }
         });
     }
@@ -370,10 +369,7 @@ public class listing_list extends Fragment {
                         if(item.getLocation() == null){
                             toRemove.add(item);
                         } else {
-                            loc = new Location("");
-                            String[] coords = item.getLocation().split(";");
-                            loc.setLatitude(Double.valueOf(coords[0]));
-                            loc.setLongitude(Double.valueOf(coords[1]));
+                            loc = LocationHandler.fromString(item.getLocation());
                             float[] distance = new float[2];
 
                             //Calculating distance between user and item location in meters
@@ -390,7 +386,6 @@ public class listing_list extends Fragment {
                 //Adding rows to recyclerView
                 recycleOfferAdapter = new RecycleOfferAdapter(getActivity(), list, selectListener);
                 recycler.setAdapter(recycleOfferAdapter);
-
             }
 
             @Override
@@ -401,42 +396,25 @@ public class listing_list extends Fragment {
     }
 
     //Method to get the current location of the user
-    @SuppressLint("MissingPermission")
-    private Location getLocation() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        if (checkPermission()) {
-            if (locationEnabled()) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        location = task.getResult();
-                        if (location == null) {
-                            requestNewLocationData();
-                        } else {
-
-                            //store to database here
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            userLocation = new Location("");
-                            userLocation.setLatitude(latitude);
-                            userLocation.setLongitude(longitude);
-                            Toast.makeText(getContext(), getAddress(latitude, longitude), Toast.LENGTH_LONG).show();
-                            if(!filtDict.get("location").contains(latitude + ";" + longitude)){
-                                filtDict.get("location").add(latitude + ";" + longitude);
-                            }
-                        }
+    private void getLocation() {
+        try {
+            LocationHandler.getLocation(getContext(), getActivity(), new LocationHandler.onLocationListener() {
+                @Override
+                public void onLocation(Location location) {
+                    userLocation = location;
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    Toast.makeText(getContext(), LocationHandler.getAddress(getContext(), location), Toast.LENGTH_LONG).show();
+                    if(!filtDict.get("location").contains(latitude + ";" + longitude)){
+                        filtDict.get("location").add(latitude + ";" + longitude);
                     }
-                });
-            } else {
-                Toast.makeText(getActivity(), "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-
-        }else {
-            askPermissionLoc();
+                    Addbubble("location:Within 5km");
+                    filter();
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
-        return location;
     }
 
     /**
@@ -518,11 +496,7 @@ public class listing_list extends Fragment {
             fragmentTransaction.commit();
 
         } else if(list.getIsBid()) {
-            listing_opened_bid listing_opened_bid = new listing_opened_bid();
-            listing_opened_bid.setArguments(bundle);
-
-            fragmentTransaction.replace(R.id.frame_layout, listing_opened_bid, "listingId").addToBackStack(null);
-            fragmentTransaction.commit();
+            Toast.makeText(getContext(), "This feature is not supported", Toast.LENGTH_LONG);
         }
 
     }
@@ -560,70 +534,7 @@ public class listing_list extends Fragment {
     //Function to filter listings
      public void filter() {
         pushDictionary(filtDict);
-
     }
-
-
-
-
-    private String getAddress(double latitude, double longitude) {
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(getActivity(), Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String address = addresses.get(0).getAddressLine(0);
-            return address;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "Something went wrong";
-    }
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData() {
-
-        // Initializing LocationRequest
-        // object with appropriate methods
-        LocationRequest mLocationRequest = LocationRequest.create();
-        // setting LocationRequest
-        // on FusedLocationClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                Looper.myLooper());
-    }
-
-    public boolean locationEnabled() {
-        LocationManager locationManager =
-                (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
-
-    public boolean checkPermission() {
-
-        return ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void askPermissionLoc() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
-    }
-
-
-
 }
 
 
