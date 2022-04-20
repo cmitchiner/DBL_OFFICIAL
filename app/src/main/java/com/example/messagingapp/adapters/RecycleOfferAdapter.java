@@ -21,9 +21,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
     private Context context;
     private ArrayList<ListFacade> listFacadeList;
-    private ArrayList<ListFacade> allListFacadeList;
-    private ArrayList<ListFacade> currentFiltRows;
-    private ArrayList<String> filterss = new ArrayList<>();
     private SelectListener listner;
 
     //Adapter constructor
@@ -31,8 +28,6 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         this.context = context;
         this.listner = listner;
         this.listFacadeList = listFacadeList;
-        allListFacadeList = new ArrayList<>();
-        currentFiltRows = new ArrayList<>();
     }
 
     @NonNull
@@ -42,7 +37,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
 
     }
 
-    //Setting values to the row item (viewHolder)
+    //Setting values to the the different components of the row (viewHolder)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListFacade rower = listFacadeList.get(holder.getAdapterPosition());
@@ -71,6 +66,8 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.offerType.setTag(rower.getTitle());
         holder.courseId.setText(rower.getCourseCode());
         holder.university.setText(rower.getUniversity());
+
+        //OnClick listener for the item
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
