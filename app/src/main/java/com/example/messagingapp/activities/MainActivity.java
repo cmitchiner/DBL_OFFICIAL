@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static boolean isGuest = false;
     private boolean firstTime = true;
+
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 101;
     private double latitude;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         //initialize fusedLocationProviderClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //Check if a user is already signed in
         checkUser();
@@ -215,22 +216,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @post if @code{firstTime == true} then firstTime = False
      */
     private void firstTimeSetup() {
-        askPermissionLoc();
+        LocationTwo loc = new LocationTwo();
+        loc.askPermissionLoc();
         if (firstTime) {
-            if (checkPermission()) {
+            if (loc.checkPermission()) {
                 return;
             } else {
-                askPermissionLoc();
+                loc.askPermissionLoc();
             }
             firstTime = false;
         }
     }
-
+    /**
     /**
      * Checks if the user already has granted permission to use the location
      *
      * @post if the user has granted permission, return true
-     */
+
     public boolean checkPermission() {
 
         return ActivityCompat.checkSelfPermission(this,
@@ -241,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Asks the user for permission to use location
-     */
+
     public void askPermissionLoc() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Checks if location is turned on by device
-     */
+
     public boolean locationEnabled() {
         LocationManager locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Requests location data
-     */
+
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
 
@@ -284,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Obtains the location from a user
-     */
+
     @SuppressLint("MissingPermission")
     public Location getLocation() {
         Location location = new Location("location");
@@ -313,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return location;
     }
-
+    */
     /**
      * loginUser(), logs a user in using the email + password specified in the EditText fields
      *
