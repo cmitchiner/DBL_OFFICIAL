@@ -77,8 +77,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link listing_list#newInstance} factory method to
- * create an instance of this fragment.
+ *
  */
 public class listing_list extends Fragment {
     int count = 0;
@@ -131,23 +130,6 @@ public class listing_list extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment listing_list.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static listing_list newInstance(String param1, String param2) {
-        listing_list fragment = new listing_list();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

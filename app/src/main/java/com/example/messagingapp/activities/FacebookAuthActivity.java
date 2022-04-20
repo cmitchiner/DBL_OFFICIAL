@@ -103,13 +103,13 @@ public class FacebookAuthActivity extends MainActivity {
      */
     private void updateToken(String token) {
         //Reference the firestore database
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore fireBaseFacebook = FirebaseFirestore.getInstance();
         //Store token in hashmap to pass to DB
         Map<String, Object> data = new HashMap<>();
         data.put("Token", token);
 
         //Store hashamp in proper collection
-        firebaseFirestore.collection("Tokens")
+        fireBaseFacebook.collection("Tokens")
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .set(data)
                 .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED"))

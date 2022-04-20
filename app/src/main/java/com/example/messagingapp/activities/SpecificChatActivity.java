@@ -444,8 +444,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                firebaseDatabase.getReference("Chats")
-                                        .child(receiverRoom)
+                                        firebaseDatabase.getReference("Chats").child(receiverRoom)
                                         .child("Messages")
                                         .push()
                                         .setValue(message)
