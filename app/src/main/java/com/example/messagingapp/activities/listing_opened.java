@@ -185,6 +185,9 @@ public class listing_opened extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     * fills the rating bar with the value associated with the author
+     */
     private void fillRatingField() {
         DatabaseReference ref = firebaseDatabase.getReference("Users").child(listing.getUser());
         ref.addValueEventListener(new ValueEventListener() {
@@ -204,7 +207,6 @@ public class listing_opened extends Fragment implements View.OnClickListener {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Metoo", "failed to read user rating");
             }
         });
     }
@@ -212,6 +214,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            //if the Message button is pressed go to the message activity
             case R.id.message_button:
                 if (!MainActivity.isGuest) {
                     String authIdCombo;
@@ -223,6 +226,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), "Guests cannot use this feature!", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            //if the List author button is pressed go to the UserListings activity
             case R.id.list_author:
                 String user = usernameAuthor;
                 String authorrid = listing.getUser().toString();
@@ -232,9 +236,11 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                 intent.putExtra("title", usidCombo);
                 startActivity(intent);
                 break;
+            //if the back button is pressed go back
             case R.id.backBtn:
                 getActivity().onBackPressed();
                 break;
+            //mark the listing as sold
             case R.id.MarkAsComplete:
                 //Prompt user for username of who they sold too
                 LayoutInflater li = LayoutInflater.from(context);
@@ -307,6 +313,9 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                 });
     }
 
+    /**
+     * marks a listing as sold
+     */
     private void markListingAsSold() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
         ApiAccess apiAccess = retrofit.create(ApiAccess.class);
