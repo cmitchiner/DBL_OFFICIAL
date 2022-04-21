@@ -190,7 +190,9 @@ public class listing_list extends Fragment {
                             filtContent = textView.getText().toString().trim();
                             Log.d("filter", "kur");
                             if (!filtContent.isEmpty()) {
+                                //add filter from filtContent to dictionary, if it is not already in it
                                 if (!filtDict.get(filtCol).contains(filtContent) || !filtDict.get("location").isEmpty()) {
+                                    //create filter bubble
                                     Addbubble(filtCol + ":" + filtContent);
                                     filtDict.get(filtCol).add(filtContent);
                                     filter();
@@ -362,6 +364,7 @@ public class listing_list extends Fragment {
      * @param listFacade
      */
     public void rowOnClick(ListFacade listFacade) {
+        //Request listing from server
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),
                 getResources().getString(R.string.apiDevKey));
         getFullData.enqueue(new Callback<ResponseBody>() {
@@ -378,6 +381,7 @@ public class listing_list extends Fragment {
                     return;
                 }
 
+                //Get location and image of listing, if they exist
                 try {
                     ArrayList<String> photos = new ArrayList<>();
                     photos.add(data.optString("photos"));
@@ -390,6 +394,7 @@ public class listing_list extends Fragment {
 
                     Listing list;
 
+                    //Creating listing object if the listing is a book
                     if (listFacade.getType().toLowerCase().equals("book")) {
                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(), listFacade.getIsbn(), loc,
@@ -397,6 +402,7 @@ public class listing_list extends Fragment {
                                 listFacade.getCourseCode(), data.optString("ownerid"));
 
                     } else {
+                        //Creating listing object if the listing is a note or summary
                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
                                 data.optBoolean("sold"), listFacade.getTitle(), loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
