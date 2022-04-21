@@ -201,7 +201,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 return;
             }
 
-            //
+            // We do need this callback as we only need to do something when the text is changed
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(s);
@@ -227,6 +227,9 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    /**
+     * Allows the user to either take a photo or select a photo from their gallery
+     */
     private void selectImage() {
         final CharSequence[] options = {"Take photo", "Choose image from gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(AddListingActivity.this);
@@ -234,11 +237,14 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                //allows the user to cancel selecting a picture
                 if (options[i].equals("Cancel")) {
                     dialogInterface.dismiss();
+                //allows the user to take a photo on the spot
                 } else if (options[i].equals("Take photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, 1);
+                //allows the user to choose an image from their gallery
                 } else if (options[i].equals("Choose image from gallery")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, 2);
@@ -445,7 +451,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         return i;
     }
 
+    /**
+     * obtains the user's location
+     */
     private void getLocation() {
+        //tries to obtain the location by using the LocationHandler class
         try {
             LocationHandler.getLocation(AddListingActivity.this, this, new LocationHandler.onLocationListener() {
                 @Override
@@ -456,6 +466,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             });
             setLocationButt.setVisibility(View.GONE);
             imgViewLocation.setVisibility(View.VISIBLE);
+        //if the LocationHandler gives any error it will tell the user
         } catch (Exception e) {
             Toast.makeText(AddListingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
