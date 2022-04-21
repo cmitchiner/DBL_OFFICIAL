@@ -24,25 +24,6 @@ public class Message {
     }
 
     /**
-     * getUniqueID() : returns the messages unique identifier
-     *
-     * @return a randomly generated unique identifier to reference the message by
-     */
-    public String getUniqueID() {
-        return uniqueID;
-    }
-
-    /**
-     * setUniqueID : sets a messages unique id to a passed value
-     *
-     * @param uniqueID the unique ID to be set
-     * @post @code{this.uniqueID = uniqueID;}
-     */
-    public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
-    }
-
-    /**
      * Paramterized constructor for a message that only contains text i.e NO image
      *
      * @param message     the text of the message
@@ -76,6 +57,25 @@ public class Message {
         //Set a boolean to reference that this message is an image
         this.isImage = true;
         this.uniqueID = UUID.randomUUID().toString();
+    }
+
+    /**
+     * getUniqueID() : returns the messages unique identifier
+     *
+     * @return a randomly generated unique identifier to reference the message by
+     */
+    public String getUniqueID() {
+        return uniqueID;
+    }
+
+    /**
+     * setUniqueID : sets a messages unique id to a passed value
+     *
+     * @param uniqueID the unique ID to be set
+     * @post @code{this.uniqueID = uniqueID;}
+     */
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
     }
 
     /**

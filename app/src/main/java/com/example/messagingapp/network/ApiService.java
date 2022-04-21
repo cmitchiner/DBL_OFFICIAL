@@ -16,8 +16,5 @@ public interface ApiService {
      * @return
      */
     @POST("send")
-    Call<String> sendMessage(
-            @HeaderMap HashMap<String, String> headers,
-            @Body String messageBody
-    );
+    Call<String> sendMessage(@HeaderMap HashMap<String, String> headers, @Body String messageBody);
 }

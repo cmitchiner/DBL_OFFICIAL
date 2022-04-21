@@ -62,8 +62,7 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
                 return true;
             case R.id.messages:
                 if (MainActivity.isGuest) {
-                    Toast.makeText(this, "This feature is not available for " +
-                            "guests!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "This feature is not available for " + "guests!", Toast.LENGTH_LONG).show();
                     return false;
                 } else {
                     startActivity(new Intent(this, MessagesActivity.class));

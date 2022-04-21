@@ -65,8 +65,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AddListingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    String locString;
+    Retrofit retrofit;
+    ApiAccess apiAccess;
     private EditText edtTxtTitle, edtTxtDescription, edtTxtCourseCode, edtTxtCourseName, edtTxtPrice, edtTxtISBN;
-    private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN, warningPicture;
+    private TextView textview, txtPrice, warningTitle, warningCourseCode, warningCourseName, warningUniversity, warningDescription, warningISBN,
+            warningPicture;
     private Button btnPublish;
     private ImageButton btnUploadPicture;
     private ImageView imgView, imgViewLocation;
@@ -80,11 +84,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private Button setLocationButt;
     private String type = "Notes";
     private File image;
-    String locString;
-
-    Retrofit retrofit;
-    ApiAccess apiAccess;
-
 
     /**
      * onCreate() is a method that runs before a user see's the current activity
@@ -141,8 +140,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 break;
             // If selling style is set to bidding
             case R.id.rbBidding:
-                txtPrice.setText("Starting price: ");
-                bidding = true;
+                Toast.makeText(getApplicationContext(), "This feature is not implemented yet", Toast.LENGTH_LONG).show();
                 break;
             // If selling style is set to a set price
             case R.id.rbSetPrice:
@@ -317,7 +315,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void initPublish() {
         Log.d(TAG, "initPublish: started");
 
-        retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create())
+                .build();
         apiAccess = retrofit.create(ApiAccess.class);
         if (image != null) {
             RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
@@ -331,7 +330,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         startActivity(new Intent(this, ProfileActivity.class));
 
     }
-
 
     /**
      * Function that takes a Multipart Image and uploads it to the backend, then invokes upload listing
@@ -382,13 +380,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
         Listing listing;
         if (ISBN) {
             long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
-                    ISBNlong, locString, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), ISBNlong, locString, "eng", null,
+                    edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(),
+                    FirebaseAuth.getInstance().getCurrentUser().getUid());
         } else {
-            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString,
-                    "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString, "eng", null,
+                    edtTxtDescription.getText().toString(), textview.getText().toString(), edtTxtCourseCode.getText().toString(),
+                    FirebaseAuth.getInstance().getCurrentUser().getUid());
         }
         Log.d("adder", "listing location: " + String.valueOf(listing.getlocation()));
         Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
@@ -407,7 +405,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             }
         });
     }
-
 
     /**
      * Validates that all the required fields are non-empty
@@ -435,7 +432,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             warningDescription.setVisibility(View.GONE);
         }
         if (ISBN) {
-            if (edtTxtISBN.getText().toString().matches("^[0-9]+$") && edtTxtISBN.getText().toString().matches("^97[8-9].*$") && edtTxtISBN.length() == 13) {
+            if (edtTxtISBN.getText().toString().matches("^[0-9]+$") && edtTxtISBN.getText().toString().matches("^97[8-9].*$") && edtTxtISBN
+                                                                                                                                         .length() == 13) {
                 warningISBN.setVisibility(View.GONE);
             } else {
                 warningISBN.setVisibility(View.VISIBLE);
@@ -460,7 +458,6 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             Toast.makeText(AddListingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     /**
      * Inits all references to Activity_Add_Listing.xml and pulls the arraylist of university

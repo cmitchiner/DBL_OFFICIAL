@@ -50,13 +50,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class listing_opened extends Fragment implements View.OnClickListener {
 
+    //Default fragment variables
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
     /**
      * VARIABLES
      **/
     //Variables to hold listing object, and data parsing class list facade
     private Listing listing;
     private Context context;
-
     //Declare variables for XML references
     private Button completeListing;
     private ImageButton messageButton;
@@ -65,17 +67,11 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     private TextView title, author, description, university, courseCode, price, isbn;
     private ImageView backBtn;
     private FirebaseDatabase firebaseDatabase;
-
     //Variables to hold information about listing
     private String usernameAuthor;
     private String currentUserId;
     private String authorId;
     private double priceEuro;
-
-    //Default fragment variables
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -99,8 +95,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_listing_opened, container, false);
     }
@@ -163,9 +158,11 @@ public class listing_opened extends Fragment implements View.OnClickListener {
             }
         }
         if (!listing.getPhotos().get(0).equals("PLACEHOLDER")) {
-            String url = getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?" + getResources().getString(R.string.apiDevKey);
+            String url = getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?" + getResources()
+                    .getString(R.string.apiDevKey);
             Log.d("URL", url);
-            Picasso.get().load(getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?apiKey=" + getResources().getString(R.string.apiDevKey)).into(image);
+            Picasso.get().load(getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?apiKey=" + getResources()
+                    .getString(R.string.apiDevKey)).into(image);
         } else {
             Drawable img = getContext().getDrawable(R.drawable.ic_baseline_no_photography_24);
             image.setImageDrawable(img);
@@ -179,8 +176,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         completeListing.setOnClickListener(this);
 
         //insert rating of user here
-        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
-                ".firebasedatabase.app/");
+        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app/");
         fillRatingField();
 
     }
@@ -244,23 +240,18 @@ public class listing_opened extends Fragment implements View.OnClickListener {
                 final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput);
 
                 // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // get user input and set it to result
-                                        // edit text
-                                        checkUserExists(userInput.getText().toString());
-                                        Log.d("COMPLETED_LISTING", userInput.getText().toString());
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // get user input and set it to result
+                        // edit text
+                        checkUserExists(userInput.getText().toString());
+                        Log.d("COMPLETED_LISTING", userInput.getText().toString());
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
@@ -280,35 +271,32 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         DatabaseReference ref = firebaseDatabase.getReference("Users");
 
         //Attempt to find a User Class in database with passed String receiverUsername
-        ref.orderByChild("username").equalTo(userToCheck).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) { //Receiving user found
-                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                User user = snapshot1.getValue(User.class);
-                                //snapshot1.getKey() contains the receiving users UID
-                                markListingAsSold();
-                                Toast.makeText(getActivity(),
-                                        "Listing marked as sold to: " + user.fullName,
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        } else { //Receiving user not found, alert current user
-                            Toast.makeText(getActivity(),
-                                    "This user does not exist!", Toast.LENGTH_SHORT).show();
-                        }
+        ref.orderByChild("username").equalTo(userToCheck).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) { //Receiving user found
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        User user = snapshot1.getValue(User.class);
+                        //snapshot1.getKey() contains the receiving users UID
+                        markListingAsSold();
+                        Toast.makeText(getActivity(), "Listing marked as sold to: " + user.fullName, Toast.LENGTH_LONG).show();
                     }
+                } else { //Receiving user not found, alert current user
+                    Toast.makeText(getActivity(), "This user does not exist!", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                    //Database request was canceled.
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.d("REGISTER", error.getMessage());
-                    }
-                });
+            //Database request was canceled.
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("REGISTER", error.getMessage());
+            }
+        });
     }
 
     private void markListingAsSold() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl))
+                .addConverterFactory(GsonConverterFactory.create()).build();
         ApiAccess apiAccess = retrofit.create(ApiAccess.class);
         JSONObject json = new JSONObject();
         try {

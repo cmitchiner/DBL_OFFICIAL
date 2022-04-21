@@ -59,7 +59,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         //Init FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
 
-
         //Set Text-Fields to User name and email
         if (!MainActivity.isGuest) {
             firebaseUser = firebaseAuth.getCurrentUser();
@@ -106,12 +105,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         //Make sure they are not guest to prevent errors with signing out
         if (!MainActivity.isGuest) {
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-            DocumentReference documentReference = firebaseFirestore.collection("Tokens")
-                    .document(firebaseAuth.getCurrentUser().getUid());
+            DocumentReference documentReference = firebaseFirestore.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid());
             HashMap<String, Object> updates = new HashMap<>();
             updates.put("Token", FieldValue.delete());
-            documentReference.update(updates)
-                    .addOnSuccessListener(unused -> Log.d("TOKEN", "Token deleted"))
+            documentReference.update(updates).addOnSuccessListener(unused -> Log.d("TOKEN", "Token deleted"))
                     .addOnFailureListener(e -> Log.d("TOKEN", "Error deleting token: " + e));
             firebaseAuth.signOut();
         }

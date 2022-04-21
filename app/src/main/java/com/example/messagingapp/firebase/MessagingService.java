@@ -20,7 +20,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Random;
 
-
 public class MessagingService extends FirebaseMessagingService {
 
     /**
@@ -71,9 +70,7 @@ public class MessagingService extends FirebaseMessagingService {
         builder.setContentTitle(user.fullName);
         //Put the message text into the notification as well with proper sizing
         builder.setContentText(message.getData().get("message"));
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(
-                message.getData().get("message")
-        ));
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message.getData().get("message")));
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);

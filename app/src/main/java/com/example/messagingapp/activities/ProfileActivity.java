@@ -81,9 +81,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
 
         //Init Firebase Database Reference
         if (!MainActivity.isGuest) {
-            ref = FirebaseDatabase.getInstance(
-                    "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
-                    .getReference("Users").child(firebaseAuth.getCurrentUser().getUid());
+            ref = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
+                    .child(firebaseAuth.getCurrentUser().getUid());
         }
 
         //Verify user is still logged in and update EditText fields
@@ -140,8 +139,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     //Start add listing process
                     startActivity(new Intent(this, AddListingActivity.class));
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Guests cannot create listings!",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Guests cannot create listings!", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.updateBtn:
@@ -149,8 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     //Start update profile process
                     updateUserInfo();
                 } else {
-                    Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests"
-                            , Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "This feature is not allowed for guests", Toast.LENGTH_LONG).show();
                 }
                 break;
             //Change to !Guest
@@ -164,13 +161,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                     intent.putExtra("title", usidCombo);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Guests do not have active listings",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "Guests do not have active listings", Toast.LENGTH_LONG).show();
                 }
 
         }
     }
-
 
     /**
      * Verifies that the user is still logged in
@@ -263,36 +258,32 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
             String username = usernameEt.getText().toString().trim();
             /*The preceding code checks to see if any username in the database is equal to the
             username pulled from the EditText field.*/
-            ref.getParent().orderByChild("username").equalTo(username).addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            //If snapshot exists it means we found a match, however we also need to
-                            //verify the match is not our current username because it is possible
-                            //the user never changed their username
-                            if (usernameEt.length() < 4) {
-                                usernameEt.setError("Username is too short");
-                            }
-                            if (usernameEt.length() > 21) {
-                                usernameEt.setError("Username is too long");
-                            }
-                            if (snapshot.exists() && !username.equals(currentUsername)) {
-                                usernameEt.setError("Username is already in use!");
-                                usernameEt.requestFocus();
-                            } else {
-                                //No match found, thus proceed with update
-                                attemptUserInfoUpdate();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(ProfileActivity.this,
-                                    "We are experiencing server issues, please try again later",
-                                    Toast.LENGTH_LONG).show();
-                        }
+            ref.getParent().orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    //If snapshot exists it means we found a match, however we also need to
+                    //verify the match is not our current username because it is possible
+                    //the user never changed their username
+                    if (usernameEt.length() < 4) {
+                        usernameEt.setError("Username is too short");
                     }
-            );
+                    if (usernameEt.length() > 21) {
+                        usernameEt.setError("Username is too long");
+                    }
+                    if (snapshot.exists() && !username.equals(currentUsername)) {
+                        usernameEt.setError("Username is already in use!");
+                        usernameEt.requestFocus();
+                    } else {
+                        //No match found, thus proceed with update
+                        attemptUserInfoUpdate();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(ProfileActivity.this, "We are experiencing server issues, please try again later", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -345,16 +336,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ProfileActivity.this,
-                                "Full Name updated successfully",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Full Name updated successfully", Toast.LENGTH_SHORT).show();
                         setFirebaseDisplayName(newFullName);
                         fullNameTv.setText(newFullName);
                     } else {
                         /** User info failed to be updated in database **/
-                        Toast.makeText(ProfileActivity.this,
-                                "Failed to update full name! Try again!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Failed to update full name! Try again!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -364,15 +351,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ProfileActivity.this,
-                                "Username updated successfully",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Username updated successfully", Toast.LENGTH_SHORT).show();
                         usernameEt.setError(null);
 
                     } else {
-                        Toast.makeText(ProfileActivity.this,
-                                "Failed to update username! Try again!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Failed to update username! Try again!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -382,23 +365,17 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ProfileActivity.this,
-                                "Phone number updated successfully",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Phone number updated successfully", Toast.LENGTH_SHORT).show();
                         phoneEt.setError(null);
                     } else {
                         /** User info failed to be updated in database **/
-                        Toast.makeText(ProfileActivity.this,
-                                "Failed to update phone number! Try again!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Failed to update phone number! Try again!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
-        if (currentPhone.equals(newPhone) && currentFullName.equals(newFullName)
-                && currentUsername.equals(newUsername)) {
-            Toast.makeText(ProfileActivity.this, "Nothing to Update!",
-                    Toast.LENGTH_SHORT).show();
+        if (currentPhone.equals(newPhone) && currentFullName.equals(newFullName) && currentUsername.equals(newUsername)) {
+            Toast.makeText(ProfileActivity.this, "Nothing to Update!", Toast.LENGTH_SHORT).show();
         }
         //Refresh EditText fields, TextView at top of screen, and variables for current user info
         getCurrentUserInfo();
@@ -420,22 +397,26 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
     private void setFirebaseDisplayName(String fullName) {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(fullName).build();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(fullName).build();
 
-        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("PROFILE_UPDATE", "Display Name Set Successfully!");
-                        } else {
-                            Log.d("PROFILE_UPDATE", "Failed to set DisplayName");
-                        }
-                    }
-                });
+        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("PROFILE_UPDATE", "Display Name Set Successfully!");
+                } else {
+                    Log.d("PROFILE_UPDATE", "Failed to set DisplayName");
+                }
+            }
+        });
     }
 
+    /**
+     * Defines navigation bar behaviour
+     *
+     * @param item The clicked item
+     * @return true iff successful navigation
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -447,8 +428,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                 return true;
             case R.id.messages:
                 if (MainActivity.isGuest) {
-                    Toast.makeText(ProfileActivity.this, "This feature is not available for " +
-                            "guests!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProfileActivity.this, "This feature is not available for " + "guests!", Toast.LENGTH_LONG).show();
                     return false;
                 } else {
                     startActivity(new Intent(this, MessagesActivity.class));

@@ -71,33 +71,25 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
     Toolbar specificChatToolbar;
     TextView receiverNameTV;
     RecyclerView recyclerView;
-
-
-    //variable to hold message user intends to send
-    private String messageToSend;
-    private File image;
-
     //Variables to store info about sender/reciever
     String receiverName, senderName, receiverUID, senderUID, currentTime;
     String receiverRoom, senderRoom;
     String senderToken, receiverToken;
-
     ArrayList<Message> messages;
-
     //Date Variables
     Calendar calender;
     SimpleDateFormat simpleDateFormat;
-
     //Firebase variables
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-
     //Adapter + Linear layout for Recycler
     RecycleSpecificChatAdapter specificChatAdapter;
-
     //Additional Variables
     Intent intent;
+    //variable to hold message user intends to send
+    private String messageToSend;
+    private File image;
 
     /** METHODS **/
 
@@ -134,8 +126,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
         //Init firebase auth and databse
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
-                ".firebasedatabase.app");
+        firebaseDatabase = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app");
 
         //Grab sender/reciever name + UID
         senderName = firebaseAuth.getCurrentUser().getDisplayName();
@@ -166,10 +157,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setAdapter(specificChatAdapter);
 
         //Init firebase database reference
-        databaseReference = firebaseDatabase
-                .getReference("Chats")
-                .child(senderRoom)
-                .child("Messages");
+        databaseReference = firebaseDatabase.getReference("Chats").child(senderRoom).child("Messages");
 
         //Set receiver token
         pullTokens();
@@ -181,10 +169,8 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
     private void pullTokens() {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = firebaseFirestore.collection("Tokens")
-                .document(receiverUID);
-        DocumentReference documentReference2 = firebaseFirestore.collection("Tokens")
-                .document(senderUID);
+        DocumentReference documentReference = firebaseFirestore.collection("Tokens").document(receiverUID);
+        DocumentReference documentReference2 = firebaseFirestore.collection("Tokens").document(senderUID);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -287,8 +273,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                 messageToSend = messageET.getText().toString();
                 if (messageToSend.isEmpty()) {
                     //Inform user message is empty
-                    Toast.makeText(getApplicationContext(), "Please enter a message first!",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter a message first!", Toast.LENGTH_SHORT).show();
                 } else {
                     sendMessage(messageToSend, null);
                 }
@@ -314,8 +299,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
                 if (options[i].equals("Cancel")) {
                     dialogInterface.dismiss();
                 } else if (options[i].equals("Choose image from gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, 2);
                 }
             }
@@ -364,17 +348,13 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onFailure(@NonNull Exception e) {
                 //Image upload failed, inform user
-                Toast.makeText(SpecificChatActivity.this, "Failed to send image",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(SpecificChatActivity.this, "Failed to send image", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void sendNotification(String messageBody) {
-        ApiClient.getClient().create(ApiService.class).sendMessage(
-                Constants.getRemoteMsgHeaders(),
-                messageBody
-        ).enqueue(new Callback<String>() {
+        ApiClient.getClient().create(ApiService.class).sendMessage(Constants.getRemoteMsgHeaders(), messageBody).enqueue(new Callback<String>() {
             @Override
             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful()) {
@@ -425,19 +405,12 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
             message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime);
         }
         //Post both the sender + receiver rooms to firebase database
-        firebaseDatabase.getReference("Chats")
-                .child(senderRoom)
-                .child("Messages")
-                .push()
-                .setValue(message)
+        firebaseDatabase.getReference("Chats").child(senderRoom).child("Messages").push().setValue(message)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            firebaseDatabase.getReference("Chats").child(receiverRoom)
-                                    .child("Messages")
-                                    .push()
-                                    .setValue(message)
+                            firebaseDatabase.getReference("Chats").child(receiverRoom).child("Messages").push().setValue(message)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {

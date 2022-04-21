@@ -6,6 +6,17 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class ListFacade implements Parcelable {
+    public static final Creator<ListFacade> CREATOR = new Creator<ListFacade>() {
+        @Override
+        public ListFacade createFromParcel(Parcel in) {
+            return new ListFacade(in);
+        }
+
+        @Override
+        public ListFacade[] newArray(int size) {
+            return new ListFacade[size];
+        }
+    };
     @SerializedName("listID")
     private String list_iD;
     @SerializedName("title")
@@ -28,8 +39,8 @@ public class ListFacade implements Parcelable {
     private String location;
 
     //ListFacade constructor
-    public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode,
-                      String auniversity, boolean aisBid, Long aisbn, String alocation) {
+    public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode, String auniversity, boolean aisBid, Long aisbn,
+                      String alocation) {
         list_iD = iD;
         title = atitle;
         price = aprice;
@@ -54,18 +65,6 @@ public class ListFacade implements Parcelable {
         isbn = in.readLong();
         location = in.readString();
     }
-
-    public static final Creator<ListFacade> CREATOR = new Creator<ListFacade>() {
-        @Override
-        public ListFacade createFromParcel(Parcel in) {
-            return new ListFacade(in);
-        }
-
-        @Override
-        public ListFacade[] newArray(int size) {
-            return new ListFacade[size];
-        }
-    };
 
     //Getter for list_iD
     public String getList_iD() {

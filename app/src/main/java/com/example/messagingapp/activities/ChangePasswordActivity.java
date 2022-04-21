@@ -31,6 +31,24 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     private FirebaseAuth firebaseAuth;
 
     /**
+     * Checks if a password is in an acceptable format:
+     * at least one special character, at least one capital, at least one number, and at least
+     * 6 characters long.
+     *
+     * @param password the password to be checked
+     * @return result = true if password is valid, result = false if password is invalid
+     */
+    public static boolean passwordFollowsFormat(final String password) {
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,20}$";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+    /**
      * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
@@ -129,30 +147,11 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
             return false;
         }
         if (!passwordFollowsFormat(newPass)) {
-            newPassEt.setError("Password must have at least one: capital letter, " +
-                    "special character, and number");
+            newPassEt.setError("Password must have at least one: capital letter, " + "special character, and number");
             newPassEt.requestFocus();
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks if a password is in an acceptable format:
-     * at least one special character, at least one capital, at least one number, and at least
-     * 6 characters long.
-     *
-     * @param password the password to be checked
-     * @return result = true if password is valid, result = false if password is invalid
-     */
-    public static boolean passwordFollowsFormat(final String password) {
-        Pattern pattern;
-        Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,20}$";
-
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-        return matcher.matches();
     }
 
     /**
@@ -167,29 +166,28 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         //Create auth credential for authentication
         AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), oldPass);
-        firebaseUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //Old password was correct, and user has been authenticated, begin change process
-                            firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        //Password updated successfully
-                                        Toast.makeText(ChangePasswordActivity.this, "Password Updated!", Toast.LENGTH_LONG).show();
-                                        startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
-                                    } else {
-                                        //Password failed to update
-                                        Toast.makeText(ChangePasswordActivity.this, "Error Password not updated", Toast.LENGTH_LONG).show();
-                                    }
+        firebaseUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //Old password was correct, and user has been authenticated, begin change process
+                    firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                //Password updated successfully
+                                Toast.makeText(ChangePasswordActivity.this, "Password Updated!", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
+                            } else {
+                                //Password failed to update
+                                Toast.makeText(ChangePasswordActivity.this, "Error Password not updated", Toast.LENGTH_LONG).show();
+                            }
 
-                                }
-                            });
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+                    });
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 //Failed to authenticate user with old password

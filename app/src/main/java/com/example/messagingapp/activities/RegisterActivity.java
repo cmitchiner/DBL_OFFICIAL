@@ -101,8 +101,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //Verify all fields are filled out correctly, username is unique and password follows
         //                                                                              requirements
-        if (allFieldsAreFilled(fullName, username, phone, email, password) &&
-                usernameIsAvailable(username) && passwordIsValid(password)) {
+        if (allFieldsAreFilled(fullName, username, phone, email, password) && usernameIsAvailable(username) && passwordIsValid(password)) {
             attemptFirebaseRegistration(fullName, username, phone, email, password);
         }
     }
@@ -117,8 +116,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * @param password the password to be checked
      * @return
      */
-    public boolean allFieldsAreFilled(String fullName, String username, String phone, String email,
-                                      String password) {
+    public boolean allFieldsAreFilled(String fullName, String username, String phone, String email, String password) {
         if (fullName.isEmpty()) {
             registerFullNameEt.setError("Full name is required");
             registerFullNameEt.requestFocus();
@@ -154,31 +152,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * @return true if username is unique, false if username is taken
      */
     public boolean usernameIsAvailable(String username) {
-        DatabaseReference ref = FirebaseDatabase.getInstance("" +
-                "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
+        DatabaseReference ref = FirebaseDatabase.getInstance("" + "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app")
                 .getReference().child("Users");
 
-        ref.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            registerUsernameEt.setError("Username is already taken!");
-                            registerUsernameEt.requestFocus();
-                            usernameIsUnique = false;
-                            Log.d("REGISTER", "Username already exists");
-                        } else {
-                            Log.d("REGISTER", "Username is unique");
-                            usernameIsUnique = true;
-                        }
-                    }
+        ref.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    registerUsernameEt.setError("Username is already taken!");
+                    registerUsernameEt.requestFocus();
+                    usernameIsUnique = false;
+                    Log.d("REGISTER", "Username already exists");
+                } else {
+                    Log.d("REGISTER", "Username is unique");
+                    usernameIsUnique = true;
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        usernameIsUnique = false;
-                        Log.d("REGISTER", error.getMessage());
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                usernameIsUnique = false;
+                Log.d("REGISTER", error.getMessage());
+            }
+        });
         return usernameIsUnique;
     }
 
@@ -197,41 +193,45 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return false;
         }
         if (!ChangePasswordActivity.passwordFollowsFormat(password)) {
-            registerPasswordEt.setError("Password must have at least one: capital letter, " +
-                    "special character, and number");
+            registerPasswordEt.setError("Password must have at least one: capital letter, " + "special character, and number");
             registerPasswordEt.requestFocus();
             return false;
         }
         return true;
     }
 
-
-    public void attemptFirebaseRegistration(String fullName, String username, String phone, String email,
-                                            String password) {
+    /**
+     * Try to register a user into the firebase
+     *
+     * @param fullName the name a user filled in
+     * @param username the username chosen by the user
+     * @param phone    the phone number filled in by the user
+     * @param email    the email filled in by the user
+     * @param password the password chosen by the user
+     */
+    public void attemptFirebaseRegistration(String fullName, String username, String phone, String email, String password) {
         //Attempt to create a new email/pass authentication account
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        //Account created Successfully
-                        if (task.isSuccessful()) {
-                            //Create new User Object
-                            User user = new User(fullName, username, phone, email);
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                //Account created Successfully
+                if (task.isSuccessful()) {
+                    //Create new User Object
+                    User user = new User(fullName, username, phone, email);
 
-                            //Attempt to store User object in FirebaseDatabase
-                            FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
-                                    ".firebasedatabase.app").getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    //Attempt to store User object in FirebaseDatabase
+                    FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app").getReference("Users")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     //SUCCESS: User posted to DB
                                     if (task.isSuccessful()) {
                                         sendVerificationEmail();
                                         Toast.makeText(RegisterActivity.this,
-                                                "Success! To finish registration please check your email " +
-                                                        "and follow the given " +
-                                                        "instructions.", Toast.LENGTH_LONG).show();
+                                                "Success! To finish registration please check your email " + "and follow the given " +
+                                                        "instructions.",
+                                                Toast.LENGTH_LONG).show();
                                         //Set Display Name on Firebase
                                         setFirebaseDisplayName(fullName);
                                         //Redirect to Login Page
@@ -239,25 +239,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                     } else {
                                         //FAIL: User was NOT posted to DB
-                                        Toast.makeText(RegisterActivity.this,
-                                                "Failed to register! Try again!",
-                                                Toast.LENGTH_LONG).show();
+                                        Toast.makeText(RegisterActivity.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
-                        } else {
-                            //Account FAILED to be created
-                            task.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(RegisterActivity.this,
-                                            e.getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
+                } else {
+                    //Account FAILED to be created
+                    task.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -267,23 +263,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         //Grab current user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         //Use firebase api to send verification email
-        firebaseUser.sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //Email sent successfully
-                            Toast.makeText(RegisterActivity.this,
-                                    "Verification email sent to " + firebaseUser.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            //Error sending email
-                            Toast.makeText(RegisterActivity.this,
-                                    "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //Email sent successfully
+                    Toast.makeText(RegisterActivity.this, "Verification email sent to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                } else {
+                    //Error sending email
+                    Toast.makeText(RegisterActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
@@ -297,22 +288,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         //Create a ProfileChangeRequest variable to send to firebase
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(fullName).build();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(fullName).build();
 
         //Call firebase api update profile function with proper variable
-        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            //Display name set successfully
-                            Log.d("REGISTER", "Display Name Set Successfully!");
-                        } else {
-                            //Failed to set display name
-                            Log.d("REGISTER", "Failed to set DisplayName");
-                        }
-                    }
-                });
+        firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    //Display name set successfully
+                    Log.d("REGISTER", "Display Name Set Successfully!");
+                } else {
+                    //Failed to set display name
+                    Log.d("REGISTER", "Failed to set DisplayName");
+                }
+            }
+        });
     }
 }

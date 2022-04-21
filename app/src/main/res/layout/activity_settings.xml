@@ -33,8 +33,8 @@
                 android:layout_toRightOf="@+id/profileImg"
                 android:fontFamily="@font/bungee"
                 android:includeFontPadding="false"
-                android:textColor="@color/white"
                 android:text="John Doe"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -42,11 +42,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/fullNameTv"
-                android:textColor="@color/white"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/profileImg"
                 android:includeFontPadding="false"
                 android:text="jdoe123@gmail.com"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
         </RelativeLayout>
 
@@ -60,23 +60,23 @@
                 android:id="@+id/logoutBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Logout"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:textColor="@color/primary_blue"
-                app:backgroundTint="@color/white"
                 android:background="@drawable/btn_bg"
-                android:layout_marginRight="5dp" />
+                android:text="Logout"
+                android:textColor="@color/primary_blue"
+                app:backgroundTint="@color/white" />
 
             <Button
                 android:id="@+id/changePassBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:backgroundTint="@color/white"
-                android:background="@drawable/btn_bg"
-                android:textColor="@color/primary_blue"
                 android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
                 android:text="Change Pass"
-                android:layout_weight="1" />
+                android:textColor="@color/primary_blue"
+                app:backgroundTint="@color/white" />
 
         </LinearLayout>
 
@@ -89,9 +89,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:baselineAligned="true"
                 android:gravity="center_vertical"
-                android:baselineAligned="true">
+                android:orientation="horizontal">
 
 
                 <Switch
@@ -102,8 +102,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dark Mode"
                     android:fontFamily="@font/bungee"
+                    android:text="Dark Mode"
                     android:textColor="@color/primary_blue"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -111,9 +111,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:baselineAligned="true"
                 android:gravity="center_vertical"
-                android:baselineAligned="true">
+                android:orientation="horizontal">
 
 
                 <Switch
@@ -124,9 +124,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/bungee"
                     android:text="Setting 2"
                     android:textColor="@color/primary_blue"
-                    android:fontFamily="@font/bungee"
                     android:textSize="20sp" />
             </LinearLayout>
 
@@ -144,9 +144,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primary_blue"
-                    android:text="Setting 3"
                     android:fontFamily="@font/bungee"
+                    android:text="Setting 3"
+                    android:textColor="@color/primary_blue"
                     android:textSize="20sp" />
             </LinearLayout>
 

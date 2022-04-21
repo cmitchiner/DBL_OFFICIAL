@@ -1,6 +1,5 @@
 package com.example.messagingapp;
 
-import com.example.messagingapp.model.BiddingData;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 
@@ -13,8 +12,6 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
@@ -27,16 +24,6 @@ import retrofit2.http.Query;
  * Interface ApiAccess for retrofit method specification
  */
 public interface ApiAccess {
-
-    /**
-     * Retrofit specification for getting the details of a bidding listing
-     *
-     * @param aucId  id of auction to look up in database
-     * @param apiKey apikey
-     * @return BiddingData object filled with data from database
-     */
-    @GET("/auction")
-    Call<BiddingData> getAuctionDetails(@Query("aucId") int aucId, @Query("apiKey") String apiKey);
 
     /**
      * Retrofit specification to get details of for listing list
@@ -76,26 +63,7 @@ public interface ApiAccess {
      * @return
      */
     @GET("/listings/{id}")
-    Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
-    );
-
-    /**
-     * Retrofit specification to place a new bid
-     *
-     * @param aucId  auction to bid on
-     * @param bidVal amount to bid in cents
-     * @param bidId  id of user bidding
-     * @param apiKey apikey
-     * @return updated biddingdata object
-     */
-    @FormUrlEncoded
-    @PATCH("/auction/{id}")
-    Call<BiddingData> placeNewBid(
-            @Path("id") int aucId,
-            @Field("bidValue") int bidVal,
-            @Field("bidderId") String bidId,
-            @Field("apiKey") String apiKey
-    );
+    Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey);
 
     /**
      * Retrofit specification to update a listing

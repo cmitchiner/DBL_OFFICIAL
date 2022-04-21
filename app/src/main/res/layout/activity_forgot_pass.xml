@@ -27,13 +27,13 @@
                 android:id="@+id/forgotTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Forgot Password"
+                android:layout_below="@+id/appLogo"
+                android:fontFamily="@font/bungee"
                 android:gravity="center"
+                android:text="Forgot Password"
                 android:textColor="@color/primary_blue"
                 android:textSize="34sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/bungee"
-                android:layout_below="@+id/appLogo" />
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <LinearLayout

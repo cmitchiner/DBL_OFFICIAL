@@ -20,14 +20,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/newMessageUserET"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="20dp"
         android:text="Enter the username you would like to chat with"
         android:textColor="@color/primary_blue"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textSize="16sp" />
+        app:layout_constraintBottom_toTopOf="@id/newMessageUserET"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/newMessageUserET"
@@ -35,10 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_search_bar"
         android:drawableStart="@drawable/ic_person"
         android:padding="7dp"
         android:textColor="@color/primary_blue"
-        android:background="@drawable/bg_search_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="START CHAT"
-        app:layout_constraintTop_toBottomOf="@id/newMessageUserET"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/newMessageUserET" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

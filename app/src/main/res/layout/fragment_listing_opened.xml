@@ -14,35 +14,35 @@
         android:layout_margin="10dp">
 
         <ImageView
-            android:layout_marginTop="10dp"
             android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_arrow_back"
-            app:tint="@color/primary_blue"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_blue" />
 
 
         <TextView
             android:id="@+id/list_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="30dp"
-            android:gravity="center_horizontal"
-            android:text="Title of a very cool listing"
             android:autoSizeTextType="uniform"
-            android:maxLines="1"
             android:fontFamily="@font/bungee"
+            android:gravity="center_horizontal"
             android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="Title of a very cool listing"
             android:textColor="@color/primary_blue"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/report_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/backBtn">
+            app:layout_constraintStart_toEndOf="@+id/backBtn"
+            app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
@@ -70,9 +70,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="Author"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="Author"
             android:textColor="@color/primary_blue"
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,11 +86,11 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="10dp"
-            android:text="Completed"
-            android:includeFontPadding="false"
-            android:textColor="@color/white"
-            android:maxLines="1"
             android:autoSizeTextType="uniform"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="Completed"
+            android:textColor="@color/white"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/list_image"
             app:layout_constraintEnd_toEndOf="parent"
@@ -103,12 +103,12 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
-            app:tint="@color/primary_blue"
             android:src="@drawable/ic_baseline_report_24"
             android:text="Report"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/message_button"
-            app:layout_constraintTop_toBottomOf="@+id/tit_line" />
+            app:layout_constraintTop_toBottomOf="@+id/tit_line"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_blue" />
 
 
         <ImageView
@@ -132,9 +132,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="University"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="University"
             android:textColor="@color/primary_blue"
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -148,9 +148,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="isbn"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="isbn"
             android:textColor="@color/black"
             android:textSize="10sp"
             android:visibility="invisible"
@@ -165,9 +165,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="CourseCode"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="CourseCode"
             android:textColor="@color/primary_blue"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/list_university"
@@ -181,9 +181,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
-            android:text="Price"
             android:fontFamily="@font/bungee"
             android:includeFontPadding="false"
+            android:text="Price"
             android:textColor="@color/primary_blue"
             android:textSize="10sp"
             app:layout_constraintStart_toEndOf="@+id/list_code"
@@ -194,8 +194,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/bg_search_bar"
             android:ems="10"
             android:focusable="false"
@@ -213,33 +213,33 @@
             android:id="@+id/message_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_message_24"
-            app:tint="@color/primary_blue"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_message_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/primary_blue" />
 
         <RatingBar
             android:id="@+id/ratingBar"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
             android:numStars="5"
             android:stepSize=".1"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_author" />
 
         <Button
             android:id="@+id/buyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/btn_bg"
             android:text="Buy listing"
             android:textColor="@color/white"
             app:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_price" />
 

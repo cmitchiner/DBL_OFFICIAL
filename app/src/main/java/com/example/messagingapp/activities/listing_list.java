@@ -55,8 +55,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  */
 public class listing_list extends Fragment {
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
     int count = 0;
-
     //Components
     TextView titleView;
     RecyclerView recycler;
@@ -67,36 +69,25 @@ public class listing_list extends Fragment {
     Spinner spinner;
     AutoCompleteTextView filterText;
     Button locationbutt;
-
     String filtCol;
     String filtContent;
     String personalType;
     String userId;
     Location userLocation;
-
     //Arraylists for items for recyclerview
     Map<String, ArrayList<String>> filtDict;
     ArrayList<ListFacade> list = new ArrayList<>();
-
     //Listner interface
     SelectListener selectListener;
-
     //Retrofit interface
     ApiAccess apiAccess;
-
     //Location varibles
     FusedLocationProviderClient mFusedLocationClient;
     int PERMISSION_ID = 101;
-    private double latitude;
-    private double longitude;
     //private Location location;
     Location location = new Location("location");
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
+    private double latitude;
+    private double longitude;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -104,7 +95,6 @@ public class listing_list extends Fragment {
     public listing_list() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,20 +105,18 @@ public class listing_list extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         //Creating retrofit object
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl))
+                .addConverterFactory(GsonConverterFactory.create()).build();
         apiAccess = retrofit.create(ApiAccess.class);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listing_list,
-                container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_listing_list, container, false);
         // Inflate the layout for this fragment
         return view;
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -148,7 +136,6 @@ public class listing_list extends Fragment {
         filtDict.put("isbn", new ArrayList<String>());
         filtDict.put("location", new ArrayList<String>());
         Log.d("filter", String.valueOf(filtDict));
-
 
         //Set Title and add filters, depending on how listing list was started
         if (getArguments() != null) {
@@ -179,8 +166,8 @@ public class listing_list extends Fragment {
             public void run() {
 
                 //Creating Spinner and setting adapter for filter column selection
-                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity()
-                        , R.array.filterColumns, android.R.layout.simple_spinner_item);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter
+                        .createFromResource(getActivity(), R.array.filterColumns, android.R.layout.simple_spinner_item);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
 
@@ -332,8 +319,7 @@ public class listing_list extends Fragment {
                             float[] distance = new float[2];
 
                             //Calculating distance between user and item location in meters
-                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(),
-                                    userLocation.getLatitude(), userLocation.getLongitude(),
+                            Location.distanceBetween(loc.getLatitude(), loc.getLongitude(), userLocation.getLatitude(), userLocation.getLongitude(),
                                     distance);
                             if (distance[0] > 5000) {
                                 toRemove.add(item);
@@ -383,8 +369,7 @@ public class listing_list extends Fragment {
      * @param listFacade
      */
     public void rowOnClick(ListFacade listFacade) {
-        Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),
-                getResources().getString(R.string.apiDevKey));
+        Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(), getResources().getString(R.string.apiDevKey));
         getFullData.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -413,15 +398,14 @@ public class listing_list extends Fragment {
 
                     if (listFacade.getType().toLowerCase().equals("book")) {
                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                data.optBoolean("sold"), listFacade.getTitle(), listFacade.getIsbn(), loc,
-                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
-                                listFacade.getCourseCode(), data.optString("ownerid"));
+                                data.optBoolean("sold"), listFacade.getTitle(), listFacade.getIsbn(), loc, data.optString("lang"),
+                                data.optString("aucid"), data.optString("description"), listFacade.getUniversity(), listFacade.getCourseCode(),
+                                data.optString("ownerid"));
 
                     } else {
                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                data.optBoolean("sold"), listFacade.getTitle(), loc,
-                                data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
-                                listFacade.getCourseCode(), data.optString("ownerid"));
+                                data.optBoolean("sold"), listFacade.getTitle(), loc, data.optString("lang"), data.optString("aucid"),
+                                data.optString("description"), listFacade.getUniversity(), listFacade.getCourseCode(), data.optString("ownerid"));
                     }
 
                     openListing(list);
@@ -469,8 +453,7 @@ public class listing_list extends Fragment {
      */
     public void Addbubble(String query) {
         LinearLayout filt_cont = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
-        View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont,
-                false);
+        View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont, false);
         TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
         bubble_text.setText(query);
 

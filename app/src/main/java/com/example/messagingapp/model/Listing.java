@@ -6,6 +6,17 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Listing implements Parcelable {
+    public static final Creator<Listing> CREATOR = new Creator<Listing>() {
+        @Override
+        public Listing createFromParcel(Parcel in) {
+            return new Listing(in);
+        }
+
+        @Override
+        public Listing[] newArray(int size) {
+            return new Listing[size];
+        }
+    };
     private String listID;
     private ArrayList<String> photo;
     private int price;
@@ -23,7 +34,8 @@ public class Listing implements Parcelable {
     private String userId;
 
     //Listing constructor for books
-    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn, String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn,
+                   String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;
@@ -42,7 +54,8 @@ public class Listing implements Parcelable {
     }
 
     //Listing constructor for notes and summaries
-    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+    public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, String location,
+                   String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;
@@ -78,18 +91,6 @@ public class Listing implements Parcelable {
         courseCode = in.readString();
         userId = in.readString();
     }
-
-    public static final Creator<Listing> CREATOR = new Creator<Listing>() {
-        @Override
-        public Listing createFromParcel(Parcel in) {
-            return new Listing(in);
-        }
-
-        @Override
-        public Listing[] newArray(int size) {
-            return new Listing[size];
-        }
-    };
 
     //Getter for photo
     public ArrayList<String> getPhotos() {
@@ -165,7 +166,6 @@ public class Listing implements Parcelable {
     public boolean getIsBid() {
         return false;
     }
-
 
     @Override
     public int describeContents() {

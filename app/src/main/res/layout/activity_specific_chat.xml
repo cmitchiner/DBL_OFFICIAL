@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SpecificChatActivity"
-    android:background="#ECE5DD">
+    android:background="#ECE5DD"
+    tools:context=".activities.SpecificChatActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarSpecificChat"
@@ -25,29 +25,29 @@
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
-                app:tint="@color/white"
-                android:src="@drawable/ic_arrow_back" />
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/white" />
 
             <TextView
                 android:id="@+id/receiverNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name Goes Here"
-                android:textSize="20sp"
-                android:layout_toRightOf="@+id/cardViewSpecificChat"
-                android:layout_marginLeft="10dp"
                 android:layout_centerVertical="true"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/cardViewSpecificChat"
+                android:text="Name Goes Here"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewSpecificChat"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                app:cardCornerRadius="35dp"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/backButtonSpecificChat"
-                android:layout_centerVertical="true">
+                app:cardCornerRadius="35dp">
 
                 <ImageView
                     android:id="@+id/chat_specific_profile_pic"
@@ -66,8 +66,8 @@
         android:id="@+id/recyclerSpecificChat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarSpecificChat"
-        android:layout_above="@id/bottomLayout" />
+        android:layout_above="@id/bottomLayout"
+        android:layout_below="@+id/toolbarSpecificChat" />
 
     <LinearLayout
         android:id="@+id/bottomLayout"
@@ -81,12 +81,12 @@
             android:id="@+id/messageET2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:background="@drawable/bg_chat_bar"
             android:hint="Type a message..."
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginBottom="5dp"
             android:paddingLeft="20dp"
             android:paddingRight="10dp"
             android:textAlignment="textStart"
@@ -105,8 +105,8 @@
                 android:id="@+id/attachImageBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"
                 android:layout_gravity="center"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_attach"
                 app:tint="@color/primary_blue" />
@@ -124,8 +124,8 @@
                 android:id="@+id/sendMessageBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"
                 android:layout_gravity="center"
+                android:padding="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_arrow_up"
                 app:tint="@color/primary_blue" />

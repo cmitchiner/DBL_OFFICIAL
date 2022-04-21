@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ActivityProfileLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="visible"
-    tools:context=".activities.ProfileActivity"
-    android:id="@+id/ActivityProfileLayout">
+    tools:context=".activities.ProfileActivity">
 
 
     <FrameLayout
@@ -130,10 +130,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/activeLabelTV"
                                 android:layout_centerHorizontal="true"
+                                android:autoSizeTextType="uniform"
                                 android:includeFontPadding="true"
                                 android:maxLines="1"
                                 android:text="Active Listings"
-                                android:autoSizeTextType="uniform"
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
 

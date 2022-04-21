@@ -80,8 +80,7 @@ public class ForgotPassActivity extends AppCompatActivity implements View.OnClic
             //Email was sent successfully
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(ForgotPassActivity.this, "Link has been sent to your email",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(ForgotPassActivity.this, "Link has been sent to your email", Toast.LENGTH_LONG).show();
                 //Redirect to login page
                 startActivity(new Intent(ForgotPassActivity.this, MainActivity.class));
             }
@@ -89,8 +88,7 @@ public class ForgotPassActivity extends AppCompatActivity implements View.OnClic
             //Email failed to send
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ForgotPassActivity.this, "Reset link was not sent! "
-                        + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ForgotPassActivity.this, "Reset link was not sent! " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

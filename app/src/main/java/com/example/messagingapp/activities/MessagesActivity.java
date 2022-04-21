@@ -69,7 +69,6 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
         });
     }
 
-
     /**
      * Controls the bottom navigation bar
      *

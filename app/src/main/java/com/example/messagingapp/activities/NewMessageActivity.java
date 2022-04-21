@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class NewMessageActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
@@ -77,8 +76,7 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
 
         //Init firebase auth, firebase database, and firestore database
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance("" +
-                "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app");
+        firebaseDatabase = FirebaseDatabase.getInstance("" + "https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app");
         firebaseFirestore = FirebaseFirestore.getInstance();
 
 
@@ -132,34 +130,31 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
         DatabaseReference ref = firebaseDatabase.getReference("Users");
 
         //Attempt to find a User Class in database with passed String receiverUsername
-        ref.orderByChild("username").equalTo(receiverUsername).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) { //Receiving user found
-                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                //Pull stored user class from database
-                                User user = snapshot1.getValue(User.class);
-                                //snapshot1.getKey() contains the receiving users UID
-                                if (!snapshot1.getKey().equals(firebaseAuth.getCurrentUser().getUid())) {
-                                    startChatWithUser(snapshot1.getKey(), user.fullName);
-                                } else {
-                                    Toast.makeText(NewMessageActivity.this,
-                                            "You cannot chat with yourself", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } else { //Receiving user not found, alert current user
-                            Toast.makeText(NewMessageActivity.this,
-                                    "This user does not exist!", Toast.LENGTH_SHORT).show();
+        ref.orderByChild("username").equalTo(receiverUsername).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) { //Receiving user found
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        //Pull stored user class from database
+                        User user = snapshot1.getValue(User.class);
+                        //snapshot1.getKey() contains the receiving users UID
+                        if (!snapshot1.getKey().equals(firebaseAuth.getCurrentUser().getUid())) {
+                            startChatWithUser(snapshot1.getKey(), user.fullName);
+                        } else {
+                            Toast.makeText(NewMessageActivity.this, "You cannot chat with yourself", Toast.LENGTH_SHORT).show();
                         }
                     }
+                } else { //Receiving user not found, alert current user
+                    Toast.makeText(NewMessageActivity.this, "This user does not exist!", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                    //Database request was canceled.
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.d("REGISTER", error.getMessage());
-                    }
-                });
+            //Database request was canceled.
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("REGISTER", error.getMessage());
+            }
+        });
     }
 
     /**
@@ -184,26 +179,20 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
         userDataForReceiver.put("uid", firebaseAuth.getCurrentUser().getUid());
 
         //Find the correct collection and create document to store receiving users info
-        firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid())
-                .collection("ReceivingUsers")
-                .document(receiverUID)
-                .set(userDataForSender)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        //Find collection and create document to store current users info
-                        firebaseFirestore.collection("Users").document(receiverUID)
-                                .collection("ReceivingUsers")
-                                .document(firebaseAuth.getCurrentUser().getUid())
-                                .set(userDataForReceiver)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        startActivity(new Intent(NewMessageActivity.this,
-                                                MessagesActivity.class));
-                                    }
-                                });
-                    }
-                });
+        firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).collection("ReceivingUsers").document(receiverUID)
+                .set(userDataForSender).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                //Find collection and create document to store current users info
+                firebaseFirestore.collection("Users").document(receiverUID).collection("ReceivingUsers")
+                        .document(firebaseAuth.getCurrentUser().getUid()).set(userDataForReceiver)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                startActivity(new Intent(NewMessageActivity.this, MessagesActivity.class));
+                            }
+                        });
+            }
+        });
     }
 }

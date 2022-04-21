@@ -18,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,13 +26,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class LocationHandler extends AppCompatActivity{
+public class LocationHandler extends AppCompatActivity {
     //int to store the ID of the location permission
     static int PERMISSION_ID = 101;
 
-    public interface onLocationListener {
-        public void onLocation(Location location);
-    }
     /**
      * Checks if the user already has granted permission to use the location
      *
@@ -43,10 +38,9 @@ public class LocationHandler extends AppCompatActivity{
      */
     public static boolean checkPermission(Context context) {
 
-        return ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat
+                .checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat
+                .checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
@@ -54,9 +48,9 @@ public class LocationHandler extends AppCompatActivity{
      * precise location or rough location
      */
     public static void askPermissionLoc(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+        ActivityCompat
+                .requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSION_ID);
     }
 
     /**
@@ -66,14 +60,14 @@ public class LocationHandler extends AppCompatActivity{
      * else returns false
      */
     public static boolean locationEnabled(Context context) {
-        LocationManager locationManager =
-                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
     /**
      * Returns the Address of the user in the form of a pop up
-     * @param context current app location context
+     *
+     * @param context  current app location context
      * @param location current location of user
      */
     public static String getAddress(Context context, Location location) {
@@ -96,7 +90,7 @@ public class LocationHandler extends AppCompatActivity{
     /**
      * Obtains the location from a user
      *
-     * @param context current app location context
+     * @param context  current app location context
      * @param activity current activity being used
      * @param listener listener to call a method as soon as location is changed
      */
@@ -118,14 +112,14 @@ public class LocationHandler extends AppCompatActivity{
                         listener.onLocation(location);
                     }
                 });
-            //if the location of the user is not enabled it requests the user to enable it
+                //if the location of the user is not enabled it requests the user to enable it
             } else {
                 Toast.makeText(context, "Please turn on your location...", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 context.startActivity(intent);
             }
-        //if the user has not yet granted permission to access the location data, the user is requested
-        // to give permission
+            //if the user has not yet granted permission to access the location data, the user is requested
+            // to give permission
         } else {
             askPermissionLoc(activity);
             throw new RuntimeException("No permissions given");
@@ -160,5 +154,9 @@ public class LocationHandler extends AppCompatActivity{
         loc.setLatitude(Double.valueOf(coords[0]));
         loc.setLongitude(Double.valueOf(coords[1]));
         return loc;
+    }
+
+    public interface onLocationListener {
+        public void onLocation(Location location);
     }
 }

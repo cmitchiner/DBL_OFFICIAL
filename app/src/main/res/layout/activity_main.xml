@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".activities.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,13 +27,13 @@
                 android:id="@+id/loginTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:layout_below="@+id/appLogo"
+                android:fontFamily="@font/bungee"
                 android:gravity="center"
+                android:text="Login"
                 android:textColor="@color/primary_blue"
                 android:textSize="34sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/bungee"
-                android:layout_below="@+id/appLogo" />
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,11 +70,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/input_bg"
+                android:drawableLeft="@drawable/ic_baseline_vpn_key_24"
                 android:drawablePadding="10dp"
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:drawableLeft="@drawable/ic_baseline_vpn_key_24"
                 android:minHeight="48dp"
                 android:paddingStart="20dp"
                 android:paddingTop="10dp"
@@ -147,60 +147,60 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             android:padding="15dp">
 
             <Button
                 android:id="@+id/btnGoogle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
                 android:background="@drawable/btn_bg"
-                app:icon="@drawable/ic_google"
-                app:iconPadding="-2dp"
-                app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
-                android:layout_marginRight="5dp" />
+                app:icon="@drawable/ic_google"
+                app:iconGravity="textEnd"
+                app:iconPadding="-2dp" />
 
             <Button
                 android:id="@+id/btnFacebook"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_bg"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                app:icon="@drawable/ic_facebook"
-                app:iconPadding="-2dp"
-                app:iconGravity="textEnd"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                android:shadowColor="@color/black"
                 app:backgroundTint="@color/primary_blue"
-                android:shadowColor="@color/black" />
+                app:icon="@drawable/ic_facebook"
+                app:iconGravity="textEnd"
+                app:iconPadding="-2dp" />
 
             <Button
                 android:id="@+id/btnMicrosoft"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_bg"
-                app:icon="@drawable/ic_microsoft_5"
-                app:iconPadding="-2dp"
-                app:iconGravity="textEnd"
-                app:backgroundTint="@color/primary_blue"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg"
+                app:backgroundTint="@color/primary_blue"
+                app:icon="@drawable/ic_microsoft_5"
+                app:iconGravity="textEnd"
+                app:iconPadding="-2dp" />
 
             <Button
                 android:id="@+id/btnGuest"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:autoSizeTextType="uniform"
                 android:background="@drawable/btn_bg"
                 android:maxLines="1"
-                android:autoSizeTextType="uniform"
                 android:text="Guest"
-                app:backgroundTint="@color/primary_blue"
-                android:layout_marginLeft="5dp" />
+                app:backgroundTint="@color/primary_blue" />
 
         </LinearLayout>
 

@@ -14,8 +14,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/bungee"
-        android:textColor="@color/primary_blue"
         android:text="Messages"
+        android:textColor="@color/primary_blue"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/newMessageBtn"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,12 +48,12 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        app:itemIconTint="@drawable/bottom_nav_bar_menu"
+        app:itemTextColor="@drawable/bottom_nav_bar_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemIconTint="@drawable/bottom_nav_bar_menu"
-        app:itemTextColor="@drawable/bottom_nav_bar_menu"
         app:menu="@menu/bottom_nav_menu" />
 
 

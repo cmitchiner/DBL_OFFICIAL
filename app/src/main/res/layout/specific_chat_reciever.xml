@@ -16,38 +16,38 @@
             android:id="@+id/senderTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sender Message Display Here"
-            android:textSize="18sp"
-            android:textColor="@color/white"
             android:paddingLeft="7dp"
-            android:paddingRight="40dp"
             android:paddingTop="7dp"
-            android:paddingBottom="7dp" />
+            android:paddingRight="40dp"
+            android:paddingBottom="7dp"
+            android:text="Sender Message Display Here"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/senderImageView"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="7dp"
-            android:maxWidth="200dp"
             android:adjustViewBounds="true"
+            android:maxWidth="200dp"
             android:maxHeight="200dp"
+            android:padding="7dp"
             android:scaleType="centerInside"
-            android:src="@drawable/profile" />
+            android:src="@drawable/profile"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/timeOfSentMsgTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:layout_toRightOf="@+id/senderTextView"
-            android:layout_marginLeft="-40dp"
             android:layout_alignBottom="@id/senderTextView"
-            android:text="20:00"
-            android:textStyle="italic"
+            android:layout_marginLeft="-40dp"
+            android:layout_toRightOf="@+id/senderTextView"
             android:padding="7dp"
-            android:textColor="#434343" />
+            android:text="20:00"
+            android:textColor="#434343"
+            android:textSize="10sp"
+            android:textStyle="italic" />
 
 
     </RelativeLayout>

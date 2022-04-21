@@ -26,21 +26,18 @@ import java.util.ArrayList;
 
 public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
+    //Constant integers to represent a sent or received message
+    final int ITEM_SEND = 1;
+    final int ITEM_RECEIVE = 2;
     /**
      * VARIABLE DECLARATIONS
      **/
 
     //Current activity context
     Context context;
-
     //Array list to hold all messages in a chat
     ArrayList<Message> messages;
     File localFile = null;
-
-    //Constant integers to represent a sent or received message
-    final int ITEM_SEND = 1;
-    final int ITEM_RECEIVE = 2;
-
 
     /**
      * Constructor to set activity context and feed in messages array
@@ -203,7 +200,6 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
         }
     }
-
 
     /**
      * Class for the view holder for a recieved message

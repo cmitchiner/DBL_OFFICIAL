@@ -27,15 +27,11 @@ public class Constants {
         if (remoteMsgHeaders == null) {
             remoteMsgHeaders = new HashMap<>();
             //define firebase cloud messaging authorization key
-            remoteMsgHeaders.put(
-                    REMOTE_MSG_AUTHORIZATION,
-                    "key=AAAAq2tBGf4:APA91bE5nirp8oofzY6IgzTaXlYEyk2DxckLiUFmOSG83OgQsNcMLrqEUmDzDkiVqGSyo2Hz6yZtzZ5yxTeMHpez6jFKKUAwlmVOtrJLbxAKM_2dOuB9rhOPw5FrKyrRetFBHN6ygQAo"
-            );
+            remoteMsgHeaders.put(REMOTE_MSG_AUTHORIZATION,
+                    "key=AAAAq2tBGf4" +
+                            ":APA91bE5nirp8oofzY6IgzTaXlYEyk2DxckLiUFmOSG83OgQsNcMLrqEUmDzDkiVqGSyo2Hz6yZtzZ5yxTeMHpez6jFKKUAwlmVOtrJLbxAKM_2dOuB9rhOPw5FrKyrRetFBHN6ygQAo");
             //make sure type is a json object
-            remoteMsgHeaders.put(
-                    REMOTE_MSG_CONTENT_TYPE,
-                    "application/json"
-            );
+            remoteMsgHeaders.put(REMOTE_MSG_CONTENT_TYPE, "application/json");
         }
         return remoteMsgHeaders;
     }

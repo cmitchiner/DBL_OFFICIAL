@@ -22,7 +22,6 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
     String userId;
     String titleTypeInfo;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,6 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
             person = parts[0];
             userId = parts[1];
         }
-
 
         String titleTypeInfo = person + ":" + userId;
         // Create new listing list

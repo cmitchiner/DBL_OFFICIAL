@@ -40,29 +40,24 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //Firebase + Google Auth Variables
+    private static final int RC_SIGN_IN = 100;
+    private static final String TAG = "GOOGLE_SIGN_IN_TAG";
+    public static boolean isGuest = false;
+    public FirebaseAuth firebaseAuth;
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 101;
     //Variables for references to activity_main.xml
     private Button loginBtn, googleSignInButton, guestBtn, facebookBtn, microsoftBtn;
     private EditText emailEt, passwordEt;
     private TextView forgotTv, registerTv;
-
-    //Firebase + Google Auth Variables
-    private static final int RC_SIGN_IN = 100;
     private GoogleSignInClient googleSignInClient;
-    public FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
-    private static final String TAG = "GOOGLE_SIGN_IN_TAG";
-
-    public static boolean isGuest = false;
     private boolean firstTime = true;
-
-    FusedLocationProviderClient mFusedLocationClient;
-    int PERMISSION_ID = 101;
     private double latitude;
     private double longitude;
-
 
     /**
      * onCreate() is a method that runs before a user see's a page
@@ -98,11 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         microsoftBtn.setOnClickListener(this);
 
         //Init Google Auth
-        GoogleSignInOptions googleSignInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build();
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         //Init Firebase Auth
@@ -171,11 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateToken(String token) {
         Map<String, Object> data = new HashMap<>();
         data.put("Token", token);
-        firebaseFirestore.collection("Tokens")
-                .document(firebaseAuth.getCurrentUser().getUid())
-                .set(data)
-                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED"))
-                .addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
+        firebaseFirestore.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid()).set(data)
+                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED")).addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
     }
 
     /**
@@ -228,34 +217,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (verifyEmailPassFields(email, password)) {
             //Begin authentication of information with firebase
-            firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                //Login SUCCESS: Redirect to Profile
-                                getToken();
-                                if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                                    isGuest = false;
-                                    startActivity(new Intent(MainActivity.this,
-                                            ProfileActivity.class));
-                                } else {
-                                    firebaseAuth.signOut();
-                                    Toast.makeText(MainActivity.this, "You must verify your email" +
-                                            " before logging in!", Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                //Login FAIL: Alert user of issue
-                                task.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(MainActivity.this, e.getMessage(),
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
+            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        //Login SUCCESS: Redirect to Profile
+                        getToken();
+                        if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                            isGuest = false;
+                            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        } else {
+                            firebaseAuth.signOut();
+                            Toast.makeText(MainActivity.this, "You must verify your email" + " before logging in!", Toast.LENGTH_LONG).show();
                         }
-                    });
+                    } else {
+                        //Login FAIL: Alert user of issue
+                        task.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 
@@ -289,7 +274,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
-
 
     /**
      * A core function for google sign in, provided by firebase
@@ -325,47 +309,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void firebaseAuthWithGoogleAccount(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        //login success
-                        Log.d(TAG, "onSuccess: Logged In");
-                        getToken();
-                        isGuest = false;
-                        //Get logged-in user
-                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                //login success
+                Log.d(TAG, "onSuccess: Logged In");
+                getToken();
+                isGuest = false;
+                //Get logged-in user
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-                        //Get user info
-                        String uid = firebaseUser.getUid();
-                        String email = firebaseUser.getEmail();
+                //Get user info
+                String uid = firebaseUser.getUid();
+                String email = firebaseUser.getEmail();
 
-                        //Check if user is new or existing
-                        if (authResult.getAdditionalUserInfo().isNewUser()) {
-                            //User Is New - Account Creation
-                            addAcctToDB(firebaseUser.getDisplayName(),
-                                    firebaseUser.getUid().toString(), " ", email);
-                            //Inform user
-                            Toast.makeText(MainActivity.this, "Account Created...\n"
-                                    + email, Toast.LENGTH_SHORT).show();
-                        } else {
-                            //existing user - Logged In
-                            Log.d(TAG, "onSuccess: Existing User...\n" + email);
-                            //Inform user
-                            Toast.makeText(MainActivity.this, "Existing User...\n"
-                                    + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-                        }
-                        //Start profile activity
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: Login Failed " + e.getMessage());
-                    }
-                });
+                //Check if user is new or existing
+                if (authResult.getAdditionalUserInfo().isNewUser()) {
+                    //User Is New - Account Creation
+                    addAcctToDB(firebaseUser.getDisplayName(), firebaseUser.getUid().toString(), " ", email);
+                    //Inform user
+                    Toast.makeText(MainActivity.this, "Account Created...\n" + email, Toast.LENGTH_SHORT).show();
+                } else {
+                    //existing user - Logged In
+                    Log.d(TAG, "onSuccess: Existing User...\n" + email);
+                    //Inform user
+                    Toast.makeText(MainActivity.this, "Existing User...\n" + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+                }
+                //Start profile activity
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: Login Failed " + e.getMessage());
+            }
+        });
     }
 
     /**
@@ -376,24 +355,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addAcctToDB(String fullName, String username, String phone, String email) {
 
         User user = new User(fullName, username, phone, email);
-        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" +
-                ".firebasedatabase.app").getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app").getReference("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 /** User posted to database successfully **/
                 if (task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this,
-                            "User has been registered successfully!",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
                     startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                 } else {
                     /** User failed to be added to database **/
-                    Toast.makeText(MainActivity.this,
-                            "Failed to register! Try again!",
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -410,12 +383,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Provided code from Firebase
         Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
         if (pendingResultTask != null) {
-            pendingResultTask.addOnSuccessListener(new OnSuccessListener<AuthResult>
-                    () {
+            pendingResultTask.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                 @Override
                 public void onSuccess(AuthResult authResult) {
-                    Log.e("PROFILE", authResult.getAdditionalUserInfo()
-                            .getProfile().toString());
+                    Log.e("PROFILE", authResult.getAdditionalUserInfo().getProfile().toString());
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -434,8 +405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //Check if a user is new
                             if (authResult.getAdditionalUserInfo().isNewUser()) {
                                 //Add account to firebase realtime database
-                                addAcctToDB(" ", firebaseUser.getUid(), "0",
-                                        firebaseUser.getEmail());
+                                addAcctToDB(" ", firebaseUser.getUid(), "0", firebaseUser.getEmail());
                             }
                             //Redirect to profile page
                             startActivity(new Intent(MainActivity.this, ProfileActivity.class));

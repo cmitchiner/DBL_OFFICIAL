@@ -7,9 +7,7 @@ import com.example.messagingapp.activities.ChangePasswordActivity;
 
 import org.junit.Test;
 
-
 public class ChangePasswordActivityTest {
-
 
     @Test
     public void checkPasswordFollowsFormat() {
