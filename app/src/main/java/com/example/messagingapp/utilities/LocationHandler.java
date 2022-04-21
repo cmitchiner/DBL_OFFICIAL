@@ -28,17 +28,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class LocationHandler extends AppCompatActivity {
+public class LocationHandler extends AppCompatActivity{
+    //int to store the ID of the location permission
     static int PERMISSION_ID = 101;
 
     public interface onLocationListener {
         public void onLocation(Location location);
     }
-
     /**
      * Checks if the user already has granted permission to use the location
      *
      * @post if the user has granted permission, return true
+     * else, return false
      */
     public static boolean checkPermission(Context context) {
 
@@ -49,7 +50,8 @@ public class LocationHandler extends AppCompatActivity {
     }
 
     /**
-     * Asks the user for permission to use location
+     * Asks the user for permission to use location with a pop up where the user can select
+     * precise location or rough location
      */
     public static void askPermissionLoc(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{
@@ -59,6 +61,9 @@ public class LocationHandler extends AppCompatActivity {
 
     /**
      * Checks if location is turned on by device
+     *
+     * @post returns true if location is enabled
+     * else returns false
      */
     public static boolean locationEnabled(Context context) {
         LocationManager locationManager =
@@ -66,14 +71,11 @@ public class LocationHandler extends AppCompatActivity {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    private LocationCallback mLocationCallback = new LocationCallback() {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-        }
-    };
-
+    /**
+     * Returns the Address of the user in the form of a pop up
+     * @param context current app location context
+     * @param location current location of user
+     */
     public static String getAddress(Context context, Location location) {
         Geocoder geocoder;
         double latitude = location.getLatitude();
@@ -93,27 +95,37 @@ public class LocationHandler extends AppCompatActivity {
 
     /**
      * Obtains the location from a user
+     *
+     * @param context current app location context
+     * @param activity current activity being used
+     * @param listener listener to call a method as soon as location is changed
      */
     @SuppressLint("MissingPermission")
     public static void getLocation(Context context, Activity activity, onLocationListener listener) {
         FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
+        //checks if the permission to access the location is given
         if (LocationHandler.checkPermission(context)) {
+            //checks if the location of the user is enabled
             if (LocationHandler.locationEnabled(context)) {
                 mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         Location location = task.getResult();
+                        //checks if obtaining the location succeeded
                         if (location == null) {
                             throw new RuntimeException("Location services failed, please try again");
                         }
                         listener.onLocation(location);
                     }
                 });
+            //if the location of the user is not enabled it requests the user to enable it
             } else {
                 Toast.makeText(context, "Please turn on your location...", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 context.startActivity(intent);
             }
+        //if the user has not yet granted permission to access the location data, the user is requested
+        // to give permission
         } else {
             askPermissionLoc(activity);
             throw new RuntimeException("No permissions given");
@@ -139,6 +151,7 @@ public class LocationHandler extends AppCompatActivity {
      * @return location object from the string
      */
     public static Location fromString(String string) {
+        //checks if the format of the location data is correct
         if (!string.matches("-?[0-9]{3,4}\\.[0-9]{5};-?[0-9]{3,4}\\.[0-9]{5}")) {
             throw new RuntimeException("String format invalid");
         }
