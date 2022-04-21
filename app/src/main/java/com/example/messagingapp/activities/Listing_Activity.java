@@ -55,11 +55,14 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
+            //if the home button is pressed, do nothing
             case R.id.home:
                 return true;
+            //if the profileNavBar is pressed, open ProfileActivity
             case R.id.profileNavBar:
                 startActivity(new Intent(this, ProfileActivity.class));
                 return true;
+            //if the messages button is pressed, open MessagesActivity
             case R.id.messages:
                 if (MainActivity.isGuest) {
                     Toast.makeText(this, "This feature is not available for " + "guests!", Toast.LENGTH_LONG).show();
