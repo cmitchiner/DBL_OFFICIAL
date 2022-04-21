@@ -78,28 +78,11 @@ public class listing_list extends Fragment {
     Map<String, ArrayList<String>> filtDict;
     ArrayList<ListFacade> list = new ArrayList<>();
 
-    //Listner interface
+    //Listener interface
     SelectListener selectListener;
 
     //Retrofit interface
     ApiAccess apiAccess;
-
-    //Location varibles
-    FusedLocationProviderClient mFusedLocationClient;
-    int PERMISSION_ID = 101;
-    private double latitude;
-    private double longitude;
-    //private Location location;
-    Location location = new Location("location");
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public listing_list() {
         // Required empty public constructor
@@ -110,10 +93,6 @@ public class listing_list extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         //Creating retrofit object
         Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
         apiAccess = retrofit.create(ApiAccess.class);
