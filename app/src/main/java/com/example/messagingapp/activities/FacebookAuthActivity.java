@@ -1,11 +1,11 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.messagingapp.objects.User;
 import com.facebook.AccessToken;
@@ -22,7 +22,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -32,7 +31,9 @@ import java.util.Map;
 
 public class FacebookAuthActivity extends MainActivity {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     CallbackManager callbackManager;
     //Firebase authentication variable
     FirebaseAuth firebaseAuth;
@@ -77,6 +78,7 @@ public class FacebookAuthActivity extends MainActivity {
 
     /**
      * After login is successful, this function is called
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -99,6 +101,7 @@ public class FacebookAuthActivity extends MainActivity {
 
     /**
      * Updates the token on the database
+     *
      * @param token the token to be sent to the database
      */
     private void updateToken(String token) {
@@ -154,9 +157,9 @@ public class FacebookAuthActivity extends MainActivity {
      * If an account is created via google sign in, we still need a reference to them in the DB, thus
      * this method does such.
      */
-    private void addAcctToDB(String fullName, String username, String phone, String email ) {
+    private void addAcctToDB(String fullName, String username, String phone, String email) {
 
-        User user = new User (fullName, username, phone, email);
+        User user = new User(fullName, username, phone, email);
         FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {

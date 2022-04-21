@@ -1,23 +1,25 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.messagingapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MessagesActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener{
+public class MessagesActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Variables for references to XML
     BottomNavigationView bottomNavigationView;
     ImageView newMessageBtn;
@@ -70,17 +72,18 @@ public class MessagesActivity extends AppCompatActivity implements NavigationBar
 
     /**
      * Controls the bottom navigation bar
+     *
      * @param item holds list of 3 item choices on bottom nav bar
      * @return
      */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.home:
                 startActivity(new Intent(this, Listing_Activity.class));
                 return true;
             case R.id.profileNavBar:
-                startActivity(new Intent(this,ProfileActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             case R.id.messages:
                 return true;

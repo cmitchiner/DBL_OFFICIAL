@@ -1,9 +1,5 @@
 package com.example.messagingapp.objects;
 
-import android.net.Uri;
-
-import java.io.File;
-import java.net.URI;
 import java.util.UUID;
 
 /**
@@ -11,7 +7,9 @@ import java.util.UUID;
  */
 public class Message {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     String message; //body of message
     String senderID; //Sender UID
     long timestamp; //Time message was sent
@@ -46,9 +44,10 @@ public class Message {
 
     /**
      * Paramterized constructor for a message that only contains text i.e NO image
-     * @param message the text of the message
-     * @param senderID the senders UID
-     * @param timestamp the timestamp the message was sent at
+     *
+     * @param message     the text of the message
+     * @param senderID    the senders UID
+     * @param timestamp   the timestamp the message was sent at
      * @param currentTime a string containing the time the message was sent at
      * @post a UID was assigned to the message
      */
@@ -61,15 +60,16 @@ public class Message {
         this.isImage = false;
         this.uniqueID = UUID.randomUUID().toString();
     }
+
     /**
      * Paramterized constructor for a message that only contains an image i.e NO text
      *
-     * @param senderID the senders UID
-     * @param timestamp the timestamp the message was sent at
+     * @param senderID    the senders UID
+     * @param timestamp   the timestamp the message was sent at
      * @param currentTime a string containing the time the message was sent at
      * @post a UID was assigned to the message
      */
-    public Message( String senderID, long timestamp, String currentTime) {
+    public Message(String senderID, long timestamp, String currentTime) {
         this.senderID = senderID;
         this.timestamp = timestamp;
         this.currentTime = currentTime;
@@ -80,6 +80,7 @@ public class Message {
 
     /**
      * Getter function for the isImage boolean
+     *
      * @return isImage
      */
     public Boolean getImage() {
@@ -88,6 +89,7 @@ public class Message {
 
     /**
      * Getter function for the message body string
+     *
      * @return message
      */
     public String getMessage() {
@@ -96,6 +98,7 @@ public class Message {
 
     /**
      * Setter function for the message body string
+     *
      * @param message the string to set @code{this.message} to
      */
     public void setMessage(String message) {
@@ -104,6 +107,7 @@ public class Message {
 
     /**
      * Getter function for the senders UID
+     *
      * @return the senders UID
      */
     public String getSenderID() {

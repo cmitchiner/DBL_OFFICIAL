@@ -1,24 +1,17 @@
 package com.example.messagingapp.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Button;
-
 import com.example.messagingapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 /**
  * Class to display listings owned by 1 specific user
@@ -41,13 +34,12 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setSelectedItemId(R.id.profileNavBar);
 
         // Get passed parameters
-        Bundle received  = getIntent().getExtras();
-        if(received != null){
+        Bundle received = getIntent().getExtras();
+        if (received != null) {
             String parts[] = received.getString("title").split(":");
-           person = parts[0];
-           userId = parts[1];
+            person = parts[0];
+            userId = parts[1];
         }
-
 
 
         String titleTypeInfo = person + ":" + userId;
@@ -75,9 +67,9 @@ public class UserListingsActivity extends AppCompatActivity implements Navigatio
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.home:
-                startActivity(new Intent(this,Listing_Activity.class));
+                startActivity(new Intent(this, Listing_Activity.class));
                 return true;
             case R.id.profileNavBar:
                 return true;

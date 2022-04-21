@@ -62,8 +62,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_spinner"
                 android:foregroundTint="@color/white"
-                android:layout_marginRight="5dp"
-                >
+                android:layout_marginRight="5dp">
 
             </Spinner>
 
@@ -73,8 +72,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 app:startIconDrawable="@drawable/ic_baseline_search_24"
-                app:endIconMode="clear_text"
-                >
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/filterInput"
@@ -102,7 +100,7 @@
             app:layout_constraintTop_toBottomOf="@id/filterLinlayout"
             app:layout_constraintBottom_toTopOf="@id/bubble_scroll_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <HorizontalScrollView
             android:id="@+id/bubble_scroll_view"
@@ -132,8 +130,6 @@
             app:layout_constraintEnd_toEndOf="parent">
 
         </androidx.recyclerview.widget.RecyclerView>
-
-
 
 
         <ProgressBar

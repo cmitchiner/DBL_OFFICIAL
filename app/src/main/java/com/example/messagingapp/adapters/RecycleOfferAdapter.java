@@ -26,7 +26,7 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     private SelectListener listner;
 
     //Adapter constructor
-    public RecycleOfferAdapter(Context context, ArrayList<ListFacade> listFacadeList, SelectListener listner){
+    public RecycleOfferAdapter(Context context, ArrayList<ListFacade> listFacadeList, SelectListener listner) {
         this.context = context;
         this.listner = listner;
         this.listFacadeList = listFacadeList;
@@ -42,7 +42,8 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
     /**
      * Sets the values of the components of the row object to the values of the corresponding
      * listFacade object
-     * @param holder - the row object
+     *
+     * @param holder   - the row object
      * @param position - the position of the row object
      */
     @Override
@@ -55,10 +56,10 @@ public class RecycleOfferAdapter extends RecyclerView.Adapter<RecycleOfferAdapte
         holder.priceEuro = rower.getPrice();
 
         holder.title.setText(rower.getTitle());
-        holder.price.setText(String.valueOf(holder.priceEuro/100 + " €"));
+        holder.price.setText(String.valueOf(holder.priceEuro / 100 + " €"));
 
         //Adding the icon representing the type of listing
-        switch(rower.getType().toLowerCase()) {
+        switch (rower.getType().toLowerCase()) {
             case "book":
                 holder.offerType.setImageResource(R.drawable.ic_book);
                 break;

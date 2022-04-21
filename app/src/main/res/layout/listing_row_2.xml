@@ -33,6 +33,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="1">
+
                     <TextView
                         android:id="@+id/Title"
                         android:layout_width="match_parent"
@@ -44,13 +45,14 @@
                         android:maxLines="1"
                         android:includeFontPadding="false"
                         android:textColor="@color/white"
-                        android:fontFamily="@font/bungee"
-                        />
+                        android:fontFamily="@font/bungee" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
                         android:layout_marginTop="10dp">
+
                         <TextView
                             android:id="@+id/OfferCourseIdRow"
                             android:layout_width="wrap_content"
@@ -58,16 +60,15 @@
                             android:layout_marginRight="10dp"
                             android:text="Course"
                             android:textSize="16sp"
-                            android:textColor="@color/white"
-                            />
+                            android:textColor="@color/white" />
+
                         <TextView
                             android:id="@+id/OfferUniversityIdRow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="University"
                             android:textSize="16sp"
-                            android:textColor="@color/white"
-                            />
+                            android:textColor="@color/white" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -99,13 +100,11 @@
                 android:textColor="@color/white"
                 android:includeFontPadding="false"
                 android:fontFamily="@font/bungee"
-                android:textSize="16sp"/>
-
+                android:textSize="16sp" />
 
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 
 
 </LinearLayout>

@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
+
     private void updateToken(String token) {
         Map<String, Object> data = new HashMap<>();
         data.put("Token", token);
@@ -292,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * A core function for google sign in, provided by firebase
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -318,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * A core function for google sign in, provided by firebase
+     *
      * @param account
      */
     private void firebaseAuthWithGoogleAccount(GoogleSignInAccount account) {

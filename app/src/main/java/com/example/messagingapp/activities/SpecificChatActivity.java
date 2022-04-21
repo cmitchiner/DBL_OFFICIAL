@@ -1,21 +1,9 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.NotificationCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -26,11 +14,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.messagingapp.R;
 import com.example.messagingapp.adapters.RecycleSpecificChatAdapter;
 import com.example.messagingapp.network.ApiClient;
 import com.example.messagingapp.network.ApiService;
 import com.example.messagingapp.objects.Message;
-import com.example.messagingapp.R;
 import com.example.messagingapp.utilities.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,9 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -56,12 +48,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,7 +60,9 @@ import retrofit2.Response;
 
 public class SpecificChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Variables for References to XML
     EditText messageET;
     ImageButton backBtn;
@@ -112,7 +101,8 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
     /** METHODS **/
 
-    /** onCreate() is a method that runs before a user see's the current activity
+    /**
+     * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -336,6 +326,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
     /**
      * Listens for an activity result and then performs action based on request code
      * ** currently being used to see what option the user selected when uploading image.
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -354,9 +345,9 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
 
     /**
      * Stores the passed file with name UID in the firebase cloud storage database
-     * @param file a Uid representing the location of the file
-     * @param UID a unique identifier to find the image, this should be the message UID
      *
+     * @param file a Uid representing the location of the file
+     * @param UID  a unique identifier to find the image, this should be the message UID
      */
     private void storeImage(Uri file, String UID) {
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://justudy-ebc7b.appspot.com");
@@ -417,8 +408,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
      * Sends a message or image, by creating a new Message Object and uploading it to the database
      *
      * @param messageToSend the text of the message to send
-     * @param file the location of the image to send
-     *
+     * @param file          the location of the image to send
      */
     private void sendMessage(String messageToSend, Uri file) {
         //Pull current time for time stamp
@@ -428,39 +418,39 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         //Create a message object with correct params
         Message message;
         if (file != null) {
-             message = new Message(firebaseAuth.getUid(), date.getTime(), currentTime);
-             //store the message under its messageID
+            message = new Message(firebaseAuth.getUid(), date.getTime(), currentTime);
+            //store the message under its messageID
             storeImage(file, message.getUniqueID());
         } else {
             message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime);
         }
-            //Post both the sender + receiver rooms to firebase database
-            firebaseDatabase.getReference("Chats")
-                    .child(senderRoom)
-                    .child("Messages")
-                    .push()
-                    .setValue(message)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                        firebaseDatabase.getReference("Chats").child(receiverRoom)
-                                        .child("Messages")
-                                        .push()
-                                        .setValue(message)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
-                                                    Log.d("CHAT", "Failed to post receiver room to DB");
-                                                }
+        //Post both the sender + receiver rooms to firebase database
+        firebaseDatabase.getReference("Chats")
+                .child(senderRoom)
+                .child("Messages")
+                .push()
+                .setValue(message)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            firebaseDatabase.getReference("Chats").child(receiverRoom)
+                                    .child("Messages")
+                                    .push()
+                                    .setValue(message)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Log.d("CHAT", "Failed to post receiver room to DB");
                                             }
-                                        });
-                            } else {
-                                Log.d("CHAT", "Failed to post sender room to DB");
-                            }
+                                        }
+                                    });
+                        } else {
+                            Log.d("CHAT", "Failed to post sender room to DB");
                         }
-                    });
+                    }
+                });
         if (receiverToken != null) {
             try {
                 JSONArray tokens = new JSONArray();
@@ -485,7 +475,7 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
         } else {
             Log.d("NOTIFICATION", "NOT SENT BECAUSE OTHER USER LOGGED OUT");
         }
-            //Clear text field so they can send another message
-            messageET.setText(null);
+        //Clear text field so they can send another message
+        messageET.setText(null);
     }
 }

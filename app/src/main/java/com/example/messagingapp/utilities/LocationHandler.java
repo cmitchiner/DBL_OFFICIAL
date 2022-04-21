@@ -28,12 +28,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class LocationHandler extends AppCompatActivity{
+public class LocationHandler extends AppCompatActivity {
     static int PERMISSION_ID = 101;
 
     public interface onLocationListener {
         public void onLocation(Location location);
     }
+
     /**
      * Checks if the user already has granted permission to use the location
      *
@@ -76,7 +77,7 @@ public class LocationHandler extends AppCompatActivity{
     public static String getAddress(Context context, Location location) {
         Geocoder geocoder;
         double latitude = location.getLatitude();
-        double longitude =location.getLongitude();
+        double longitude = location.getLongitude();
         List<Address> addresses;
         geocoder = new Geocoder(context, Locale.getDefault());
         try {
@@ -119,12 +120,24 @@ public class LocationHandler extends AppCompatActivity{
         }
     }
 
+    /**
+     * Converts a location to a specifically formatted string used in this apps database
+     *
+     * @param location the location object to format
+     * @return a string with the specified format
+     */
     public static String toString(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        return  String.format(Locale.ROOT, "%010.5f;%010.5f", latitude,longitude);
+        return String.format(Locale.ROOT, "%010.5f;%010.5f", latitude, longitude);
     }
 
+    /**
+     * Converts a string with specified format to a location object
+     *
+     * @param string the string to be converted
+     * @return location object from the string
+     */
     public static Location fromString(String string) {
         if (!string.matches("-?[0-9]{3,4}\\.[0-9]{5};-?[0-9]{3,4}\\.[0-9]{5}")) {
             throw new RuntimeException("String format invalid");

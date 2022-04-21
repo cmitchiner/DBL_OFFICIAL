@@ -2,6 +2,7 @@ package com.example.messagingapp;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import com.example.messagingapp.activities.ChangePasswordActivity;
 
 import org.junit.Test;

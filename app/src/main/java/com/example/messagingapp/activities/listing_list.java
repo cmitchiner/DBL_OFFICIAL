@@ -1,18 +1,8 @@
 package com.example.messagingapp.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,7 +22,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -42,30 +31,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
-import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.SelectListener;
+import com.example.messagingapp.adapters.RecycleOfferAdapter;
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.protobuf.Api;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -77,7 +53,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
- *
  */
 public class listing_list extends Fragment {
     int count = 0;
@@ -167,7 +142,7 @@ public class listing_list extends Fragment {
         filtDict = new HashMap<>();
         filtDict.put("author", new ArrayList<String>());
         filtDict.put("title", new ArrayList<String>());
-        filtDict.put("type",    new ArrayList<String>());
+        filtDict.put("type", new ArrayList<String>());
         filtDict.put("university", new ArrayList<String>());
         filtDict.put("course_code", new ArrayList<String>());
         filtDict.put("isbn", new ArrayList<String>());
@@ -176,24 +151,24 @@ public class listing_list extends Fragment {
 
 
         //Set Title and add filters, depending on how listing list was started
-        if(getArguments() != null){
+        if (getArguments() != null) {
 
             Log.d("bundle", String.valueOf(getArguments()));
             personalType = getArguments().getString("title");
             String[] parts = personalType.split(":");
             userId = parts[1];
 
-            titleView.setText(String.valueOf(parts[0]+"'s Offers"));
+            titleView.setText(String.valueOf(parts[0] + "'s Offers"));
 
             //If listing list is started from profile, or from opened listing:
-            if( !userId.toString().equals("no") ) {
-                titleView.setText(String.valueOf(parts[0]+"'s Offers"));
+            if (!userId.toString().equals("no")) {
+                titleView.setText(String.valueOf(parts[0] + "'s Offers"));
                 filtDict.get("author").add(userId);
                 Log.d("filter", String.valueOf(filtDict));
                 filter();
 
                 //If listing list is stated from nav bar:
-            }else {
+            } else {
                 titleView.setText(String.valueOf("Offers"));
             }
         }
@@ -231,16 +206,16 @@ public class listing_list extends Fragment {
                 filterText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                        if(i == EditorInfo.IME_ACTION_SEARCH) {
+                        if (i == EditorInfo.IME_ACTION_SEARCH) {
 
                             filtContent = textView.getText().toString().trim();
                             Log.d("filter", "kur");
-                            if(!filtContent.isEmpty()) {
-                                if(!filtDict.get(filtCol).contains( filtContent) || !filtDict.get("location").isEmpty() ){
-                                    Addbubble(filtCol+":"+filtContent);
+                            if (!filtContent.isEmpty()) {
+                                if (!filtDict.get(filtCol).contains(filtContent) || !filtDict.get("location").isEmpty()) {
+                                    Addbubble(filtCol + ":" + filtContent);
                                     filtDict.get(filtCol).add(filtContent);
                                     filter();
-                                } else{
+                                } else {
                                     Toast.makeText(getActivity(), "Already filtering by " + filtContent, Toast.LENGTH_SHORT).show();
                                 }
 
@@ -271,7 +246,7 @@ public class listing_list extends Fragment {
         });
 
         //Adding listings, when listing list has been started from nav bar
-        if(userId.toString().equals("no")) {
+        if (userId.toString().equals("no")) {
             filter();
         }
 
@@ -281,10 +256,10 @@ public class listing_list extends Fragment {
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()){
+                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
                     count++;
                     progressBar.setVisibility(View.VISIBLE);
-                    if(count < 100){
+                    if (count < 100) {
                         filter();
                     }
                 }
@@ -295,6 +270,7 @@ public class listing_list extends Fragment {
 
     /**
      * Method that initiates View and variables
+     *
      * @param view
      */
     private void initViewsAndVars(View view) {
@@ -328,15 +304,16 @@ public class listing_list extends Fragment {
     /**
      * Pushes filter dictionary to the server, then pulls listings based on the filters and
      * refreshes the current listings on screen
+     *
      * @param filtDict - contains the filters
      */
-    public void pushDictionary(Map<String, ArrayList<String>> filtDict){
-        Log.d("filter", "this triggers: "+String.valueOf(filtDict));
+    public void pushDictionary(Map<String, ArrayList<String>> filtDict) {
+        Log.d("filter", "this triggers: " + String.valueOf(filtDict));
         Call<ArrayList<ListFacade>> pushDict = apiAccess.getFilteredInfo(getResources().getString(R.string.apiDevKey), filtDict);
         pushDict.enqueue(new Callback<ArrayList<ListFacade>>() {
             @Override
             public void onResponse(Call<ArrayList<ListFacade>> call, Response<ArrayList<ListFacade>> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     return;
                 }
 
@@ -344,11 +321,11 @@ public class listing_list extends Fragment {
                 list = response.body();
 
                 //Filtering by location by comparing current user and item locations
-                if(!filtDict.get("location").isEmpty()){
+                if (!filtDict.get("location").isEmpty()) {
                     ArrayList<ListFacade> toRemove = new ArrayList<>();
-                    for(ListFacade item:list){
+                    for (ListFacade item : list) {
                         Location loc;
-                        if(item.getLocation() == null){
+                        if (item.getLocation() == null) {
                             toRemove.add(item);
                         } else {
                             loc = LocationHandler.fromString(item.getLocation());
@@ -358,7 +335,7 @@ public class listing_list extends Fragment {
                             Location.distanceBetween(loc.getLatitude(), loc.getLongitude(),
                                     userLocation.getLatitude(), userLocation.getLongitude(),
                                     distance);
-                            if(distance[0] > 5000){
+                            if (distance[0] > 5000) {
                                 toRemove.add(item);
                             }
                         }
@@ -387,7 +364,7 @@ public class listing_list extends Fragment {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
                     Toast.makeText(getContext(), LocationHandler.getAddress(getContext(), location), Toast.LENGTH_LONG).show();
-                    if(!filtDict.get("location").contains(latitude + ";" + longitude)){
+                    if (!filtDict.get("location").contains(latitude + ";" + longitude)) {
                         filtDict.get("location").add(latitude + ";" + longitude);
                     }
                     Addbubble("location:Within 5km");
@@ -402,15 +379,16 @@ public class listing_list extends Fragment {
     /**
      * On click listener for the RecyclerView rows.Swaps fragments when a row is clicked.
      * Requests the full listing data before opening the fragment
+     *
      * @param listFacade
      */
     public void rowOnClick(ListFacade listFacade) {
         Call<ResponseBody> getFullData = apiAccess.getDetailedListing(listFacade.getList_iD(),
-                getResources().getString(R.string.apiDevKey) );
+                getResources().getString(R.string.apiDevKey));
         getFullData.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(!response.isSuccessful()) {
+                if (!response.isSuccessful()) {
                     return;
                 }
                 JSONObject data;
@@ -434,14 +412,14 @@ public class listing_list extends Fragment {
                     Listing list;
 
                     if (listFacade.getType().toLowerCase().equals("book")) {
-                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                data.optBoolean("sold"), listFacade.getTitle(),listFacade.getIsbn(),loc,
+                        list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(), listFacade.getIsbn(), loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
 
                     } else {
-                         list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
-                                data.optBoolean("sold"), listFacade.getTitle(),loc,
+                        list = new Listing(listFacade.getList_iD(), photos, listFacade.getPrice(), listFacade.getType(), data.optInt("reports"),
+                                data.optBoolean("sold"), listFacade.getTitle(), loc,
                                 data.optString("lang"), data.optString("aucid"), data.optString("description"), listFacade.getUniversity(),
                                 listFacade.getCourseCode(), data.optString("ownerid"));
                     }
@@ -461,6 +439,7 @@ public class listing_list extends Fragment {
 
     /**
      * Swaps listing list fragment with the opened listing fragment, depending on the value of isBid
+     *
      * @param list - Listing object passed as a parameter to the corresponding fragment
      * @post A new fragment is opened, with data taken from the list parameter
      */
@@ -470,14 +449,14 @@ public class listing_list extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if(!list.getIsBid()) {
+        if (!list.getIsBid()) {
             listing_opened listing_opened = new listing_opened();
             listing_opened.setArguments(bundle);
 
             fragmentTransaction.replace(R.id.frame_layout, listing_opened, "listingId").addToBackStack(null);
             fragmentTransaction.commit();
 
-        } else if(list.getIsBid()) {
+        } else if (list.getIsBid()) {
             Toast.makeText(getContext(), "This feature is not supported", Toast.LENGTH_LONG);
         }
 
@@ -485,10 +464,11 @@ public class listing_list extends Fragment {
 
     /**
      * Method to create the ui bubble after entering a filter in the searchbar
+     *
      * @param query- string representing the text input from the AutoCompleteTextView
      */
     public void Addbubble(String query) {
-        LinearLayout filt_cont  = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
+        LinearLayout filt_cont = (LinearLayout) getView().findViewById(R.id.filt_bubble_cont);
         View bubble = getLayoutInflater().inflate(R.layout.fiter_tag_bubble, filt_cont,
                 false);
         TextView bubble_text = (TextView) bubble.findViewById(R.id.bubble_text);
@@ -500,9 +480,9 @@ public class listing_list extends Fragment {
             public void onClick(View v) {
                 CharSequence bubText = bubble_text.getText();
                 String parts[] = bubText.toString().split(":");
-                if(parts[0].equals("location")) {
+                if (parts[0].equals("location")) {
                     filtDict.get(parts[0]).remove(0);
-                } else{
+                } else {
                     filtDict.get(parts[0]).remove(parts[1]);
                 }
                 filt_cont.removeView(v);
@@ -514,7 +494,7 @@ public class listing_list extends Fragment {
     }
 
     //Function to filter listings
-     public void filter() {
+    public void filter() {
         pushDictionary(filtDict);
     }
 }

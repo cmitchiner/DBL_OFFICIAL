@@ -1,8 +1,5 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.messagingapp.R;
 import com.example.messagingapp.objects.User;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -142,7 +141,7 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
                                 //Pull stored user class from database
                                 User user = snapshot1.getValue(User.class);
                                 //snapshot1.getKey() contains the receiving users UID
-                                if (!snapshot1.getKey().equals( firebaseAuth.getCurrentUser().getUid())) {
+                                if (!snapshot1.getKey().equals(firebaseAuth.getCurrentUser().getUid())) {
                                     startChatWithUser(snapshot1.getKey(), user.fullName);
                                 } else {
                                     Toast.makeText(NewMessageActivity.this,

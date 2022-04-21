@@ -2,18 +2,17 @@ package com.example.messagingapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.firebaseChatModel;
@@ -24,8 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 /**
- * A simple {@link Fragment} subclass.
- *
+ * A {@link Fragment} class for displaying all users that have an open chat with the logged in user
  */
 public class ChatListFragment extends Fragment {
 
@@ -51,7 +49,6 @@ public class ChatListFragment extends Fragment {
     public ChatListFragment() {
         // Required empty public constructor
     }
-
 
 
     //Auto generated code
@@ -112,7 +109,7 @@ public class ChatListFragment extends Fragment {
             @NonNull
             @Override
             public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_row, parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_row, parent, false);
                 return new NoteViewHolder(view);
             }
         };
@@ -129,17 +126,20 @@ public class ChatListFragment extends Fragment {
     public class NoteViewHolder extends RecyclerView.ViewHolder {
         private TextView usernameToChat;
         private CardView currentCard;
+
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameToChat = itemView.findViewById(R.id.chat_row_name);
             currentCard = itemView.findViewById(R.id.chat_list_card_view);
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
         chatAdapter.startListening();
     }
+
     @Override
     public void onStop() {
         super.onStop();

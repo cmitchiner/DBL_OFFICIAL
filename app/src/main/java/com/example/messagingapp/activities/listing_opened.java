@@ -24,11 +24,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
-import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.objects.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.example.messagingapp.objects.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,8 +36,6 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -51,7 +47,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
- *
  */
 public class listing_opened extends Fragment implements View.OnClickListener {
 
@@ -114,7 +109,7 @@ public class listing_opened extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //Grab current user, and listing object
-        if(!MainActivity.isGuest){
+        if (!MainActivity.isGuest) {
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
         listing = getArguments().getParcelable("listingFacade");
@@ -145,9 +140,9 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         price.setText(String.valueOf(priceEuro / 100 + "€"));
         authorId = listing.getUser();
         //Check if listing has an ISBN or not
-        if(currentUserId.equals(authorId)){
+        if (currentUserId.equals(authorId)) {
             buyButton.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             buyButton.setVisibility(View.VISIBLE);
         }
         if (!String.valueOf(listing.getIsbn()).equals("0")) {
@@ -158,19 +153,19 @@ public class listing_opened extends Fragment implements View.OnClickListener {
         }
 
         //Check if current user is the creator of the listing, and show complete button if so
-        if(MainActivity.isGuest) {
+        if (MainActivity.isGuest) {
             completeListing.setVisibility(View.GONE);
-        } else{
+        } else {
             if (currentUserId.equals(authorId)) {
                 completeListing.setVisibility(View.VISIBLE);
             } else {
                 completeListing.setVisibility(View.GONE);
             }
         }
-        if(!listing.getPhotos().get(0).equals("PLACEHOLDER")) {
-            String url = getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?"+getResources().getString(R.string.apiDevKey);
+        if (!listing.getPhotos().get(0).equals("PLACEHOLDER")) {
+            String url = getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?" + getResources().getString(R.string.apiDevKey);
             Log.d("URL", url);
-            Picasso.get().load(getResources().getString(R.string.apiBaseUrl)+"img/"+listing.getPhotos().get(0)+"?apiKey="+getResources().getString(R.string.apiDevKey)).into(image);
+            Picasso.get().load(getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?apiKey=" + getResources().getString(R.string.apiDevKey)).into(image);
         } else {
             Drawable img = getContext().getDrawable(R.drawable.ic_baseline_no_photography_24);
             image.setImageDrawable(img);

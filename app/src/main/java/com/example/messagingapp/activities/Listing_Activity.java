@@ -10,12 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-
 import com.example.messagingapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import java.util.ArrayList;
 
 /**
  * Activity which main job is to be a fragment container for listing_list or listing_opened and the navbar
@@ -32,7 +29,7 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
-        String titleTypeInfo = "Offers:" + "no" ;
+        String titleTypeInfo = "Offers:" + "no";
         // Create a new listing_list activity and put it into the fragment placeholder
         listing_list listing_list = new listing_list();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -57,11 +54,11 @@ public class Listing_Activity extends AppCompatActivity implements NavigationBar
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.home:
                 return true;
             case R.id.profileNavBar:
-                startActivity(new Intent(this,ProfileActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 return true;
             case R.id.messages:
                 if (MainActivity.isGuest) {

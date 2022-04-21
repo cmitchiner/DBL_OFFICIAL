@@ -22,7 +22,7 @@ public class Constants {
      *
      * @return a non-null hashmap containing the content type and authorization key
      */
-    public static HashMap<String,String> getRemoteMsgHeaders() {
+    public static HashMap<String, String> getRemoteMsgHeaders() {
         //Verify we have not already initialized the hash map
         if (remoteMsgHeaders == null) {
             remoteMsgHeaders = new HashMap<>();

@@ -31,6 +31,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView" />
+
     <FrameLayout
         android:id="@+id/chat_list_frame_layout"
         android:layout_width="0dp"
@@ -53,8 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:itemIconTint="@drawable/bottom_nav_bar_menu"
         app:itemTextColor="@drawable/bottom_nav_bar_menu"
-        app:menu="@menu/bottom_nav_menu"/>
-
+        app:menu="@menu/bottom_nav_menu" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

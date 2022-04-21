@@ -1,8 +1,5 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.objects.User;
@@ -27,12 +27,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Variables for references to activity_register.xml
     private Button registerBtn;
     private EditText registerFullNameEt, registerEmailEt, registerPasswordEt, registerUsernameEt;
@@ -110,10 +109,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * Verifies the given paramters are non-empty, if not sets an error on the TextView and alerts the user
+     *
      * @param fullName the full name to be checked
      * @param username the username to be checked
-     * @param phone the phone to be checked
-     * @param email the email to be checked
+     * @param phone    the phone to be checked
+     * @param email    the email to be checked
      * @param password the password to be checked
      * @return
      */
@@ -149,6 +149,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * Searches all User objects in database looking for one with username equal to passed param.
+     *
      * @param username the username to search for
      * @return true if username is unique, false if username is taken
      */
@@ -184,6 +185,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * Verifies the passed string is greater than or equal to 6 characters, and calls helper function
      * to check that password is in the correct format.
+     *
      * @param password the string to be checked
      * @return true if password is valid, false if password is not
      */
@@ -260,7 +262,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * sendVerificationEmail(): sends a verification email to the current firebase user
-     *
      */
     private void sendVerificationEmail() {
         //Grab current user
@@ -288,6 +289,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * Sets the firebase authentication accounts display name, note this is different
      * from the user object stored in realtime DB.
+     *
      * @param fullName the full name to be set on the authentication account
      */
     private void setFirebaseDisplayName(String fullName) {

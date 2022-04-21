@@ -22,6 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/logo" />
+
             <TextView
                 android:id="@+id/loginTv"
                 android:layout_width="match_parent"
@@ -32,7 +33,7 @@
                 android:textSize="34sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/bungee"
-                android:layout_below="@+id/appLogo"/>
+                android:layout_below="@+id/appLogo" />
         </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -142,6 +143,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -159,7 +161,7 @@
                 app:iconPadding="-2dp"
                 app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp" />
 
             <Button
                 android:id="@+id/btnFacebook"
@@ -173,7 +175,8 @@
                 app:iconPadding="-2dp"
                 app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
-                android:shadowColor="@color/black"/>
+                android:shadowColor="@color/black" />
+
             <Button
                 android:id="@+id/btnMicrosoft"
                 android:layout_width="0dp"
@@ -185,7 +188,8 @@
                 app:iconGravity="textEnd"
                 app:backgroundTint="@color/primary_blue"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp" />
+
             <Button
                 android:id="@+id/btnGuest"
                 android:layout_width="0dp"
@@ -196,7 +200,7 @@
                 android:autoSizeTextType="uniform"
                 android:text="Guest"
                 app:backgroundTint="@color/primary_blue"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
 

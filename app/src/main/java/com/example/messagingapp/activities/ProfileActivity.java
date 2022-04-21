@@ -1,9 +1,5 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.objects.User;
@@ -270,10 +270,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
                             //If snapshot exists it means we found a match, however we also need to
                             //verify the match is not our current username because it is possible
                             //the user never changed their username
-                            if( usernameEt.length() < 4 ){
+                            if (usernameEt.length() < 4) {
                                 usernameEt.setError("Username is too short");
                             }
-                            if( usernameEt.length() > 21 ){
+                            if (usernameEt.length() > 21) {
                                 usernameEt.setError("Username is too long");
                             }
                             if (snapshot.exists() && !username.equals(currentUsername)) {

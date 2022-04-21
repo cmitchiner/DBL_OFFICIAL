@@ -1,8 +1,5 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,14 +23,15 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener{
+public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button submitBtn;
     private TextView fullNameTv, emailTv;
     private EditText oldPassEt, newPassEt, confNewPassEt;
     private FirebaseAuth firebaseAuth;
 
-    /** onCreate() is a method that runs before a user see's the current activity
+    /**
+     * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -67,8 +68,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
      * @param v a view of all elements present on the screen
      */
     @Override
-    public void onClick(View v){
-        switch(v.getId()) {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.submitBtn:
                 changePassword();
                 break;
@@ -97,8 +98,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
      * Verifies all fields are non empty, password is greater than 6 characters, password is in correct
      * format, and confirmation password is equivalent to old password
      *
-     * @param oldPass the users old password to be checked
-     * @param newPass the new password to be checked
+     * @param oldPass     the users old password to be checked
+     * @param newPass     the new password to be checked
      * @param confNewPass the confirmation of the new password to be checked
      * @return true if all fields are valid and in correct format
      */
@@ -138,8 +139,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
     /**
      * Checks if a password is in an acceptable format:
-     *      at least one special character, at least one capital, at least one number, and at least
-     *      6 characters long.
+     * at least one special character, at least one capital, at least one number, and at least
+     * 6 characters long.
+     *
      * @param password the password to be checked
      * @return result = true if password is valid, result = false if password is invalid
      */
@@ -166,33 +168,33 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         //Create auth credential for authentication
         AuthCredential credential = EmailAuthProvider.getCredential(firebaseUser.getEmail(), oldPass);
         firebaseUser.reauthenticate(credential)
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        //Old password was correct, and user has been authenticated, begin change process
-                        firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    //Password updated successfully
-                                    Toast.makeText(ChangePasswordActivity.this, "Password Updated!", Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
-                                } else {
-                                    //Password failed to update
-                                    Toast.makeText(ChangePasswordActivity.this, "Error Password not updated", Toast.LENGTH_LONG).show();
-                                }
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            //Old password was correct, and user has been authenticated, begin change process
+                            firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        //Password updated successfully
+                                        Toast.makeText(ChangePasswordActivity.this, "Password Updated!", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(ChangePasswordActivity.this, ProfileActivity.class));
+                                    } else {
+                                        //Password failed to update
+                                        Toast.makeText(ChangePasswordActivity.this, "Error Password not updated", Toast.LENGTH_LONG).show();
+                                    }
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //Failed to authenticate user with old password
-                    Toast.makeText(ChangePasswordActivity.this, "Incorrect Old Password OR Using Google Account", Toast.LENGTH_LONG).show();
-                }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //Failed to authenticate user with old password
+                Toast.makeText(ChangePasswordActivity.this, "Incorrect Old Password OR Using Google Account", Toast.LENGTH_LONG).show();
+            }
         });
     }
 }

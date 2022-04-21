@@ -24,7 +24,7 @@ android {
     }
 
     //Maybe remove
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
 
@@ -34,7 +34,6 @@ android {
     }
 
 }
-
 
 
 dependencies {

@@ -1,10 +1,7 @@
 package com.example.messagingapp.model;
 
-import android.util.Log;
-
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -45,12 +42,13 @@ public class BiddingData {
 
     // Getter for end of the auction, converts it from string to ZonedDateTime first
     public ZonedDateTime getBidEnd() {
-        if(date == null) {
+        if (date == null) {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssZZZZZ");
             date = ZonedDateTime.parse(bidEnd, format);
         }
         return date;
     }
+
     // Get highest bidder ID
     public String getHighestBidder() {
         return highestBidder;

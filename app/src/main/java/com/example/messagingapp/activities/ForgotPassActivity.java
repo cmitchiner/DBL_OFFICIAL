@@ -1,14 +1,14 @@
 package com.example.messagingapp.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -17,7 +17,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPassActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
     //Firebase auth vars
     private FirebaseAuth firebaseAuth;
 
@@ -25,7 +27,8 @@ public class ForgotPassActivity extends AppCompatActivity implements View.OnClic
     private EditText forgotEmailEt;
     private Button sendResetEmailBtn;
 
-    /** onCreate() is a method that runs before a user see's the current activity
+    /**
+     * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly

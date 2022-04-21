@@ -2,7 +2,6 @@ package com.example.messagingapp.adapters;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,9 @@ import java.util.ArrayList;
 
 public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
-    /** VARIABLE DECLARATIONS **/
+    /**
+     * VARIABLE DECLARATIONS
+     **/
 
     //Current activity context
     Context context;
@@ -44,7 +45,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     /**
      * Constructor to set activity context and feed in messages array
      *
-     * @param context context of the current activity
+     * @param context  context of the current activity
      * @param messages all messages in this specific chat
      */
     public RecycleSpecificChatAdapter(Context context, ArrayList<Message> messages) {
@@ -54,6 +55,7 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
 
     /**
      * Method that runs once on the creation of the view holder
+     *
      * @param parent
      * @param viewType
      * @return the proper view holder whether a message is from a receiver or sent by a user
@@ -106,7 +108,8 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             senderHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
-                        }});
+                        }
+                    });
                 }
 
             } else { //not an image, set data accordingly
@@ -134,7 +137,8 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             receiverHolder.imageView.setImageURI(Uri.parse(localFile.toString()));
-                        }});
+                        }
+                    });
                 }
             } else { //message is not an image
                 receiverHolder.messageText.setVisibility(View.VISIBLE);
@@ -178,14 +182,16 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     /**
      * Class for the view holder for a sent message
      */
-    class SenderViewHolder extends RecyclerView.ViewHolder
-    {
-        /** VARIABLES **/
+    class SenderViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * VARIABLES
+         **/
         TextView messageText, timeOfMessage;
         ImageView imageView;
 
         /**
          * Default constructor
+         *
          * @param itemView
          */
         public SenderViewHolder(@NonNull View itemView) {
@@ -202,14 +208,16 @@ public class RecycleSpecificChatAdapter extends RecyclerView.Adapter {
     /**
      * Class for the view holder for a recieved message
      */
-    class ReceiverViewHolder extends RecyclerView.ViewHolder
-    {
-        /** VARIABLES **/
+    class ReceiverViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * VARIABLES
+         **/
         TextView messageText, timeOfMessage;
         ImageView imageView;
 
         /**
          * Default constructor
+         *
          * @param itemView
          */
         public ReceiverViewHolder(@NonNull View itemView) {

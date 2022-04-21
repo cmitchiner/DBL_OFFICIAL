@@ -29,7 +29,7 @@ public class ListFacade implements Parcelable {
 
     //ListFacade constructor
     public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode,
-                      String auniversity, boolean aisBid, Long aisbn, String alocation ){
+                      String auniversity, boolean aisBid, Long aisbn, String alocation) {
         list_iD = iD;
         title = atitle;
         price = aprice;
@@ -41,6 +41,7 @@ public class ListFacade implements Parcelable {
         location = alocation;
 
     }
+
     //Method for getting the values from the parcel object
     protected ListFacade(Parcel in) {
         list_iD = in.readString();
@@ -67,39 +68,49 @@ public class ListFacade implements Parcelable {
     };
 
     //Getter for list_iD
-    public String getList_iD(){return this.list_iD;}
+    public String getList_iD() {
+        return this.list_iD;
+    }
 
     //Getter for title
-    public String getTitle(){ return this.title; }
+    public String getTitle() {
+        return this.title;
+    }
 
     //Getter for price
-    public int getPrice(){
+    public int getPrice() {
         return this.price;
     }
 
     //Getter for type
-    public String getType(){
+    public String getType() {
         return this.type;
     }
 
     //Getter for courseCode
-    public String getCourseCode(){
+    public String getCourseCode() {
         return courseCode;
     }
 
     //Getter for university
-    public String getUniversity(){
+    public String getUniversity() {
         return this.university;
     }
 
     //Getter for isBid
-    public boolean getIsBid(){return this.isBid;}
+    public boolean getIsBid() {
+        return this.isBid;
+    }
 
     //Getter for isbn
-    public Long getIsbn(){ return this.isbn; }
+    public Long getIsbn() {
+        return this.isbn;
+    }
 
     //Getter for location
-    public String getLocation(){ return this.location; }
+    public String getLocation() {
+        return this.location;
+    }
 
     @Override
     public int describeContents() {

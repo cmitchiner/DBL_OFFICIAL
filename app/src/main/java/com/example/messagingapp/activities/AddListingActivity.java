@@ -1,28 +1,18 @@
 package com.example.messagingapp.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,30 +23,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 
+import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
 import com.example.messagingapp.utilities.LocationHandler;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import com.example.messagingapp.ApiAccess;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
@@ -67,13 +45,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -112,7 +86,8 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     ApiAccess apiAccess;
 
 
-    /** onCreate() is a method that runs before a user see's the current activity
+    /**
+     * onCreate() is a method that runs before a user see's the current activity
      *
      * @param savedInstanceState the previous state of the app to be loaded
      * @post All variables are initialized and Auth Tokens are setup correctly
@@ -145,18 +120,20 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      */
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             //Publish the listing
             case R.id.btnPublish:
                 if (validateData()) {
-                new Thread(new Runnable() {
-                    // New thread to upload data in the background instead of on the ui thread
-                    @Override
-                    public void run() {
-                        initPublish();
-                    }
-                }).start();} else {
-                    Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();}
+                    new Thread(new Runnable() {
+                        // New thread to upload data in the background instead of on the ui thread
+                        @Override
+                        public void run() {
+                            initPublish();
+                        }
+                    }).start();
+                } else {
+                    Toast.makeText(this, "Not all required fields are filled in", Toast.LENGTH_SHORT).show();
+                }
                 break;
             //Get an image from the camera or gallery
             case R.id.btnUploadPicture:
@@ -209,7 +186,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
     private void searchableSpinner() {
         dialog = new Dialog(AddListingActivity.this);
         dialog.setContentView(R.layout.dialog_searchable_spinner);
-        dialog.getWindow().setLayout(1000,1500);
+        dialog.getWindow().setLayout(1000, 1500);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
         EditText editText = dialog.findViewById(R.id.edit_text);
@@ -223,11 +200,13 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 return;
             }
+
             //
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(s);
             }
+
             // We ignore this callback as we don't need it
             @Override
             public void afterTextChanged(Editable s) {
@@ -248,111 +227,110 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-        private void selectImage() {
-            final CharSequence[] options = {"Take photo", "Choose image from gallery", "Cancel"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(AddListingActivity.this);
-            builder.setTitle("Add an image");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (options[i].equals("Cancel")) {
-                        dialogInterface.dismiss();
-                    } else if(options[i].equals("Take photo")) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, 1);
-                    } else if (options[i].equals("Choose image from gallery")){
-                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent, 2);
-                    }
+    private void selectImage() {
+        final CharSequence[] options = {"Take photo", "Choose image from gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddListingActivity.this);
+        builder.setTitle("Add an image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (options[i].equals("Cancel")) {
+                    dialogInterface.dismiss();
+                } else if (options[i].equals("Take photo")) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, 1);
+                } else if (options[i].equals("Choose image from gallery")) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 2);
                 }
-            });
-            builder.show();
-        }
+            }
+        });
+        builder.show();
+    }
 
     /**
-     *
      * @param requestCode
      * @param resultCode
      * @param data
      */
     @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (data != null && data.getExtras() != null ) {
-                if (requestCode == 2) {
-                    // Image chosen from gallery
-                    Uri selectedImage = data.getData();
-                    imgView.setVisibility(View.VISIBLE);
-                    imgView.setImageURI(selectedImage);
-                    image = new File(selectedImage.getPath());
-                } else if (requestCode == 1) {
-                    // Image taken while using app
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            image = new File(getApplicationContext().getCacheDir(), "image");
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && data.getExtras() != null) {
+            if (requestCode == 2) {
+                // Image chosen from gallery
+                Uri selectedImage = data.getData();
+                imgView.setVisibility(View.VISIBLE);
+                imgView.setImageURI(selectedImage);
+                image = new File(selectedImage.getPath());
+            } else if (requestCode == 1) {
+                // Image taken while using app
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        image = new File(getApplicationContext().getCacheDir(), "image");
+                        try {
+                            //create a file to write bitmap data
+                            File f = new File(getApplicationContext().getCacheDir(), "image");
+                            f.createNewFile();
+
+                            //Convert bitmap to byte array
+                            Bitmap bitmap = imageBitmap;
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                            byte[] bitmapdata = bos.toByteArray();
+
+                            //write the bytes in file
+                            FileOutputStream fos = null;
                             try {
-                                //create a file to write bitmap data
-                                File f = new File(getApplicationContext().getCacheDir(), "image");
-                                f.createNewFile();
-
-                                //Convert bitmap to byte array
-                                Bitmap bitmap = imageBitmap;
-                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                                byte[] bitmapdata = bos.toByteArray();
-
-                                //write the bytes in file
-                                FileOutputStream fos = null;
-                                try {
-                                    fos = new FileOutputStream(f);
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                                try {
-                                    fos.write(bitmapdata);
-                                    fos.flush();
-                                    fos.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                image = f;
+                                fos = new FileOutputStream(f);
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
+                            }
+                            try {
+                                fos.write(bitmapdata);
+                                fos.flush();
+                                fos.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            image = f;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    }).start();
-                    pictureUploaded = true;
-                    imgView.setVisibility(View.VISIBLE);
-                    imgView.setImageBitmap(imageBitmap);
-                }
+                    }
+                }).start();
+                pictureUploaded = true;
+                imgView.setVisibility(View.VISIBLE);
+                imgView.setImageBitmap(imageBitmap);
             }
         }
+    }
 
     /**
      * Sending the listing to the database when the publish button is clicked and if all required fields are filled in
      */
     private void initPublish() {
-            Log.d(TAG, "initPublish: started");
+        Log.d(TAG, "initPublish: started");
 
-                retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
-                apiAccess = retrofit.create(ApiAccess.class);
-                if(image != null) {
-                    RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
-                    MultipartBody.Part img = MultipartBody.Part.createFormData("photo", image.getName(), part);
-                    uploadImage(img);
-                } else {
-                    ArrayList<String> temp = new ArrayList<>();
-                    temp.add("PLACEHOLDER");
-                    uploadListing(temp);
-                }
-                startActivity(new Intent(this, ProfileActivity.class));
-
+        retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(GsonConverterFactory.create()).build();
+        apiAccess = retrofit.create(ApiAccess.class);
+        if (image != null) {
+            RequestBody part = RequestBody.create(MediaType.parse("image/*"), image);
+            MultipartBody.Part img = MultipartBody.Part.createFormData("photo", image.getName(), part);
+            uploadImage(img);
+        } else {
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add("PLACEHOLDER");
+            uploadListing(temp);
         }
+        startActivity(new Intent(this, ProfileActivity.class));
+
+    }
 
 
     /**
@@ -361,37 +339,37 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      * @param image the image to be uploaded
      */
     private void uploadImage(MultipartBody.Part image) {
-            Call<ResponseBody> uploadImg = apiAccess.uploadImg(image, getResources().getString(R.string.apiDevKey));
-            uploadImg.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if(!response.isSuccessful()) {
-                        return;
-                    }
-                    JSONObject data;
-                    try {
-                        String extraData = response.body().string();
-                        data = new JSONObject(extraData);
-                    } catch (Exception e) {
-                        return;
-                    }
-                    ArrayList<String> photoString = new ArrayList<>();
-                    JSONArray photos = data.optJSONArray("photos");
-                    for(int i = 0; i < photos.length(); i++){
-                        photoString.add(photos.optString(i));
-                    }
-                    uploadListing(photoString);
-
+        Call<ResponseBody> uploadImg = apiAccess.uploadImg(image, getResources().getString(R.string.apiDevKey));
+        uploadImg.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    return;
                 }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                JSONObject data;
+                try {
+                    String extraData = response.body().string();
+                    data = new JSONObject(extraData);
+                } catch (Exception e) {
+                    return;
                 }
-            });
+                ArrayList<String> photoString = new ArrayList<>();
+                JSONArray photos = data.optJSONArray("photos");
+                for (int i = 0; i < photos.length(); i++) {
+                    photoString.add(photos.optString(i));
+                }
+                uploadListing(photoString);
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
 
 
-        }
+    }
 
     /**
      * Method that uploads a listing to the database
@@ -399,75 +377,76 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      * @param photoString An arraylist containing the names of the photos to be added
      */
     private void uploadListing(ArrayList<String> photoString) {
-            double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
-            int priceInt = (int) price;
-            Listing listing;
-            if (ISBN) {
-                long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
-                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
-                        ISBNlong,locString , "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                        edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-            }else {
-                listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString,
-                        "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
-                        edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-            }
-            Log.d("adder", "listing location: " + String.valueOf(listing.getlocation()));
-            Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
-            call2.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if(!response.isSuccessful()){
-                        return;
-                    }
-                    Toast.makeText(AddListingActivity.this, "Listing successfully created", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
+        double price = Double.parseDouble(edtTxtPrice.getText().toString()) * 100;
+        int priceInt = (int) price;
+        Listing listing;
+        if (ISBN) {
+            long ISBNlong = Long.parseLong(edtTxtISBN.getText().toString());
+            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(),
+                    ISBNlong, locString, "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        } else {
+            listing = new Listing(null, photoString, priceInt, type, 0, false, edtTxtTitle.getText().toString(), locString,
+                    "eng", null, edtTxtDescription.getText().toString(), textview.getText().toString(),
+                    edtTxtCourseCode.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getUid());
         }
+        Log.d("adder", "listing location: " + String.valueOf(listing.getlocation()));
+        Call<ResponseBody> call2 = apiAccess.addNewListing(listing, getResources().getString(R.string.apiDevKey));
+        call2.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                Toast.makeText(AddListingActivity.this, "Listing successfully created", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 
 
     /**
      * Validates that all the required fields are non-empty
+     *
      * @returns
      */
     private boolean validateData() {
         boolean i = true;
-            if (edtTxtTitle.getText().toString().equals("")) {
-                warningTitle.setVisibility(View.VISIBLE);
-                i = false;
-            }else {
-                warningTitle.setVisibility(View.GONE);
-            }
-            if (textview.getText().toString().equals("Select University")) {
-                warningUniversity.setVisibility(View.VISIBLE);
-                i = false;
-            }else {
-                warningUniversity.setVisibility(View.GONE);
-            }
-            if (edtTxtDescription.getText().toString().equals("")) {
-                warningDescription.setVisibility(View.VISIBLE);
-                i = false;
-            }else {
-                warningDescription.setVisibility(View.GONE);
-            }
-            if (ISBN) {
-                if(edtTxtISBN.getText().toString().matches("^[0-9]+$") && edtTxtISBN.getText().toString().matches("^97[8-9].*$") && edtTxtISBN.length()==13) {
-                    warningISBN.setVisibility(View.GONE);
-                }else {
-                    warningISBN.setVisibility(View.VISIBLE);
-                    i = false;
-                }
-            }
-            return i;
+        if (edtTxtTitle.getText().toString().equals("")) {
+            warningTitle.setVisibility(View.VISIBLE);
+            i = false;
+        } else {
+            warningTitle.setVisibility(View.GONE);
         }
+        if (textview.getText().toString().equals("Select University")) {
+            warningUniversity.setVisibility(View.VISIBLE);
+            i = false;
+        } else {
+            warningUniversity.setVisibility(View.GONE);
+        }
+        if (edtTxtDescription.getText().toString().equals("")) {
+            warningDescription.setVisibility(View.VISIBLE);
+            i = false;
+        } else {
+            warningDescription.setVisibility(View.GONE);
+        }
+        if (ISBN) {
+            if (edtTxtISBN.getText().toString().matches("^[0-9]+$") && edtTxtISBN.getText().toString().matches("^97[8-9].*$") && edtTxtISBN.length() == 13) {
+                warningISBN.setVisibility(View.GONE);
+            } else {
+                warningISBN.setVisibility(View.VISIBLE);
+                i = false;
+            }
+        }
+        return i;
+    }
 
     private void getLocation() {
-        try{
+        try {
             LocationHandler.getLocation(AddListingActivity.this, this, new LocationHandler.onLocationListener() {
                 @Override
                 public void onLocation(Location location) {
@@ -478,7 +457,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             setLocationButt.setVisibility(View.GONE);
             imgViewLocation.setVisibility(View.VISIBLE);
         } catch (Exception e) {
-            Toast.makeText(AddListingActivity.this, e.getMessage() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddListingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -488,39 +467,39 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
      * from strings.xml
      */
     private void initViews() {
-            edtTxtTitle = findViewById(R.id.edtTxtTitle);
-            edtTxtDescription = findViewById(R.id.edtTxtDescription);
-            edtTxtCourseCode = findViewById(R.id.edtTxtCourseCode);
-            edtTxtCourseName = findViewById(R.id.edtTxtCourseName);
-            edtTxtISBN = findViewById(R.id.edtTxtISBN);
-            edtTxtPrice = findViewById(R.id.edtTxtPrice);
+        edtTxtTitle = findViewById(R.id.edtTxtTitle);
+        edtTxtDescription = findViewById(R.id.edtTxtDescription);
+        edtTxtCourseCode = findViewById(R.id.edtTxtCourseCode);
+        edtTxtCourseName = findViewById(R.id.edtTxtCourseName);
+        edtTxtISBN = findViewById(R.id.edtTxtISBN);
+        edtTxtPrice = findViewById(R.id.edtTxtPrice);
 
-            btnPublish = findViewById(R.id.btnPublish);
-            btnUploadPicture = findViewById(R.id.btnUploadPicture);
+        btnPublish = findViewById(R.id.btnPublish);
+        btnUploadPicture = findViewById(R.id.btnUploadPicture);
 
-            txtPrice = findViewById(R.id.txtPrice);
-            warningTitle = findViewById(R.id.warningTitle);
-            warningUniversity = findViewById(R.id.warningUniversity);
-            warningDescription = findViewById(R.id.warningDescription);
-            warningISBN = findViewById(R.id.warningISBN);
-            textview = findViewById(R.id.testView);
-            txtISBN = findViewById(R.id.txtISBN);
+        txtPrice = findViewById(R.id.txtPrice);
+        warningTitle = findViewById(R.id.warningTitle);
+        warningUniversity = findViewById(R.id.warningUniversity);
+        warningDescription = findViewById(R.id.warningDescription);
+        warningISBN = findViewById(R.id.warningISBN);
+        textview = findViewById(R.id.testView);
+        txtISBN = findViewById(R.id.txtISBN);
 
-            rbBidding = findViewById(R.id.rbBidding);
-            rbSetPrice = findViewById(R.id.rbSetPrice);
-            rbNotes = findViewById(R.id.rbNotes);
-            rbSummary = findViewById(R.id.rbSummary);
-            rbBook = findViewById(R.id.rbBook);
+        rbBidding = findViewById(R.id.rbBidding);
+        rbSetPrice = findViewById(R.id.rbSetPrice);
+        rbNotes = findViewById(R.id.rbNotes);
+        rbSummary = findViewById(R.id.rbSummary);
+        rbBook = findViewById(R.id.rbBook);
 
-            parent = findViewById(R.id.parent);
-            ActivityProfileLayout = findViewById(R.id.ActivityProfileLayout);
-            imgView = findViewById(R.id.imgView);
+        parent = findViewById(R.id.parent);
+        ActivityProfileLayout = findViewById(R.id.ActivityProfileLayout);
+        imgView = findViewById(R.id.imgView);
 
-            imgViewLocation = findViewById(R.id.imgViewLocation);
+        imgViewLocation = findViewById(R.id.imgViewLocation);
 
-            setLocationButt = findViewById(R.id.addLocationListButt);
+        setLocationButt = findViewById(R.id.addLocationListButt);
 
-            arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
-            Collections.sort(arrayList);
-        }
+        arrayList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Universities)));
+        Collections.sort(arrayList);
+    }
 }

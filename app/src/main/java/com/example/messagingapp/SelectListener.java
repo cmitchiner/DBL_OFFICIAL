@@ -8,6 +8,7 @@ import com.example.messagingapp.model.ListFacade;
 public interface SelectListener {
     /**
      * When event observed do something
+     *
      * @param listFacade ListFacade that got clicked
      */
     void onItemClicked(ListFacade listFacade);

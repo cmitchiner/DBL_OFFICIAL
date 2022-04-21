@@ -5,7 +5,9 @@ package com.example.messagingapp.model;
  * it can be automatically parsed into the recylcer.
  */
 public class firebaseChatModel {
-    /** VARIABLES **/
+    /**
+     * VARIABLES
+     **/
 
     static String name; //name of sender
     String uid; //UID of sender
@@ -14,7 +16,7 @@ public class firebaseChatModel {
      * Paramaterized constructor
      *
      * @param name the senders name to be set
-     * @param uid the senders UID to be set
+     * @param uid  the senders UID to be set
      */
     public firebaseChatModel(String name, String uid) {
         //Init variables
@@ -25,7 +27,8 @@ public class firebaseChatModel {
     /**
      * Default constructor
      */
-    public firebaseChatModel() {}
+    public firebaseChatModel() {
+    }
 
     /**
      * GETTERS AND SETTERS
@@ -34,14 +37,17 @@ public class firebaseChatModel {
     public String getName() {
         return name;
     }
+
     //Set string name
     public void setName(String name) {
         this.name = name;
     }
+
     //get sender UID
     public String getUid() {
         return uid;
     }
+
     //set sender UID
     public void setUid(String uid) {
         this.uid = uid;

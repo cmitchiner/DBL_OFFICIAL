@@ -1,6 +1,5 @@
 package com.example.messagingapp.model;
 
-        import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -93,50 +92,74 @@ public class Listing implements Parcelable {
     };
 
     //Getter for photo
-    public ArrayList<String> getPhotos(){
+    public ArrayList<String> getPhotos() {
         return this.photo;
     }
 
     //Getter for listID
-    public String getListId() {return this.listID; }
+    public String getListId() {
+        return this.listID;
+    }
 
     //Getter for price
-    public int getPrice(){ return this.price;}
+    public int getPrice() {
+        return this.price;
+    }
 
     //Getter for type
-    public String getType(){ return this.type;}
+    public String getType() {
+        return this.type;
+    }
 
     //Getter for reportCounter
-    public int getReportCounter(){ return this.reportCounter; }
+    public int getReportCounter() {
+        return this.reportCounter;
+    }
 
     //Setter for reportCounter
-    public void setReportCounter(int repCounter){ this.reportCounter = repCounter; }
+    public void setReportCounter(int repCounter) {
+        this.reportCounter = repCounter;
+    }
 
     //Getter for sold
-    public boolean getSold(){
+    public boolean getSold() {
         return this.sold;
     }
 
     //Getter for title
-    public String getTitle(){ return this.title; }
+    public String getTitle() {
+        return this.title;
+    }
 
     //Getter for isbn
-    public long getIsbn(){ return this.isbn; }
+    public long getIsbn() {
+        return this.isbn;
+    }
 
     //Getter for location
-    public String getlocation() { return this.location; }
+    public String getlocation() {
+        return this.location;
+    }
 
     //Getter for description
-    public String getDescription() { return this.description; }
+    public String getDescription() {
+        return this.description;
+    }
 
     //Getter for university
-    public String getUniversity() { return this.university; }
+    public String getUniversity() {
+        return this.university;
+    }
 
     //Getter for courseCode
-    public String getCourseCode() { return this.courseCode; }
+    public String getCourseCode() {
+        return this.courseCode;
+    }
 
     //Getter for userId
-    public String getUser() { return userId; }
+    public String getUser() {
+        return userId;
+    }
 
     //Getter for isBid
     public boolean getIsBid() {

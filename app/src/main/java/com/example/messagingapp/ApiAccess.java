@@ -6,7 +6,6 @@ import com.example.messagingapp.model.Listing;
 
 import org.json.JSONObject;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public interface ApiAccess {
     /**
      * Retrofit specification for getting the details of a bidding listing
      *
-     * @param aucId id of auction to look up in database
+     * @param aucId  id of auction to look up in database
      * @param apiKey apikey
      * @return BiddingData object filled with data from database
      */
@@ -42,7 +41,7 @@ public interface ApiAccess {
     /**
      * Retrofit specification to get details of for listing list
      *
-     * @param apiKey apikey
+     * @param apiKey     apikey
      * @param numberRows number of rows of the database to return
      * @return arraylist of listfacades
      */
@@ -53,7 +52,7 @@ public interface ApiAccess {
      * Retrofit specification  to get the listings from the database with filters
      *
      * @param apikey apikey
-     * @param json dictionary of filters
+     * @param json   dictionary of filters
      * @return arraylist of listfacades
      */
     @POST("/listings")
@@ -62,7 +61,7 @@ public interface ApiAccess {
     /**
      * Retrofit specification for posting a new listing
      *
-     * @param list listing to upload to the database
+     * @param list   listing to upload to the database
      * @param apiKey apikey
      * @return status: ok if the listing got added to the database correctly else status: ERROR
      */
@@ -72,21 +71,20 @@ public interface ApiAccess {
     /**
      * Retrofit specification for getting the full data of a single listing
      *
-     *
      * @param listingId
      * @param apiKey
      * @return
      */
     @GET("/listings/{id}")
     Call<ResponseBody> getDetailedListing(@Path("id") String listingId, @Query("apiKey") String apiKey
-                                     );
+    );
 
     /**
      * Retrofit specification to place a new bid
      *
-     * @param aucId auction to bid on
+     * @param aucId  auction to bid on
      * @param bidVal amount to bid in cents
-     * @param bidId id of user bidding
+     * @param bidId  id of user bidding
      * @param apiKey apikey
      * @return updated biddingdata object
      */
@@ -100,10 +98,10 @@ public interface ApiAccess {
     );
 
     /**
-     *  Retrofit specification to update a listing
+     * Retrofit specification to update a listing
      *
      * @param updates list of values to update
-     * @param apiKey apikey
+     * @param apiKey  apikey
      * @return status: OK iff update worked, else status: ERROR
      */
     @PATCH("/updatelisting")
@@ -112,7 +110,7 @@ public interface ApiAccess {
     /**
      * Retrofit specification to upload an image
      *
-     * @param image the image to upload, encoded as a multipartbody.part
+     * @param image  the image to upload, encoded as a multipartbody.part
      * @param apiKey apikey
      * @return status: OK iff update worked, else status: ERROR
      */
