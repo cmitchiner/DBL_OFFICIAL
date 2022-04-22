@@ -108,8 +108,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             DocumentReference documentReference = firebaseFirestore.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid());
             HashMap<String, Object> updates = new HashMap<>();
             updates.put("Token", FieldValue.delete());
-            documentReference.update(updates).addOnSuccessListener(unused -> Log.d("TOKEN", "Token deleted"))
-                    .addOnFailureListener(e -> Log.d("TOKEN", "Error deleting token: " + e));
+            documentReference.update(updates).addOnSuccessListener(unused -> Log.d("TOKEN", "Token deleted")).addOnFailureListener(
+                    e -> Log.d("TOKEN", "Error deleting token: " + e));
             firebaseAuth.signOut();
         }
         //Inform user of log out

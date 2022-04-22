@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.activities.MessagesActivity;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

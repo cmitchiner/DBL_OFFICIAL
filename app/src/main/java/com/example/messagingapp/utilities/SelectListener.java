@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.utilities;
 
 import com.example.messagingapp.model.ListFacade;
 

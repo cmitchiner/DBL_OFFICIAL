@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -179,19 +179,18 @@ public class NewMessageActivity extends AppCompatActivity implements View.OnClic
         userDataForReceiver.put("uid", firebaseAuth.getCurrentUser().getUid());
 
         //Find the correct collection and create document to store receiving users info
-        firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).collection("ReceivingUsers").document(receiverUID)
-                .set(userDataForSender).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).collection("ReceivingUsers").document(receiverUID).set(
+                userDataForSender).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 //Find collection and create document to store current users info
-                firebaseFirestore.collection("Users").document(receiverUID).collection("ReceivingUsers")
-                        .document(firebaseAuth.getCurrentUser().getUid()).set(userDataForReceiver)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                startActivity(new Intent(NewMessageActivity.this, MessagesActivity.class));
-                            }
-                        });
+                firebaseFirestore.collection("Users").document(receiverUID).collection("ReceivingUsers").document(
+                        firebaseAuth.getCurrentUser().getUid()).set(userDataForReceiver).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        startActivity(new Intent(NewMessageActivity.this, MessagesActivity.class));
+                    }
+                });
             }
         });
     }

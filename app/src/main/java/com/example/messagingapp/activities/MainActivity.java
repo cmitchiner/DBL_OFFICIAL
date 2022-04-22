@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
 import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         microsoftBtn.setOnClickListener(this);
 
         //Init Google Auth
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(
+                getString(R.string.default_web_client_id)).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         //Init Firebase Auth
@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateToken(String token) {
         Map<String, Object> data = new HashMap<>();
         data.put("Token", token);
-        firebaseFirestore.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid()).set(data)
-                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED")).addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
+        firebaseFirestore.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid()).set(data).addOnSuccessListener(
+                unused -> Log.d("TOKEN", "UPDATED")).addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
     }
 
     /**
@@ -355,8 +355,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addAcctToDB(String fullName, String username, String phone, String email) {
 
         User user = new User(fullName, username, phone, email);
-        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app").getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app").getReference("Users").child(
+                FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -395,8 +395,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         } else {
-            firebaseAuth.startActivityForSignInWithProvider(MainActivity.this, provider.build())
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            firebaseAuth.startActivityForSignInWithProvider(MainActivity.this, provider.build()).addOnSuccessListener(
+                    new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             getToken();

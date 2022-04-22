@@ -23,9 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messagingapp.R;
 import com.example.messagingapp.adapters.RecycleSpecificChatAdapter;
+import com.example.messagingapp.model.Message;
 import com.example.messagingapp.network.ApiClient;
 import com.example.messagingapp.network.ApiService;
-import com.example.messagingapp.objects.Message;
 import com.example.messagingapp.utilities.Constants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -405,8 +405,8 @@ public class SpecificChatActivity extends AppCompatActivity implements View.OnCl
             message = new Message(messageToSend, firebaseAuth.getUid(), date.getTime(), currentTime);
         }
         //Post both the sender + receiver rooms to firebase database
-        firebaseDatabase.getReference("Chats").child(senderRoom).child("Messages").push().setValue(message)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseDatabase.getReference("Chats").child(senderRoom).child("Messages").push().setValue(message).addOnCompleteListener(
+                new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {

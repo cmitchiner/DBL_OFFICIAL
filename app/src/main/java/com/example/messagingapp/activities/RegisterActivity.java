@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.messagingapp.R;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -221,8 +221,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                     //Attempt to store User object in FirebaseDatabase
                     FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1" + ".firebasedatabase.app").getReference("Users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(
+                            new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     //SUCCESS: User posted to DB
@@ -230,7 +230,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                         sendVerificationEmail();
                                         Toast.makeText(RegisterActivity.this,
                                                 "Success! To finish registration please check your email " + "and follow the given " +
-                                                        "instructions.",
+                                                "instructions.",
                                                 Toast.LENGTH_LONG).show();
                                         //Set Display Name on Firebase
                                         setFirebaseDisplayName(fullName);

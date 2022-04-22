@@ -40,7 +40,7 @@ public class ListFacade implements Parcelable {
 
     //ListFacade constructor
     public ListFacade(String iD, String atitle, int aprice, String atype, String acourseCode, String auniversity, boolean aisBid, Long aisbn,
-                      String alocation) {
+            String alocation) {
         list_iD = iD;
         title = atitle;
         price = aprice;

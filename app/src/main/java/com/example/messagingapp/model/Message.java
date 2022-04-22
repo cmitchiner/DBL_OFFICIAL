@@ -1,4 +1,4 @@
-package com.example.messagingapp.objects;
+package com.example.messagingapp.model;
 
 import java.util.UUID;
 

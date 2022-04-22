@@ -73,8 +73,8 @@ public class ChatListFragment extends Fragment {
         Query query = firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).collection("ReceivingUsers");
 
         //Set the query for our recycler
-        FirestoreRecyclerOptions<firebaseChatModel> allUsernames = new FirestoreRecyclerOptions.Builder<firebaseChatModel>()
-                .setQuery(query, firebaseChatModel.class).build();
+        FirestoreRecyclerOptions<firebaseChatModel> allUsernames = new FirestoreRecyclerOptions.Builder<firebaseChatModel>().setQuery(query,
+                firebaseChatModel.class).build();
 
         //Implement adapter, this sets the text for every individual conversation and stores
         //additional info we will need when moving to specific chat

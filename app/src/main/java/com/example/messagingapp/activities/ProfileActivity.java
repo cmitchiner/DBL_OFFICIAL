@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.messagingapp.R;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -81,8 +81,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationBarV
 
         //Init Firebase Database Reference
         if (!MainActivity.isGuest) {
-            ref = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                    .child(firebaseAuth.getCurrentUser().getUid());
+            ref = FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(
+                    firebaseAuth.getCurrentUser().getUid());
         }
 
         //Verify user is still logged in and update EditText fields

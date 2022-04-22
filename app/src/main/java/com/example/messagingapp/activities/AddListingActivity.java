@@ -30,9 +30,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
+import com.example.messagingapp.network.ApiAccess;
 import com.example.messagingapp.utilities.LocationHandler;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -238,11 +238,11 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
                 //allows the user to cancel selecting a picture
                 if (options[i].equals("Cancel")) {
                     dialogInterface.dismiss();
-                //allows the user to take a photo on the spot
+                    //allows the user to take a photo on the spot
                 } else if (options[i].equals("Take photo")) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, 1);
-                //allows the user to choose an image from their gallery
+                    //allows the user to choose an image from their gallery
                 } else if (options[i].equals("Choose image from gallery")) {
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, 2);
@@ -464,7 +464,7 @@ public class AddListingActivity extends AppCompatActivity implements View.OnClic
             });
             setLocationButt.setVisibility(View.GONE);
             imgViewLocation.setVisibility(View.VISIBLE);
-        //if the LocationHandler gives any error it will tell the user
+            //if the LocationHandler gives any error it will tell the user
         } catch (Exception e) {
             Toast.makeText(AddListingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }

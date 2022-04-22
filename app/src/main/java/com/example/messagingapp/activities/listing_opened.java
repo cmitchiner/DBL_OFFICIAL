@@ -22,10 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.messagingapp.ApiAccess;
 import com.example.messagingapp.R;
 import com.example.messagingapp.model.Listing;
-import com.example.messagingapp.objects.User;
+import com.example.messagingapp.model.User;
+import com.example.messagingapp.network.ApiAccess;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -158,8 +158,8 @@ public class listing_opened extends Fragment implements View.OnClickListener {
             }
         }
         if (!listing.getPhotos().get(0).equals("PLACEHOLDER")) {
-            String url = getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?" + getResources()
-                    .getString(R.string.apiDevKey);
+            String url = getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?" + getResources().getString(
+                    R.string.apiDevKey);
             Log.d("URL", url);
             Picasso.get().load(getResources().getString(R.string.apiBaseUrl) + "img/" + listing.getPhotos().get(0) + "?apiKey=" + getResources()
                     .getString(R.string.apiDevKey)).into(image);
@@ -304,8 +304,8 @@ public class listing_opened extends Fragment implements View.OnClickListener {
      * marks a listing as sold
      */
     private void markListingAsSold() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl))
-                .addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(getResources().getString(R.string.apiBaseUrl)).addConverterFactory(
+                GsonConverterFactory.create()).build();
         ApiAccess apiAccess = retrofit.create(ApiAccess.class);
         JSONObject json = new JSONObject();
         try {

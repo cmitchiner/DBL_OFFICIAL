@@ -35,7 +35,7 @@ public class Listing implements Parcelable {
 
     //Listing constructor for books
     public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, long isbn,
-                   String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
+            String location, String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;
@@ -55,7 +55,7 @@ public class Listing implements Parcelable {
 
     //Listing constructor for notes and summaries
     public Listing(String id, ArrayList<String> photo, int price, String type, int reportCounter, boolean sold, String title, String location,
-                   String language, String auc_id, String description, String university, String courseCode, String userId) {
+            String language, String auc_id, String description, String university, String courseCode, String userId) {
         this.listID = id;
         this.photo = photo;
         this.price = price;

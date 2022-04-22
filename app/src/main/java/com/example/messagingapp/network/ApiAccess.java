@@ -1,4 +1,4 @@
-package com.example.messagingapp;
+package com.example.messagingapp.network;
 
 import com.example.messagingapp.model.ListFacade;
 import com.example.messagingapp.model.Listing;

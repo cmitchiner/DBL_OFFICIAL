@@ -38,9 +38,9 @@ public class LocationHandler extends AppCompatActivity {
      */
     public static boolean checkPermission(Context context) {
 
-        return ActivityCompat
-                .checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat
-                .checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
@@ -48,9 +48,8 @@ public class LocationHandler extends AppCompatActivity {
      * precise location or rough location
      */
     public static void askPermissionLoc(Activity activity) {
-        ActivityCompat
-                .requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSION_ID);
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
     /**
@@ -156,6 +155,9 @@ public class LocationHandler extends AppCompatActivity {
         return loc;
     }
 
+    /**
+     * Define a listener for when location gets returned in getLocation()
+     */
     public interface onLocationListener {
         public void onLocation(Location location);
     }

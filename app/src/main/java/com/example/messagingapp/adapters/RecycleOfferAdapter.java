@@ -12,8 +12,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.messagingapp.R;
-import com.example.messagingapp.SelectListener;
 import com.example.messagingapp.model.ListFacade;
+import com.example.messagingapp.utilities.SelectListener;
 
 import java.util.ArrayList;
 
