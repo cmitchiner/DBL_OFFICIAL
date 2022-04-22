@@ -54,25 +54,27 @@ public class FacebookAuthActivity extends MainActivity {
         //Create callback manager
         callbackManager = CallbackManager.Factory.create();
 
-        //Init login manager for facebook and get proper access token
+        //Opens a google chrome tab to facebook login page
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            /** LISTENERS FOR SUCCESSFUL LOGIN, CANCELED LOGIN, and ERROR */
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    /** LISTENERS FOR SUCCESSFUL LOGIN, CANCELED LOGIN, and ERROR */
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        //if successful begin the OAUTH firebase process
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
 
-            @Override
-            public void onCancel() {
-                // App code
-            }
+                    @Override
+                    public void onCancel() {
+                        //Do nothing as it will redirect back to login page
+                    }
 
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-            }
-        });
+                    @Override
+                    public void onError(FacebookException exception) {
+                        //Do nothing as it will redirect back to login page
+                    }
+                });
     }
 
     /**
@@ -91,8 +93,9 @@ public class FacebookAuthActivity extends MainActivity {
     }
 
     /**
-     * When a user is signed out there token is deleted, thus when they sign in we need to recreate the
-     * notification token, this grabs a new token
+     * When a user is signed out their notification token is deleted,
+     * thus when they sign in we need to recreate the
+     * notification token, this grabs a new token and calls the update token function with said token
      */
     private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
@@ -111,41 +114,46 @@ public class FacebookAuthActivity extends MainActivity {
         data.put("Token", token);
 
         //Store hashamp in proper collection
-        fireBaseFacebook.collection("Tokens").document(firebaseAuth.getCurrentUser().getUid()).set(data)
-                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED")).addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
+        fireBaseFacebook.collection("Tokens")
+                .document(firebaseAuth.getCurrentUser().getUid())
+                .set(data)
+                .addOnSuccessListener(unused -> Log.d("TOKEN", "UPDATED"))
+                .addOnFailureListener(e -> Log.d("TOKEN", "Error Updating: " + e));
     }
 
     /**
-     * Attempts to use firebase OAuth to start facebook login
+     * Completes the firebase side of the login after facebook auth was successful
      *
-     * @param token token to authorize facebook login
+     * @param token token from facebook side of login
      */
     private void handleFacebookAccessToken(AccessToken token) {
 
+        //Create firebase auth credential from facebook auth
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                //LOGIN SUCCESS
-                if (task.isSuccessful()) {
-                    // Update UI with the signed-in user's information
-                    getToken();
-                    MainActivity.isGuest = false;
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                    //Store user in the database
-                    if (task.getResult().getAdditionalUserInfo().isNewUser()) {
-                        addAcctToDB(user.getDisplayName(), user.getUid(), "", "Facebook Account");
-                    } else {
-                        Toast.makeText(FacebookAuthActivity.this, "Existing User found, signing in...", Toast.LENGTH_SHORT).show();
-                        //Redirect to profile activity
-                        startActivity(new Intent(FacebookAuthActivity.this, ProfileActivity.class));
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //LOGIN SUCCESS
+                        if (task.isSuccessful()) {
+                            // Update UI with the signed-in user's information
+                            getToken();
+                            MainActivity.isGuest = false;
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            //Store user in the database
+                            if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+                                addAcctToDB(user.getDisplayName(), user.getUid(), "", "Facebook Account");
+                            } else {
+                                Toast.makeText(FacebookAuthActivity.this, "Existing User found, signing in...", Toast.LENGTH_SHORT).show();
+                                //Redirect to profile activity
+                                startActivity(new Intent(FacebookAuthActivity.this, ProfileActivity.class));
+                            }
+                        } else { //LOGIN FAIL
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(FacebookAuthActivity.this, "" + task.getException(), Toast.LENGTH_LONG).show();
+                        }
                     }
-                } else { //LOGIN FAIL
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(FacebookAuthActivity.this, "" + task.getException(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+                });
     }
 
     /**
@@ -156,17 +164,22 @@ public class FacebookAuthActivity extends MainActivity {
 
         User user = new User(fullName, username, phone, email);
         FirebaseDatabase.getInstance("https://justudy-ebc7b-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 /** User posted to database successfully **/
                 if (task.isSuccessful()) {
-                    Toast.makeText(FacebookAuthActivity.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FacebookAuthActivity.this,
+                            "User has been registered successfully!",
+                            Toast.LENGTH_LONG).show();
                     startActivity(new Intent(FacebookAuthActivity.this, ProfileActivity.class));
                 } else {
                     /** User failed to be added to database **/
-                    Toast.makeText(FacebookAuthActivity.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FacebookAuthActivity.this,
+                            "Failed to register! Try again!",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
