@@ -88,6 +88,15 @@ public class Message {
     }
 
     /**
+     * Setter for the isImage variable
+     *
+     * @param image if the message is an image or not
+     */
+    public void setImage(Boolean image) {
+        isImage = image;
+    }
+
+    /**
      * Getter function for the message body string
      *
      * @return message
@@ -122,6 +131,4 @@ public class Message {
     public String getCurrentTime() {
         return currentTime;
     }
-
-
 }
