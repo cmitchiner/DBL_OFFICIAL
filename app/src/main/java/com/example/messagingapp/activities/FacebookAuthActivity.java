@@ -54,24 +54,25 @@ public class FacebookAuthActivity extends MainActivity {
         //Create callback manager
         callbackManager = CallbackManager.Factory.create();
 
-        //Init login manager for facebook and get proper access token
+        //Opens a google chrome tab to facebook login page
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     /** LISTENERS FOR SUCCESSFUL LOGIN, CANCELED LOGIN, and ERROR */
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        //if successful begin the OAUTH firebase process
                         handleFacebookAccessToken(loginResult.getAccessToken());
                     }
 
                     @Override
                     public void onCancel() {
-                        // App code
+                        //Do nothing as it will redirect back to login page
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
-                        // App code
+                        //Do nothing as it will redirect back to login page
                     }
                 });
     }
@@ -92,8 +93,9 @@ public class FacebookAuthActivity extends MainActivity {
     }
 
     /**
-     * When a user is signed out there token is deleted, thus when they sign in we need to recreate the
-     * notification token, this grabs a new token
+     * When a user is signed out their notification token is deleted,
+     * thus when they sign in we need to recreate the
+     * notification token, this grabs a new token and calls the update token function with said token
      */
     private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
@@ -120,12 +122,13 @@ public class FacebookAuthActivity extends MainActivity {
     }
 
     /**
-     * Attempts to use firebase OAuth to start facebook login
+     * Completes the firebase side of the login after facebook auth was successful
      *
-     * @param token token to authorize facebook login
+     * @param token token from facebook side of login
      */
     private void handleFacebookAccessToken(AccessToken token) {
 
+        //Create firebase auth credential from facebook auth
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
